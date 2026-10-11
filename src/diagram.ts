@@ -64,7 +64,8 @@ function lastLayerSvg(setup: string, view: CaseView, label: string): string {
 }
 
 const ARROW_DEFS =
-  '<defs><marker id="cl-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--arrow)"/></marker></defs>';
+  '<defs><marker id="cl-arrow" viewBox="-2 -2 14 14" refX="7" refY="5" markerWidth="4.4" markerHeight="4.4" orient="auto-start-reverse">' +
+  '<path d="M0 0L10 5L0 10z" fill="var(--arrow)" stroke="var(--arrow-outline)" stroke-width="1.6" stroke-linejoin="round" paint-order="stroke"/></marker></defs>';
 
 /** Arrows from each top-layer piece to the place it has to go (double-headed for swaps). */
 function pllArrows(map: Map<string, Sticker>, center: (p: Vec) => [number, number]): string[] {
@@ -102,19 +103,26 @@ function pllArrows(map: Map<string, Sticker>, center: (p: Vec) => [number, numbe
     const [cx, cy] = center([0, 1, 0]);
     const mx = (x1 + x2) / 2;
     const my = (y1 + y2) / 2;
-    const bow = Math.hypot(mx - cx, my - cy) > 4 ? 0.5 : 0;
+    // Bowing outward would run into the piece beyond the chord (e.g. the corner between two swapped
+    // edges); if another arrow starts or ends there, bow inward instead.
+    const beyond = key([from[0] + to[0], 1, from[2] + to[2]] as Vec);
+    const crowded = [...target].some(([f, t]) => f !== fromKey && (f === beyond || key(t) === beyond));
+    const bow = Math.hypot(mx - cx, my - cy) > 4 ? (crowded ? -0.5 : 0.5) : 0;
     const qx = mx + (mx - cx) * bow;
     const qy = my + (my - cy) * bow;
     const trimTo = (px: number, py: number, tx: number, ty: number) => {
       const l = Math.hypot(tx - px, ty - py);
-      return [px + ((tx - px) * 5) / l, py + ((ty - py) * 5) / l];
+      return [px + ((tx - px) * 7) / l, py + ((ty - py) * 7) / l];
     };
     const a = trimTo(x1, y1, qx, qy);
     const b = trimTo(x2, y2, qx, qy);
     const f = (n: number) => n.toFixed(1);
     const d = `M${f(a[0])} ${f(a[1])}Q${f(qx)} ${f(qy)} ${f(b[0])} ${f(b[1])}`;
     out.push(
-      `<path d="${d}" stroke="var(--arrow)" stroke-width="1.8" stroke-linecap="round" fill="none" marker-end="url(#cl-arrow)"${
+      `<path d="${d}" stroke="var(--arrow-outline)" stroke-width="5" stroke-linecap="round" fill="none"/>`,
+    );
+    out.push(
+      `<path d="${d}" stroke="var(--arrow)" stroke-width="2.6" stroke-linecap="round" fill="none" marker-end="url(#cl-arrow)"${
         swap ? ' marker-start="url(#cl-arrow)"' : ""
       }/>`,
     );
