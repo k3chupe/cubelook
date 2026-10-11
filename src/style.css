@@ -16,35 +16,36 @@
 :root,
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #0e1a1d;
-  --panel: #16252a;
-  --panel-2: #1d3037;
-  --line: #2b4148;
-  --text: #edf4f3;
-  --muted: #a3b9b9;
-  --accent: #7fd6c2;
-  --accent-2: #93c5fd;
-  --on-accent: #0a1a1a;
-  --focus: #ffd166;
+  --bg: #111214;
+  --panel: #1a1b1f;
+  --panel-2: #222429;
+  --line: #33353c;
+  --text: #f2f2f3;
+  --muted: #a6a8b0;
+  --accent: #ffd23f;
+  --accent-2: #8ab4f8;
+  --on-accent: #16130a;
+  --accent-ink: #ffd23f;
+  --focus: #ffd23f;
   --st-u: #fde047;
   --st-d: #f8fafc;
   --st-f: #22c55e;
   --st-b: #3b82f6;
   --st-r: #f97316;
   --st-l: #ef4444;
-  --st-gray: #51666b;
-  --st-stroke: #0a1315;
-  --diagram-bg: #0f2025;
+  --st-gray: #4a4d55;
+  --st-stroke: #0b0c0e;
+  --diagram-bg: #141518;
   --t-sexy: #60a5fa;
   --t-rsexy: #22d3ee;
   --t-sledge: #fb923c;
-  --t-hedge: #fbbf24;
-  --t-sune: #c4a1fb;
+  --t-hedge: #f87171;
+  --t-sune: #c084fc;
   --t-insert: #4ade80;
-  --t-insertF: #2dd4bf;
-  --t-dtrick: #facc15;
-  --t-bracket: #f58cbd;
-  --t-auf: #a6b4c6;
+  --t-insertF: #bef264;
+  --t-dtrick: #e5c07b;
+  --t-bracket: #f472b6;
+  --t-auf: #94a3b8;
   --chip-mix: 20%;
   --chip-text-mix: 30%;
   --chip-text-base: #fff;
@@ -54,33 +55,34 @@
 
 :root[data-theme="light"] {
   color-scheme: light;
-  --bg: #e8eeee;
+  --bg: #f2f3f5;
   --panel: #ffffff;
-  --panel-2: #f0f5f5;
-  --line: #cbd8d9;
-  --text: #11262a;
-  --muted: #4a6265;
-  --accent: #0b6e63;
-  --accent-2: #0a5a8f;
-  --on-accent: #ffffff;
-  --focus: #b45309;
+  --panel-2: #f6f7f9;
+  --line: #dcdee3;
+  --text: #15161a;
+  --muted: #565a63;
+  --accent: #f5c518;
+  --accent-2: #1a56b0;
+  --on-accent: #16130a;
+  --accent-ink: #8a6200;
+  --focus: #1a56b0;
   --st-u: #facc15;
   --st-d: #ffffff;
   --st-f: #16a34a;
   --st-b: #2563eb;
   --st-r: #ea580c;
   --st-l: #dc2626;
-  --st-gray: #a3b0b3;
-  --st-stroke: #1d2a2d;
-  --diagram-bg: #dfe9ea;
+  --st-gray: #a7abb3;
+  --st-stroke: #1d1f24;
+  --diagram-bg: #eceef1;
   --t-sexy: #1d4ed8;
   --t-rsexy: #0e7490;
   --t-sledge: #c2410c;
-  --t-hedge: #a16207;
+  --t-hedge: #b91c1c;
   --t-sune: #7e22ce;
   --t-insert: #15803d;
-  --t-insertF: #0f766e;
-  --t-dtrick: #854d0e;
+  --t-insertF: #4d7c0f;
+  --t-dtrick: #92400e;
   --t-bracket: #be185d;
   --t-auf: #475569;
   --chip-mix: 12%;
@@ -298,11 +300,11 @@ button {
 }
 
 .icon-btn.star.on {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .icon-btn.star.on svg {
-  fill: var(--accent);
+  fill: var(--accent-ink);
 }
 
 .icon-btn.learn {
@@ -455,7 +457,7 @@ main {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 410px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
   gap: 18px;
   padding: 8px 0 8px;
 }
@@ -491,7 +493,7 @@ main {
   grid-template-columns: var(--dcol) minmax(0, 1fr);
   grid-template-rows: auto auto auto;
   align-content: start;
-  background: linear-gradient(to right, var(--diagram-bg) 0, var(--diagram-bg) var(--dcol), var(--panel) var(--dcol));
+  background: var(--panel);
   border: 1.5px solid var(--line);
   border-radius: var(--radius);
   overflow: hidden;
@@ -504,15 +506,15 @@ main {
 
 .diagram-btn {
   grid-column: 1;
-  grid-row: 1 / -1;
+  grid-row: 1;
   align-self: start;
   justify-self: center;
   width: var(--dcol);
   height: var(--dcol);
   padding: var(--dia-pad);
   border: none;
-  border-radius: 0;
-  background: transparent;
+  border-radius: 0 0 14px 0;
+  background: var(--diagram-bg);
   cursor: pointer;
   transition: transform 0.15s;
 }
@@ -577,11 +579,11 @@ main {
 }
 
 .algs {
-  grid-column: 2;
+  grid-column: 1 / -1;
   grid-row: 2;
   list-style: none;
   margin: 0;
-  padding: 8px 20px 16px;
+  padding: 12px 16px 14px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -691,16 +693,12 @@ a.src:hover {
   font-weight: 500;
 }
 
-.alg-actions::after {
-  content: "";
-  order: 1;
-  flex-basis: 100%;
-  height: 0;
+.alg-actions .link-btn {
+  margin-left: 4px;
 }
 
-.alg-actions .link-btn {
-  order: 2;
-  margin-right: 4px;
+.alg-actions .link-btn:first-of-type {
+  margin-left: auto;
 }
 
 .link-btn:hover {
@@ -708,7 +706,7 @@ a.src:hover {
 }
 
 .more {
-  grid-column: 2;
+  grid-column: 1 / -1;
   grid-row: 3;
   margin: 0 20px 16px;
   justify-self: start;
@@ -1180,33 +1178,34 @@ dialog.player::backdrop {
   :root[data-theme="dark"],
   :root[data-theme="light"] {
   color-scheme: light;
-  --bg: #e8eeee;
+  --bg: #f2f3f5;
   --panel: #ffffff;
-  --panel-2: #f0f5f5;
-  --line: #cbd8d9;
-  --text: #11262a;
-  --muted: #4a6265;
-  --accent: #0b6e63;
-  --accent-2: #0a5a8f;
-  --on-accent: #ffffff;
-  --focus: #b45309;
+  --panel-2: #f6f7f9;
+  --line: #dcdee3;
+  --text: #15161a;
+  --muted: #565a63;
+  --accent: #f5c518;
+  --accent-2: #1a56b0;
+  --on-accent: #16130a;
+  --accent-ink: #8a6200;
+  --focus: #1a56b0;
   --st-u: #facc15;
   --st-d: #ffffff;
   --st-f: #16a34a;
   --st-b: #2563eb;
   --st-r: #ea580c;
   --st-l: #dc2626;
-  --st-gray: #a3b0b3;
-  --st-stroke: #1d2a2d;
-  --diagram-bg: #dfe9ea;
+  --st-gray: #a7abb3;
+  --st-stroke: #1d1f24;
+  --diagram-bg: #eceef1;
   --t-sexy: #1d4ed8;
   --t-rsexy: #0e7490;
   --t-sledge: #c2410c;
-  --t-hedge: #a16207;
+  --t-hedge: #b91c1c;
   --t-sune: #7e22ce;
   --t-insert: #15803d;
-  --t-insertF: #0f766e;
-  --t-dtrick: #854d0e;
+  --t-insertF: #4d7c0f;
+  --t-dtrick: #92400e;
   --t-bracket: #be185d;
   --t-auf: #475569;
   --chip-mix: 12%;
@@ -1217,10 +1216,10 @@ dialog.player::backdrop {
     font-size: 11px;
     --dia: 80px;
     --dia-pad: 6px;
-    --text: #111;
-    --muted: #444;
-    --panel: #fff;
-    --line: #bbb;
+    --text: #15161a;
+    --muted: #565a63;
+    --panel: #ffffff;
+    --line: #dcdee3;
   }
   body {
     background: #fff;
