@@ -1,14 +1,27 @@
+import "@fontsource/fira-sans/latin-400.css";
+import "@fontsource/fira-sans/latin-ext-400.css";
+import "@fontsource/fira-sans/latin-500.css";
+import "@fontsource/fira-sans/latin-ext-500.css";
+import "@fontsource/fira-sans/latin-700.css";
+import "@fontsource/fira-sans/latin-ext-700.css";
+import "@fontsource/fira-code/latin-500.css";
+import "@fontsource/fira-code/latin-ext-500.css";
+import "@fontsource/fira-code/latin-600.css";
+import "@fontsource/fira-code/latin-ext-600.css";
 import "./style.css";
 import data from "./data/generated.json";
-import type { AlgOut, CaseOut, GroupOut, SectionOut, Tip } from "./data/types";
+import type { AlgOut, CaseOut, GroupOut, SectionOut, TipSource } from "./data/types";
+import { SOURCES, TOOLS, type SourceId } from "./data/sources";
 import { caseDiagram } from "./diagram";
 import { icons } from "./icons";
 import { algCubingNetUrl, twizzleUrl } from "./links";
 import { onChange, orderedAlgs, resetSettings, settings, update } from "./store";
-import { segmentAlg, TRIGGER_KINDS, usesSlice, isTwoGen, isRotation } from "./triggers";
+import { segmentAlg, TRIGGER_KINDS, usesSlice, isTwoGen, isRotation, hasRotation } from "./triggers";
 import { openPlayer } from "./player";
+import { content, detectLocale, isLocale, LOCALES, locale, plural, setLocale, t, type Locale } from "./i18n";
 
 const sections = data as unknown as SectionOut[];
+const APP_NAME = "CubeLook";
 
 const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
@@ -22,28 +35,51 @@ const caseIndex = new Map<string, CaseRef>();
 for (const section of sections)
   for (const group of section.groups) for (const c of group.cases) caseIndex.set(c.id, { section, group, c });
 
+const algsBySource = sections
+  .flatMap((s) => s.groups.flatMap((g) => g.cases.flatMap((c) => c.algs)))
+  .reduce<Record<string, number>>((acc, a) => ((acc[a.source] = (acc[a.source] ?? 0) + 1), acc), {});
+
+const caseName = (c: CaseOut) => content("cases", c.id)?.name ?? c.name;
+const caseSubtitle = (c: CaseOut) => content("cases", c.id)?.subtitle;
+const caseTitle = (c: CaseOut) => [caseName(c), caseSubtitle(c)].filter(Boolean).join(" – ");
+
 function isCollapsed(id: string, fallback: boolean): boolean {
   return settings.collapsed[id] ?? fallback;
+}
+
+/* ---------- algorithm rendering ---------- */
+
+function triggerLabel(key: string, arg?: string): string {
+  const label = t().triggers[key]?.label ?? key;
+  return arg ? label.replace("{move}", arg) : label;
 }
 
 function renderAlg(alg: string): string {
   return segmentAlg(alg)
     .map((seg) => {
-      const moves = seg.moves
-        .map((m) => `<span class="mv${isRotation(m) ? " rot" : ""}">${esc(m)}</span>`)
-        .join(" ");
-      if (!seg.kind) return `<span class="seg plain"><span class="seg-label"></span><span class="seg-moves">${moves}</span></span>`;
-      return `<span class="seg" style="--c:${seg.kind.color}"><span class="seg-label">${esc(seg.label ?? "")}</span><span class="seg-moves">${moves}</span></span>`;
+      const moves = seg.moves.map((m) => `<span class="mv${isRotation(m) ? " rot" : ""}">${esc(m)}</span>`).join(" ");
+      if (!seg.kind)
+        return `<span class="seg plain"><span class="seg-label" aria-hidden="true"></span><span class="seg-moves">${moves}</span></span>`;
+      return `<span class="seg" style="--c:${seg.kind.color}"><span class="seg-label">${esc(triggerLabel(seg.labelKey!, seg.labelArg))}</span><span class="seg-moves">${moves}</span></span>`;
     })
     .join("");
 }
 
 function algTags(alg: string): string {
+  const m = t().ui;
   const tags: string[] = [];
-  if (isTwoGen(alg)) tags.push(`<span class="tag tag-ru">tylko R U</span>`);
-  if (usesSlice(alg)) tags.push(`<span class="tag tag-m">M/S</span>`);
-  if (/(^|\s)[xyz]/.test(alg.replace(/^\(.*?\)/, ""))) tags.push(`<span class="tag">obrót</span>`);
+  if (isTwoGen(alg)) tags.push(`<span class="tag tag-ru">${esc(m.tagRU)}</span>`);
+  if (usesSlice(alg)) tags.push(`<span class="tag tag-m">${esc(m.tagSlice)}</span>`);
+  if (hasRotation(alg)) tags.push(`<span class="tag">${esc(m.tagRotation)}</span>`);
   return tags.join("");
+}
+
+function sourceChip(a: AlgOut): string {
+  const s = SOURCES[a.source];
+  const label = `${t().ui.source}: ${s.short}`;
+  return a.sourceUrl
+    ? `<a class="src src-${s.id}" href="${esc(a.sourceUrl)}" target="_blank" rel="noopener" title="${esc(label)}">${esc(s.short)}</a>`
+    : `<span class="src src-${s.id}" title="${esc(label)}">${esc(s.short)}</span>`;
 }
 
 function visibleAlgs(c: CaseOut): { list: AlgOut[]; hidden: number; all: AlgOut[] } {
@@ -57,59 +93,93 @@ function visibleAlgs(c: CaseOut): { list: AlgOut[]; hidden: number; all: AlgOut[
   return { list, hidden: all.length - list.length, all };
 }
 
+function iconButton(action: string, label: string, icon: string, extra = "", attrs = ""): string {
+  return `<button class="icon-btn ${extra}" data-action="${action}" aria-label="${esc(label)}" title="${esc(label)}" ${attrs}>${icon}</button>`;
+}
+
 function renderAlgRow(ref: CaseRef, a: AlgOut, index: number, count: number, showReorder: boolean): string {
-  const title = `${ref.c.name}${ref.c.subtitle ? ` – ${ref.c.subtitle}` : ""}`;
+  const m = t().ui;
+  const title = caseTitle(ref.c);
   const fav = index === 0;
+  const data = `data-case="${ref.c.id}" data-alg="${esc(a.alg)}"`;
+  const note = a.note ? content("notes", a.note) : undefined;
   return `
   <li class="alg-row${fav ? " is-fav" : ""}">
-    <div class="alg-main">
-      <div class="alg" aria-label="${esc(a.alg)}">${renderAlg(a.alg)}</div>
-      ${a.note ? `<div class="alg-note">${esc(a.note)}</div>` : ""}
-    </div>
+    <div class="alg" translate="no" aria-label="${esc(a.alg)}">${renderAlg(a.alg)}</div>
+    ${note ? `<div class="alg-note">${esc(note)}</div>` : ""}
     <div class="alg-actions">
-      <span class="tags">${algTags(a.alg)}</span>
-      <button class="icon-btn star${fav ? " on" : ""}" data-action="fav" data-case="${ref.c.id}" data-alg="${esc(a.alg)}" title="${fav ? "Twój ulubiony" : "Ustaw jako ulubiony"}" aria-pressed="${fav}">${icons.star}</button>
+      <span class="tags">${algTags(a.alg)}${sourceChip(a)}</span>
+      ${iconButton("fav", fav ? m.fav : m.setFav, icons.star, `star${fav ? " on" : ""}`, `${data} aria-pressed="${fav}"`)}
       ${
         showReorder
-          ? `<button class="icon-btn" data-action="up" data-case="${ref.c.id}" data-alg="${esc(a.alg)}" title="W górę" ${index === 0 ? "disabled" : ""}>${icons.up}</button>
-             <button class="icon-btn" data-action="down" data-case="${ref.c.id}" data-alg="${esc(a.alg)}" title="W dół" ${index === count - 1 ? "disabled" : ""}>${icons.down}</button>`
+          ? iconButton("up", m.moveUp, icons.up, "", `${data} ${index === 0 ? "disabled" : ""}`) +
+            iconButton("down", m.moveDown, icons.down, "", `${data} ${index === count - 1 ? "disabled" : ""}`)
           : ""
       }
-      <button class="icon-btn play" data-action="play" data-case="${ref.c.id}" data-alg="${esc(a.alg)}" title="Animacja tutaj">${icons.play}</button>
-      <a class="link-btn" href="${algCubingNetUrl(a.alg, title)}" target="_blank" rel="noopener" title="Otwórz na wirtualnej kostce (alg.cubing.net)">kostka ${icons.external}</a>
-      <a class="link-btn alt" href="${twizzleUrl(a.alg, ref.group.view, title)}" target="_blank" rel="noopener" title="Otwórz w Twizzle">Twizzle</a>
+      ${iconButton("play", m.playHere, icons.play, "play", data)}
+      <a class="link-btn" href="${algCubingNetUrl(a.alg, title)}" target="_blank" rel="noopener" title="${esc(m.openCubeHint)}">${esc(m.openCube)} ${icons.external}</a>
+      <a class="link-btn alt" href="${twizzleUrl(a.alg, ref.group.view, title)}" target="_blank" rel="noopener">${esc(m.openTwizzle)}</a>
     </div>
   </li>`;
 }
 
 function renderCase(ref: CaseRef): string {
+  const m = t().ui;
   const { c } = ref;
   const learned = !!settings.learned[c.id];
   if (learned && settings.hideLearned) return "";
   const { list, hidden, all } = visibleAlgs(c);
   const expanded = !settings.onlyFav || !!settings.expanded[c.id];
+  const sub = caseSubtitle(c);
+  const diagramLabel = `${ref.group.view === "f2l" ? m.diagramF2L : m.diagramLL}: ${caseTitle(c)}`;
   return `
   <article class="case${learned ? " learned" : ""}" id="case-${c.id}">
     <div class="case-top">
-      <button class="diagram-btn" data-action="play" data-case="${c.id}" data-alg="${esc(all[0].alg)}" title="Odtwórz ulubiony algorytm">
-        ${caseDiagram(c.setup, ref.group.view)}
+      <button class="diagram-btn" data-action="play" data-case="${c.id}" data-alg="${esc(all[0].alg)}" title="${esc(m.playFav)}" aria-label="${esc(`${m.playFav}: ${caseTitle(c)}`)}">
+        ${caseDiagram(c.setup, ref.group.view, diagramLabel)}
       </button>
       <div class="case-meta">
-        <h4>${esc(c.name)}</h4>
-        ${c.subtitle ? `<p class="sub">${esc(c.subtitle)}</p>` : ""}
-        ${c.sameAs ? `<span class="badge" title="Ten sam przypadek w sekcji średniozaawansowanej">= ${esc(c.sameAs)}</span>` : ""}
+        <h4>${esc(caseName(c))}</h4>
+        ${sub ? `<p class="sub">${esc(sub)}</p>` : ""}
+        ${c.sameAs ? `<span class="badge" title="${esc(m.sameAsHint)}" translate="no">= ${esc(c.sameAs)}</span>` : ""}
       </div>
-      <button class="icon-btn learn${learned ? " on" : ""}" data-action="learn" data-case="${c.id}" title="${learned ? "Oznaczone jako opanowane" : "Oznacz jako opanowane"}" aria-pressed="${learned}">${icons.check}</button>
+      ${iconButton("learn", learned ? m.learned : m.markLearned, icons.check, `learn${learned ? " on" : ""}`, `data-case="${c.id}" aria-pressed="${learned}"`)}
     </div>
     <ol class="algs">${list.map((a, i) => renderAlgRow(ref, a, i, list.length, expanded && list.length > 1)).join("")}</ol>
     ${
       settings.onlyFav && all.length > 1
-        ? `<button class="more" data-action="expand" data-case="${c.id}">${
-            expanded ? "Pokaż tylko ulubiony" : `+${hidden} ${hidden === 1 ? "alternatywa" : hidden < 5 ? "alternatywy" : "alternatyw"} – wybierz ulubiony`
+        ? `<button class="more" data-action="expand" data-case="${c.id}" aria-expanded="${expanded}">${
+            expanded ? esc(m.showOnlyFav) : `${esc(plural(hidden, m.alternatives))} – ${esc(m.chooseFav)}`
           }</button>`
         : ""
     }
   </article>`;
+}
+
+/* ---------- sections ---------- */
+
+function collapsibleHead(level: "section" | "group", id: string, collapsed: boolean, inner: string): string {
+  return `<button class="${level}-head" data-action="toggle" data-id="${id}" aria-expanded="${!collapsed}">${icons.chevron}${inner}</button>`;
+}
+
+function renderTip(tip: TipSource): string {
+  const text = content("tips", tip.id);
+  if (!text) return "";
+  return `
+  <div class="tip">
+    <h5>${esc(text.title)}</h5>
+    <p>${esc(text.body)}</p>
+    ${
+      tip.algs?.length
+        ? `<div class="tip-algs">${tip.algs
+            .map(
+              (a) =>
+                `<a class="tip-alg" href="${algCubingNetUrl(a, text.title)}" target="_blank" rel="noopener" title="${esc(t().ui.seeOnCube)}"><span class="alg" translate="no">${renderAlg(a)}</span>${icons.external}</a>`,
+            )
+            .join("")}</div>`
+        : ""
+    }
+  </div>`;
 }
 
 function renderTips(section: SectionOut): string {
@@ -118,73 +188,60 @@ function renderTips(section: SectionOut): string {
   const collapsed = isCollapsed(id, section.id !== "f2l-beginner");
   return `
   <div class="group tips">
-    <button class="group-head" data-action="toggle" data-id="${id}" aria-expanded="${!collapsed}">
-      ${icons.chevron}<h3>Wskazówki i triki</h3><span class="count">${section.tips.length}</span>
-    </button>
-    ${
-      collapsed
-        ? ""
-        : `<div class="tips-grid">${section.tips.map((t) => renderTip(t)).join("")}</div>`
-    }
-  </div>`;
-}
-
-function renderTip(t: Tip): string {
-  return `
-  <div class="tip">
-    <h5>${esc(t.title)}</h5>
-    <p>${esc(t.body)}</p>
-    ${
-      t.algs?.length
-        ? `<div class="tip-algs">${t.algs
-            .map(
-              (a) =>
-                `<a class="tip-alg" href="${algCubingNetUrl(a, t.title)}" target="_blank" rel="noopener" title="Zobacz na wirtualnej kostce"><span class="alg">${renderAlg(a)}</span>${icons.external}</a>`,
-            )
-            .join("")}</div>`
-        : ""
-    }
+    ${collapsibleHead("group", id, collapsed, `<h3>${esc(t().ui.tips)}</h3><span class="count">${section.tips.length}</span>`)}
+    ${collapsed ? "" : `<div class="tips-grid">${section.tips.map(renderTip).join("")}</div>`}
   </div>`;
 }
 
 function renderGroup(section: SectionOut, group: GroupOut): string {
   const id = `group:${group.id}`;
   const collapsed = isCollapsed(id, false);
+  const text = content("groups", group.id);
   const cards = group.cases.map((c) => renderCase({ section, group, c })).join("");
   const learnedCount = group.cases.filter((c) => settings.learned[c.id]).length;
   return `
   <div class="group">
-    <button class="group-head" data-action="toggle" data-id="${id}" aria-expanded="${!collapsed}">
-      ${icons.chevron}<h3>${esc(group.title)}</h3>
-      <span class="count">${learnedCount ? `${learnedCount}/` : ""}${group.cases.length}</span>
-      ${group.description ? `<span class="group-desc">${esc(group.description)}</span>` : ""}
-    </button>
-    ${
-      collapsed
-        ? ""
-        : cards.trim()
-          ? `<div class="grid">${cards}</div>`
-          : `<p class="empty">Wszystkie przypadki w tej grupie są opanowane. Wyłącz „Ukryj opanowane”, żeby je zobaczyć.</p>`
-    }
+    ${collapsibleHead(
+      "group",
+      id,
+      collapsed,
+      `<h3>${esc(text?.title ?? group.id)}</h3>
+       <span class="count">${learnedCount ? `${learnedCount}/` : ""}${group.cases.length}</span>
+       ${text?.description ? `<span class="group-desc">${esc(text.description)}</span>` : ""}`,
+    )}
+    ${collapsed ? "" : cards.trim() ? `<div class="grid">${cards}</div>` : `<p class="empty">${esc(t().ui.allLearned)}</p>`}
   </div>`;
+}
+
+function basedOn(ids: SourceId[]): string {
+  const links = ids
+    .map((id) => SOURCES[id])
+    .map((s) =>
+      s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)}</a>` : esc(s.name),
+    )
+    .join(" · ");
+  return `<p class="based-on"><span>${esc(t().ui.basedOn)}</span> ${links} <a class="to-sources" href="#sources" data-action="jump" data-id="section:sources">↓</a></p>`;
 }
 
 function renderSection(section: SectionOut): string {
   const id = `section:${section.id}`;
   const collapsed = isCollapsed(id, !!section.defaultCollapsed);
   const total = section.groups.reduce((n, g) => n + g.cases.length, 0);
+  const text = content("sections", section.id);
   return `
-  <section class="section" id="${section.id}">
-    <button class="section-head" data-action="toggle" data-id="${id}" aria-expanded="${!collapsed}">
-      ${icons.chevron}
-      <h2>${esc(section.title)}</h2>
-      <span class="count">${total} przypadków</span>
-    </button>
+  <section class="section" id="${section.id}" aria-labelledby="h-${section.id}">
+    ${collapsibleHead(
+      "section",
+      id,
+      collapsed,
+      `<h2 id="h-${section.id}">${esc(text?.title ?? section.id)}</h2><span class="count">${esc(plural(total, t().ui.cases))}</span>`,
+    )}
+    ${basedOn(section.basedOn)}
     ${
       collapsed
         ? ""
         : `<div class="section-body">
-            <p class="section-desc">${esc(section.description)}</p>
+            ${text?.description ? `<p class="section-desc">${esc(text.description)}</p>` : ""}
             ${renderTips(section)}
             ${section.groups.map((g) => renderGroup(section, g)).join("")}
           </div>`
@@ -192,31 +249,94 @@ function renderSection(section: SectionOut): string {
   </section>`;
 }
 
+function renderSources(): string {
+  const m = t().ui;
+  const id = "section:sources";
+  const collapsed = isCollapsed(id, false);
+  const sourceCards = (Object.keys(SOURCES) as SourceId[])
+    .map((sid) => {
+      const s = SOURCES[sid];
+      const count = algsBySource[sid] ?? 0;
+      return `
+      <div class="source-card src-${sid}">
+        <h4>${s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ${icons.external}</a>` : esc(s.name)}</h4>
+        <p class="source-author">${esc(s.author)} · ${esc(plural(count, m.algCount))}</p>
+        <p><b>${esc(m.sourcesUsedFor)}:</b> ${esc(content("sources", sid) ?? "")}</p>
+      </div>`;
+    })
+    .join("");
+  const tools = TOOLS.map(
+    (tool) => `
+    <li>
+      <a href="${esc(tool.url)}" target="_blank" rel="noopener">${esc(tool.name)}</a>
+      <span class="source-author">– ${esc(tool.author)}${tool.license !== "—" ? ` · ${esc(m.sourcesLicense)}: ${esc(tool.license)}` : ""}</span>
+      <div>${esc(content("sources", `tool-${tool.key}`) ?? "")}</div>
+    </li>`,
+  ).join("");
+  return `
+  <section class="section sources" id="sources" aria-labelledby="h-sources">
+    ${collapsibleHead("section", id, collapsed, `<h2 id="h-sources">${esc(m.sourcesTitle)}</h2>`)}
+    ${
+      collapsed
+        ? ""
+        : `<div class="section-body">
+            <p class="section-desc">${esc(m.sourcesIntro)}</p>
+            <div class="sources-grid">${sourceCards}</div>
+            <h3 class="tools-title">${esc(m.toolsTitle)}</h3>
+            <ul class="tools">${tools}</ul>
+          </div>`
+    }
+  </section>`;
+}
+
+/* ---------- header & chrome ---------- */
+
 function toggleBtn(action: string, label: string, on: boolean, hint: string): string {
-  return `<button class="toggle${on ? " on" : ""}" data-action="${action}" aria-pressed="${on}" title="${esc(hint)}"><span class="dot"></span>${esc(label)}</button>`;
+  return `<button class="toggle${on ? " on" : ""}" data-action="${action}" aria-pressed="${on}" title="${esc(hint)}"><span class="dot" aria-hidden="true"></span>${esc(label)}</button>`;
+}
+
+function renderThemeSwitch(): string {
+  const m = t().ui;
+  const opts: [Settings["theme"], string][] = [
+    ["system", m.themeSystem],
+    ["light", m.themeLight],
+    ["dark", m.themeDark],
+  ];
+  return `<div class="segmented" role="radiogroup" aria-label="${esc(m.theme)}">${opts
+    .map(
+      ([v, label]) =>
+        `<button role="radio" aria-checked="${settings.theme === v}" data-action="theme" data-value="${v}">${esc(label)}</button>`,
+    )
+    .join("")}</div>`;
+}
+
+type Settings = typeof settings;
+
+function renderLanguagePicker(): string {
+  const m = t().ui;
+  return `<label class="lang"><span class="sr-only">${esc(m.language)}</span>
+    <select data-action="locale" aria-label="${esc(m.language)}">
+      ${(Object.keys(LOCALES) as Locale[])
+        .map((l) => `<option value="${l}" ${l === locale() ? "selected" : ""}>${esc(LOCALES[l].meta.name)}</option>`)
+        .join("")}
+    </select></label>`;
 }
 
 function renderLegend(): string {
+  const m = t();
   const collapsed = isCollapsed("legend", true);
   return `
   <div class="legend">
-    <button class="group-head" data-action="toggle" data-id="legend" aria-expanded="${!collapsed}">
-      ${icons.chevron}<h3>Legenda kolorów i jak używać</h3>
-    </button>
+    ${collapsibleHead("group", "legend", collapsed, `<h3>${esc(m.ui.legend)}</h3>`)}
     ${
       collapsed
         ? ""
         : `<div class="legend-body">
-            <div class="legend-chips">${TRIGGER_KINDS.map(
-              (k) => `<span class="seg" style="--c:${k.color}"><span class="seg-label">${esc(k.label)}</span><span class="seg-moves">${esc(k.description)}</span></span>`,
-            ).join("")}</div>
-            <ul class="howto">
-              <li><b>★</b> ustawia algorytm jako ulubiony – przy „Tylko ulubiony” widzisz tylko jego.</li>
-              <li><b>+N alternatyw</b> rozwija pozostałe algorytmy danego przypadku; strzałkami zmieniasz kolejność.</li>
-              <li><b>▶</b> albo klik w obrazek odtwarza animację tutaj, <b>kostka</b> otwiera alg.cubing.net, <b>Twizzle</b> – edytor cubing.net.</li>
-              <li><b>✓</b> oznacza przypadek jako opanowany. Wszystko zapisuje się w tej przeglądarce.</li>
-              <li>Trzymanie kostki: żółty na górze, zielony z przodu, biały krzyż na dole. Slot F2L zawsze z przodu po prawej.</li>
-            </ul>
+            <div class="legend-chips" translate="no">${TRIGGER_KINDS.map((k) => {
+              const tr = m.triggers[k.legendKey];
+              return `<span class="seg" style="--c:${k.color}"><span class="seg-label">${esc(tr.label.replace("{move}", "F"))}</span><span class="seg-moves">${esc(tr.description)}</span></span>`;
+            }).join("")}</div>
+            <ul class="howto">${m.ui.howto.map((h) => `<li>${esc(h)}</li>`).join("")}</ul>
           </div>`
     }
   </div>`;
@@ -224,44 +344,66 @@ function renderLegend(): string {
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 
+function applyChrome() {
+  const root = document.documentElement;
+  const dark = settings.theme === "dark" || (settings.theme === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+  root.dataset.theme = dark ? "dark" : "light";
+  root.dataset.density = settings.compact ? "compact" : "normal";
+  setLocale(isLocale(settings.locale) ? settings.locale : detectLocale());
+  document.title = `${APP_NAME} – ${t().app.tagline}`;
+  document.querySelector('meta[name="description"]')?.setAttribute("content", t().app.description);
+}
+
 function render() {
+  applyChrome();
+  const m = t();
   const scrollY = window.scrollY;
+  const focusedKey = (document.activeElement as HTMLElement | null)?.dataset?.focusKey;
   app.innerHTML = `
+  <a class="skip" href="#main">${esc(m.ui.sectionsNav)}</a>
   <header class="topbar">
     <div class="brand">
-      <div class="logo" aria-hidden="true">${caseDiagram("", "pll")}</div>
+      <div class="logo" aria-hidden="true">${caseDiagram("", "pll", APP_NAME)}</div>
       <div>
-        <h1>Ściąga: F2L + 4LLL</h1>
-        <p>Beginner F2L (5 przypadków) · F2L średniozaawansowane · 4-look last layer</p>
+        <h1 translate="no">${APP_NAME}</h1>
+        <p>${esc(m.app.tagline)}</p>
       </div>
     </div>
-    <nav class="jump" aria-label="Sekcje">
-      ${sections.map((s) => `<a href="#${s.id}" data-action="jump" data-id="section:${s.id}">${esc(s.title.split(" – ")[0])}</a>`).join("")}
+    <nav class="jump" aria-label="${esc(m.ui.sectionsNav)}">
+      ${sections
+        .map((s) => `<a href="#${s.id}" data-action="jump" data-id="section:${s.id}">${esc((content("sections", s.id)?.title ?? s.id).split(" – ")[0])}</a>`)
+        .join("")}
+      <a href="#sources" data-action="jump" data-id="section:sources">${esc(m.ui.sourcesTitle)}</a>
     </nav>
     <div class="controls">
-      ${toggleBtn("onlyFav", "Tylko ulubiony", settings.onlyFav, "Pokazuj jeden (ulubiony) algorytm na przypadek")}
-      ${toggleBtn("hideSlice", "Bez M/S", settings.hideSlice, "Ukryj algorytmy z ruchami środka (M, S, E)")}
-      ${toggleBtn("hideLearned", "Ukryj opanowane", settings.hideLearned, "Ukryj przypadki oznaczone ✓")}
-      <span class="sep"></span>
-      <button class="icon-btn" data-action="collapseAll" title="Zwiń wszystko">${icons.fold}</button>
-      <button class="icon-btn" data-action="expandAll" title="Rozwiń wszystko">${icons.unfold}</button>
-      <button class="icon-btn" data-action="print" title="Drukuj / zapisz jako PDF">${icons.printer}</button>
+      ${toggleBtn("onlyFav", m.ui.onlyFav, settings.onlyFav, m.ui.onlyFavHint)}
+      ${toggleBtn("hideSlice", m.ui.hideSlice, settings.hideSlice, m.ui.hideSliceHint)}
+      ${toggleBtn("hideLearned", m.ui.hideLearned, settings.hideLearned, m.ui.hideLearnedHint)}
+      ${toggleBtn("compact", m.ui.compact, settings.compact, m.ui.compactHint)}
+      <span class="sep" aria-hidden="true"></span>
+      ${renderThemeSwitch()}
+      ${renderLanguagePicker()}
+      <span class="sep" aria-hidden="true"></span>
+      ${iconButton("collapseAll", m.ui.collapseAll, icons.fold)}
+      ${iconButton("expandAll", m.ui.expandAll, icons.unfold)}
+      ${iconButton("print", m.ui.print, icons.printer)}
     </div>
   </header>
-  <main>
+  <main id="main">
     ${renderLegend()}
     ${sections.map(renderSection).join("")}
+    ${renderSources()}
   </main>
   <footer>
-    Algorytmy: <a href="https://speedcubedb.com/a/3x3/F2L" target="_blank" rel="noopener">speedcubedb.com</a>,
-    <a href="https://cubingcheatsheet.com/algs3x_4lll.html" target="_blank" rel="noopener">cubingcheatsheet.com</a>,
-    <a href="https://www.reddit.com/r/Cubers/comments/boukt3/" target="_blank" rel="noopener">r/Cubers</a>.
-    F2L dla początkujących wg <a href="https://www.youtube.com/watch?v=Hx9ZbPdX8zM" target="_blank" rel="noopener">ParadoxCubing</a>.
-    Każdy algorytm sprawdzony symulatorem kostki.
-    <button class="text-btn" data-action="reset">Przywróć ustawienia domyślne</button>
+    <p>${esc(m.ui.footerVerified)} ${m.meta.machineTranslated ? esc(m.ui.footerMachine) : ""}</p>
+    <button class="text-btn" data-action="reset">${esc(m.ui.reset)}</button>
   </footer>`;
   window.scrollTo(0, scrollY);
+  app.querySelectorAll<HTMLElement>("[data-action]").forEach(tagFocus);
+  if (focusedKey) app.querySelector<HTMLElement>(`[data-focus-key="${CSS.escape(focusedKey)}"]`)?.focus();
 }
+
+/* ---------- interactions ---------- */
 
 function moveAlg(caseId: string, alg: string, delta: number | "top") {
   const ref = caseIndex.get(caseId);
@@ -282,17 +424,31 @@ function setAll(collapsed: boolean) {
       s.collapsed[`tips:${section.id}`] = collapsed;
       for (const g of section.groups) s.collapsed[`group:${g.id}`] = collapsed;
     }
+    s.collapsed["section:sources"] = collapsed;
   });
 }
 
+/** Keeps keyboard focus on the "same" control after a full re-render. */
+function tagFocus(el: HTMLElement) {
+  const { action, id, case: caseId, alg, value } = el.dataset;
+  el.dataset.focusKey = [action, id, caseId, alg, value].filter(Boolean).join("|");
+}
+
+app.addEventListener("change", (e) => {
+  const el = e.target as HTMLSelectElement;
+  if (el.dataset.action === "locale" && isLocale(el.value)) {
+    const value = el.value;
+    update((s) => (s.locale = value));
+  }
+});
+
 app.addEventListener("click", (e) => {
   const el = (e.target as HTMLElement).closest<HTMLElement>("[data-action]");
-  if (!el) return;
-  const { action, id, case: caseId, alg } = el.dataset;
+  if (!el || el.tagName === "SELECT") return;
+  const { action, id, case: caseId, alg, value } = el.dataset;
   switch (action) {
     case "toggle": {
-      const btn = el as HTMLButtonElement;
-      const nowCollapsed = btn.getAttribute("aria-expanded") === "true";
+      const nowCollapsed = el.getAttribute("aria-expanded") === "true";
       update((s) => (s.collapsed[id!] = nowCollapsed));
       break;
     }
@@ -310,6 +466,12 @@ app.addEventListener("click", (e) => {
     case "hideLearned":
       update((s) => (s.hideLearned = !s.hideLearned));
       break;
+    case "compact":
+      update((s) => (s.compact = !s.compact));
+      break;
+    case "theme":
+      update((s) => (s.theme = value as Settings["theme"]));
+      break;
     case "collapseAll":
       setAll(true);
       break;
@@ -320,7 +482,7 @@ app.addEventListener("click", (e) => {
       window.print();
       break;
     case "reset":
-      if (confirm("Przywrócić domyślne ulubione, kolejność i zwinięcia?")) resetSettings();
+      if (confirm(t().ui.resetConfirm)) resetSettings();
       break;
     case "fav":
       moveAlg(caseId!, alg!, "top");
@@ -339,11 +501,27 @@ app.addEventListener("click", (e) => {
       break;
     case "play": {
       const ref = caseIndex.get(caseId!);
-      if (ref) openPlayer({ alg: alg!, view: ref.group.view, title: `${ref.c.name}${ref.c.subtitle ? ` – ${ref.c.subtitle}` : ""}`, algHtml: renderAlg(alg!) });
+      if (ref) openPlayer({ alg: alg!, view: ref.group.view, title: caseTitle(ref.c), algHtml: renderAlg(alg!) });
       break;
     }
   }
 });
 
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+  if (settings.theme === "system") render();
+});
+
+/** `?theme=light|dark|system&lang=pl|en|fr&density=compact|normal` – handy for links, screenshots and tests. */
+function applyUrlOverrides() {
+  const q = new URLSearchParams(location.search);
+  const theme = q.get("theme");
+  const lang = q.get("lang");
+  const density = q.get("density");
+  if (theme === "light" || theme === "dark" || theme === "system") settings.theme = theme;
+  if (isLocale(lang)) settings.locale = lang;
+  if (density) settings.compact = density === "compact";
+}
+
+applyUrlOverrides();
 onChange(render);
 render();

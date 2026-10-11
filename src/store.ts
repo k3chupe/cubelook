@@ -1,4 +1,4 @@
-const KEY = "kostka-rubika:v1";
+const KEY = "cubelook:v1";
 
 export interface Settings {
   /** Per case: user's preferred order of algorithms (first = favourite). */
@@ -10,6 +10,10 @@ export interface Settings {
   onlyFav: boolean;
   hideSlice: boolean;
   hideLearned: boolean;
+  compact: boolean;
+  theme: "system" | "light" | "dark";
+  /** null = follow the browser language. */
+  locale: string | null;
 }
 
 const defaults: Settings = {
@@ -20,6 +24,9 @@ const defaults: Settings = {
   onlyFav: true,
   hideSlice: false,
   hideLearned: false,
+  compact: false,
+  theme: "system",
+  locale: null,
 };
 
 function load(): Settings {

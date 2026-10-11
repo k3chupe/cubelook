@@ -1,15 +1,17 @@
 /**
- * Builds src/data/generated.json from the hand-written sources and the scraped speedcubedb data,
- * verifying every algorithm with the cube simulator. `--check` fails on any rejected hand-written alg.
+ * Builds src/data/generated.json from the hand-written sources and the scraped SpeedCubeDB data,
+ * verifying every algorithm with the cube simulator and attributing each one to its source.
+ * `--check` fails on any rejected hand-written alg.
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { caseState, findPreAuf, invertAlg, parseAlg, applyAlg, GOAL_CHECK, type Goal, type Cube } from "../src/cube";
-import type { AlgOut, CaseOut, CaseSource, GroupOut, SectionOut, SectionSource } from "../src/data/types";
+import type { AlgOut, AlgSource, CaseOut, CaseSource, GroupOut, SectionOut, SectionSource } from "../src/data/types";
+import { SOURCES, speedcubedbCaseUrl, type SourceId } from "../src/data/sources";
 import { f2lBeginner } from "../src/data/f2l-beginner";
 import { fourLLL } from "../src/data/4lll";
-import { f2lGroupOrder, f2lGroupTitles, f2lIntermediateBase } from "../src/data/f2l-intermediate";
+import { f2lGroupIds, f2lGroupOrder, f2lIntermediateBase } from "../src/data/f2l-intermediate";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const check = process.argv.includes("--check");
@@ -22,6 +24,64 @@ const tidy = (alg: string) =>
     .replace(/(\w)2'/g, "$12")
     .replace(/\s+/g, " ")
     .trim();
+
+/** Comparable form: no parentheses, no leading/trailing whole-cube rotations. */
+const comparable = (alg: string) => {
+  const t = tidy(alg.replace(/[()]/g, " ")).split(" ").filter(Boolean);
+  while (t.length && /^[xyz]/.test(t[0])) t.shift();
+  while (t.length && /^[xyz]/.test(t[t.length - 1])) t.pop();
+  return t.join(" ");
+};
+
+interface Scraped {
+  name: string;
+  sub: string;
+  setup: string | null;
+  algs: string[];
+}
+const readRaw = (f: string): Scraped[] => JSON.parse(readFileSync(join(root, "scripts/raw", f), "utf8"));
+
+const scdb: Record<"OLL" | "PLL", Map<string, Set<string>>> = { OLL: new Map(), PLL: new Map() };
+for (const r of [...readRaw("speedcubedb-oll.json"), ...readRaw("speedcubedb-2look-oll.json")])
+  scdb.OLL.set(r.name, new Set([...(scdb.OLL.get(r.name) ?? []), ...r.algs.map(comparable)]));
+for (const r of readRaw("speedcubedb-pll.json")) scdb.PLL.set(r.name, new Set(r.algs.map(comparable)));
+
+// Algorithms as printed on cubingcheatsheet.com/algs3x_4lll.html and in the r/Cubers thread.
+const CHEATSHEET = new Set(
+  [
+    "F R U R' U' F'", "f R U R' U' f'", "R U2 R2 F R F' U2 R' F R F'", "R U R' U R U2 R'", "L' U' L U' L' U2 L",
+    "F R U R' U' R U R' U' R U R' U' F'", "R U2 R2 U' R2 U' R2 U2 R", "R2 D R' U2 R D' R' U2 R'",
+    "r U R' U' r' F R F'", "F' r U R' U' r' F R", "F R U' R' U' R U R' F' R U R' U' R' F R F'",
+    "M2 U M U2 M' U M2", "M2 U' M U2 M' U' M2", "M2 U' M2 U' M' U2 M2 U2 M'", "M2 U M2 U2 M2 U M2",
+  ].map(comparable),
+);
+const REDDIT = new Set(
+  [
+    "R U2 R' U' R U' R'", "R' U' R U' R' U2 R", "x R' U R' D2 R U' R' D2 R2", "R' U' R U' R' U R U' R' U2 R",
+    "R U2 R' U' R U R' U' R U' R'", "M' U M2 U M2 U M' U2 M2", "f R U R' U' f' F R U R' U' F'",
+  ].map(comparable),
+);
+
+interface Attribution {
+  source: SourceId;
+  sourceUrl?: string;
+}
+
+/** Explicit source → r/Cubers → Cubing Cheat Sheet → SpeedCubeDB → fallback. */
+function attribute(alg: string, c: Pick<CaseSource, "ref" | "source">, explicit?: SourceId): Attribution {
+  const key = comparable(alg);
+  const url = (id: SourceId) => SOURCES[id].url;
+  if (explicit) return { source: explicit, sourceUrl: url(explicit) };
+  if (REDDIT.has(key)) return { source: "reddit", sourceUrl: url("reddit") };
+  if (CHEATSHEET.has(key)) return { source: "cubingcheatsheet", sourceUrl: url("cubingcheatsheet") };
+  if (c.ref && scdb[c.ref.set].get(c.ref.name)?.has(key))
+    return { source: "speedcubedb", sourceUrl: speedcubedbCaseUrl(c.ref.set, c.ref.name) };
+  for (const set of ["PLL", "OLL"] as const)
+    for (const [name, algs] of scdb[set])
+      if (algs.has(key)) return { source: "speedcubedb", sourceUrl: speedcubedbCaseUrl(set, name) };
+  const fallback = c.source ?? "community";
+  return { source: fallback, sourceUrl: url(fallback) };
+}
 
 const LL_GOALS: Goal[] = ["eo", "oll", "cp", "pll"];
 
@@ -59,7 +119,7 @@ function penalty(alg: string): number {
   const moves = parseAlg(alg);
   let p = 0;
   if (moves.some((m) => "MES".includes(m.face))) p += 10;
-  if (moves.some((m) => "xyz".includes(m.face) && m !== moves[0])) p += 2;
+  if (moves.slice(1).some((m) => "xyz".includes(m.face))) p += 2;
   if (moves.length && "xyz".includes(moves[0].face)) p += 1;
   if (moves.some((m) => "Bb".includes(m.face))) p += 1;
   return p;
@@ -69,91 +129,67 @@ function verifyAlgs(
   label: string,
   start: Cube,
   goal: Goal,
-  algs: (string | { alg: string; note?: string })[],
+  algs: (string | AlgSource)[],
   strict: boolean,
+  attr: (alg: string, explicit?: SourceId) => Attribution,
 ): AlgOut[] {
   const out: AlgOut[] = [];
   const seen = new Set<string>();
   for (const raw of algs) {
-    const src = typeof raw === "string" ? { alg: raw } : raw;
+    const src: AlgSource = typeof raw === "string" ? { alg: raw } : raw;
     const alg = tidy(src.alg);
     let pre: string | null;
     try {
       pre = findPrefix(start, alg, goal);
-    } catch (e) {
+    } catch {
       pre = null;
     }
     if (pre === null) {
-      if (strict) errors.push(`${label}: "${alg}" nie rozwiązuje przypadku`);
+      if (strict) errors.push(`${label}: "${alg}" does not solve the case`);
       dropped++;
       continue;
     }
     const full = withPrefix(pre, alg);
     if (seen.has(full)) continue;
     seen.add(full);
-    out.push(src.note ? { alg: full, note: src.note } : { alg: full });
+    out.push({ alg: full, ...(src.note ? { note: src.note } : {}), ...attr(alg, src.source) });
   }
   return out;
 }
 
-function buildCase(c: CaseSource, goal: Goal, label: string): CaseOut {
+function buildCase(c: CaseSource, goal: Goal, sectionId: string): CaseOut {
   const first = typeof c.algs[0] === "string" ? c.algs[0] : c.algs[0].alg;
   const setup = tidy(c.setup ?? invertAlg(first));
   const start = caseState(setup);
-  const algs = verifyAlgs(`${label} / ${c.name}`, start, goal, c.algs, !!c.strict);
-  if (!algs.length) errors.push(`${label} / ${c.name}: brak poprawnych algorytmów`);
-  return { id: c.id, name: c.name, subtitle: c.subtitle, setup, algs };
+  const algs = verifyAlgs(`${sectionId}/${c.id}`, start, goal, c.algs, !!c.strict, (a, e) => attribute(a, c, e));
+  if (!algs.length) errors.push(`${sectionId}/${c.id}: no valid algorithms`);
+  return { id: c.id, name: c.ref?.name ?? c.id, setup, algs };
 }
 
 function buildSection(s: SectionSource): SectionOut {
   return {
     ...s,
     groups: s.groups.map(
-      (g): GroupOut => ({
-        id: g.id,
-        title: g.title,
-        description: g.description,
-        goal: g.goal,
-        view: g.view,
-        cases: g.cases.map((c) => buildCase(c, g.goal, s.title)),
-      }),
+      (g): GroupOut => ({ id: g.id, goal: g.goal, view: g.view, cases: g.cases.map((c) => buildCase(c, g.goal, s.id)) }),
     ),
   };
 }
 
-interface Scraped {
-  name: string;
-  sub: string;
-  setup: string | null;
-  algs: string[];
-}
-
 function buildIntermediate(): SectionOut {
-  const raw: Scraped[] = JSON.parse(readFileSync(join(root, "scripts/raw/speedcubedb-f2l.json"), "utf8"));
-  const groups: GroupOut[] = f2lGroupOrder.map((sub) => ({
-    id: `f2l-${sub.toLowerCase().replace(/\s+/g, "-")}`,
-    title: f2lGroupTitles[sub].title,
-    description: f2lGroupTitles[sub].description,
-    goal: "f2l",
-    view: "f2l",
-    cases: [],
-  }));
+  const raw = readRaw("speedcubedb-f2l.json");
+  const groups: GroupOut[] = f2lGroupOrder.map((sub) => ({ id: f2lGroupIds[sub], goal: "f2l", view: "f2l", cases: [] }));
   for (const r of raw) {
     const setup = tidy(r.setup ?? invertAlg(r.algs[0]));
     const start = caseState(setup);
-    const algs = verifyAlgs(r.name, start, "f2l", r.algs, false)
+    const sourceUrl = speedcubedbCaseUrl("F2L", r.name);
+    const algs = verifyAlgs(r.name, start, "f2l", r.algs, false, () => ({ source: "speedcubedb", sourceUrl }))
       .map((a, i) => ({ a, i }))
       .sort((x, y) => penalty(x.a.alg) - penalty(y.a.alg) || x.i - y.i)
       .map((x) => x.a)
       .slice(0, 6);
-    if (!algs.length) errors.push(`${r.name}: brak poprawnych algorytmów`);
+    if (!algs.length) errors.push(`${r.name}: no valid algorithms`);
     const num = r.name.replace("F2L ", "");
-    groups[f2lGroupOrder.indexOf(r.sub)].cases.push({
-      id: `f2l-${num}`,
-      name: `F2L ${num}`,
-      setup,
-      algs,
-    });
+    groups[f2lGroupOrder.indexOf(r.sub)].cases.push({ id: `f2l-${num}`, name: `F2L ${num}`, setup, algs });
   }
   return { ...f2lIntermediateBase, groups };
 }
@@ -177,17 +213,23 @@ function buildBeginner(s: SectionSource): SectionOut {
         if (match) break;
       }
       if (!match) {
-        errors.push(`${c.name} (${c.subtitle}): "${first}" nie rozwiązuje ${c.expect ?? "żadnego z 41 przypadków"}`);
-        return buildCase(c, "f2l-free-br", s.title);
+        errors.push(`${c.id}: "${first}" does not solve ${c.expect ?? "any of the 41 F2L cases"}`);
+        return buildCase(c, "f2l-free-br", s.id);
       }
       const start = caseState(match.setup);
-      const own = verifyAlgs(`${s.title} / ${c.name}`, start, "f2l-free-br", c.algs, !!c.strict);
-      const extra = verifyAlgs(c.name, start, "f2l", match.algs.map((a) => stripPrefix(a.alg)), false);
+      const own = verifyAlgs(`${s.id}/${c.id}`, start, "f2l-free-br", c.algs, !!c.strict, (a, e) =>
+        attribute(a, c, e ?? c.source),
+      );
+      const scdbUrl = speedcubedbCaseUrl("F2L", match.name);
+      const extra = verifyAlgs(c.id, start, "f2l", match.algs.map((a) => stripPrefix(a.alg)), false, () => ({
+        source: "speedcubedb",
+        sourceUrl: scdbUrl,
+      }));
       const algs = [...own];
       for (const e of extra) if (!algs.some((a) => a.alg === e.alg) && algs.length < 5) algs.push(e);
-      return { id: c.id, name: c.name, subtitle: c.subtitle, setup: match.setup, algs, sameAs: match.name };
+      return { id: c.id, name: c.id, setup: match.setup, algs, sameAs: match.name };
     });
-    return { id: g.id, title: g.title, description: g.description, goal: g.goal, view: g.view, cases };
+    return { id: g.id, goal: g.goal, view: g.view, cases };
   });
   return { ...s, groups };
 }
@@ -195,9 +237,10 @@ function buildBeginner(s: SectionSource): SectionOut {
 const beginner = buildBeginner(f2lBeginner);
 
 const sections = [beginner, intermediate, lll];
-const total = sections.flatMap((s) => s.groups.flatMap((g) => g.cases.flatMap((c) => c.algs))).length;
+const all = sections.flatMap((s) => s.groups.flatMap((g) => g.cases.flatMap((c) => c.algs)));
+const bySource = all.reduce<Record<string, number>>((acc, a) => ((acc[a.source] = (acc[a.source] ?? 0) + 1), acc), {});
 
 writeFileSync(join(root, "src/data/generated.json"), JSON.stringify(sections, null, 1) + "\n");
-console.log(`Zapisano ${total} algorytmów (odrzucono ${dropped} niepasujących alternatyw).`);
-for (const e of errors) console.error("BŁĄD:", e);
+console.log(`Wrote ${all.length} algorithms (dropped ${dropped} non-matching alternatives).`, bySource);
+for (const e of errors) console.error("ERROR:", e);
 if (check && errors.length) process.exit(1);

@@ -1,55 +1,58 @@
 export interface TriggerKind {
   id: string;
-  label: string;
   color: string;
-  description: string;
+  /** Example label key (in `Messages.triggers`) used in the legend. */
+  legendKey: string;
 }
 
+/** Colors are CSS custom properties so themes can tune them for contrast. */
 export const TRIGGER_KINDS: TriggerKind[] = [
-  { id: "sexy", label: "sexy", color: "#3b82f6", description: "R U R' U'" },
-  { id: "rsexy", label: "odwr. sexy", color: "#06b6d4", description: "U R U' R' / R' U' R U" },
-  { id: "sledge", label: "sledge", color: "#f97316", description: "R' F R F'" },
-  { id: "hedge", label: "hedge", color: "#f59e0b", description: "F R' F' R" },
-  { id: "sune", label: "sune", color: "#a855f7", description: "R U R' U R U2 R' i odmiany" },
-  { id: "insert", label: "wstawka", color: "#22c55e", description: "R U R', R U' R', R' U R…" },
-  { id: "insertF", label: "wstawka F/L", color: "#14b8a6", description: "F' U' F, L' U L…" },
-  { id: "dtrick", label: "D-trik", color: "#eab308", description: "R D R', R' D' R…" },
-  { id: "bracket", label: "nawias", color: "#ec4899", description: "F … F' / f … f' / x … x'" },
-  { id: "auf", label: "AUF", color: "#94a3b8", description: "ustaw górę przed algorytmem" },
+  { id: "sexy", color: "var(--t-sexy)", legendKey: "sexy" },
+  { id: "rsexy", color: "var(--t-rsexy)", legendKey: "rsexy" },
+  { id: "sledge", color: "var(--t-sledge)", legendKey: "sledge" },
+  { id: "hedge", color: "var(--t-hedge)", legendKey: "hedge" },
+  { id: "sune", color: "var(--t-sune)", legendKey: "sune" },
+  { id: "insert", color: "var(--t-insert)", legendKey: "insert" },
+  { id: "insertF", color: "var(--t-insertF)", legendKey: "insertF" },
+  { id: "dtrick", color: "var(--t-dtrick)", legendKey: "dtrick" },
+  { id: "bracket", color: "var(--t-bracket)", legendKey: "bracket" },
+  { id: "auf", color: "var(--t-auf)", legendKey: "auf" },
 ];
 
 const KIND = Object.fromEntries(TRIGGER_KINDS.map((k) => [k.id, k]));
 
 interface Pattern {
   kind: string;
-  label?: string;
+  labelKey: string;
   seq: string[];
 }
 
-const P = (kind: string, seqs: string[], label?: string): Pattern[] =>
-  seqs.map((s) => ({ kind, label, seq: s.split(" ") }));
+const P = (kind: string, labelKey: string, seqs: string[]): Pattern[] =>
+  seqs.map((s) => ({ kind, labelKey, seq: s.split(" ") }));
 
 const PATTERNS: Pattern[] = [
-  ...P("sune", ["R U R' U R U2 R'"], "sune"),
-  ...P("sune", ["R U2 R' U' R U' R'", "R' U' R U' R' U2 R"], "antysune"),
-  ...P("sune", ["L' U' L U' L' U2 L", "L' U2 L U L' U L"], "lewe sune"),
-  ...P("sexy", ["R U R' U'"]),
-  ...P("sexy", ["r U R' U'"], "szeroki sexy"),
-  ...P("sexy", ["L' U' L U"], "lewy sexy"),
-  ...P("rsexy", ["U R U' R'", "R' U' R U"]),
-  ...P("sledge", ["R' F R F'"]),
-  ...P("sledge", ["r' F R F'"], "szeroki sledge"),
-  ...P("hedge", ["F R' F' R"]),
-  ...P("dtrick", ["R D R'", "R D' R'", "R' D R", "R' D' R", "R D2 R'", "R' D2 R"]),
-  ...P("insert", ["R U R'", "R U' R'", "R U2 R'", "R' U R", "R' U' R", "R' U2 R"]),
-  ...P("insertF", ["F' U' F", "F' U F", "F' U2 F", "F U F'", "F U' F'", "F U2 F'"]),
-  ...P("insertF", ["L' U' L", "L' U L", "L' U2 L", "L U L'", "L U' L'", "L U2 L'"]),
+  ...P("sune", "sune", ["R U R' U R U2 R'"]),
+  ...P("sune", "antisune", ["R U2 R' U' R U' R'", "R' U' R U' R' U2 R"]),
+  ...P("sune", "leftSune", ["L' U' L U' L' U2 L", "L' U2 L U L' U L"]),
+  ...P("sexy", "sexy", ["R U R' U'"]),
+  ...P("sexy", "wideSexy", ["r U R' U'"]),
+  ...P("sexy", "leftSexy", ["L' U' L U"]),
+  ...P("rsexy", "rsexy", ["U R U' R'", "R' U' R U"]),
+  ...P("sledge", "sledge", ["R' F R F'"]),
+  ...P("sledge", "wideSledge", ["r' F R F'"]),
+  ...P("hedge", "hedge", ["F R' F' R"]),
+  ...P("dtrick", "dtrick", ["R D R'", "R D' R'", "R' D R", "R' D' R", "R D2 R'", "R' D2 R"]),
+  ...P("insert", "insert", ["R U R'", "R U' R'", "R U2 R'", "R' U R", "R' U' R", "R' U2 R"]),
+  ...P("insertF", "insertF", ["F' U' F", "F' U F", "F' U2 F", "F U F'", "F U' F'", "F U2 F'"]),
+  ...P("insertF", "insertF", ["L' U' L", "L' U L", "L' U2 L", "L U L'", "L U' L'", "L U2 L'"]),
 ].sort((a, b) => b.seq.length - a.seq.length);
 
 export interface Segment {
   moves: string[];
   kind?: TriggerKind;
-  label?: string;
+  /** Key in `Messages.triggers`; `{move}` in the label is replaced by `labelArg`. */
+  labelKey?: string;
+  labelArg?: string;
 }
 
 const inverseOf = (m: string) => (m.endsWith("'") ? m.slice(0, -1) : m.endsWith("2") ? m : `${m}'`);
@@ -60,8 +63,7 @@ function matchPatterns(tokens: string[]): Segment[] {
   while (i < tokens.length) {
     const p = PATTERNS.find((pat) => pat.seq.every((m, k) => tokens[i + k] === m));
     if (p) {
-      const kind = KIND[p.kind];
-      out.push({ moves: tokens.slice(i, i + p.seq.length), kind, label: p.label ?? kind.label });
+      out.push({ moves: tokens.slice(i, i + p.seq.length), kind: KIND[p.kind], labelKey: p.labelKey });
       i += p.seq.length;
     } else {
       const last = out[out.length - 1];
@@ -78,7 +80,7 @@ export function segmentAlg(alg: string): Segment[] {
   const pre = /^\(([^)]*)\)\s*/.exec(alg);
   const segments: Segment[] = [];
   if (pre) {
-    segments.push({ moves: pre[1].split(" "), kind: KIND.auf, label: "AUF" });
+    segments.push({ moves: pre[1].split(" "), kind: KIND.auf, labelKey: "auf" });
     alg = alg.slice(pre[0].length);
   }
   const tokens = alg.replace(/[()]/g, "").trim().split(/\s+/).filter(Boolean);
@@ -89,10 +91,14 @@ export function segmentAlg(alg: string): Segment[] {
   const bracketable =
     !wholeIsTrigger && first && /^[Ffxy]'?$/.test(first) && tokens.length > 3 && last === inverseOf(first);
   if (bracketable) {
-    const label = /^[xy]/.test(first) ? "obrót" : `nawias ${first}`;
-    segments.push({ moves: [first], kind: KIND.bracket, label });
-    segments.push(...matchPatterns(tokens.slice(1, -1)));
-    segments.push({ moves: [last], kind: KIND.bracket, label });
+    const rotation = /^[xy]/.test(first);
+    const seg = (m: string): Segment => ({
+      moves: [m],
+      kind: KIND.bracket,
+      labelKey: rotation ? "rotation" : "bracket",
+      labelArg: first,
+    });
+    segments.push(seg(first), ...matchPatterns(tokens.slice(1, -1)), seg(last));
   } else {
     segments.push(...matchPatterns(tokens));
   }
@@ -101,6 +107,7 @@ export function segmentAlg(alg: string): Segment[] {
 
 export const isRotation = (m: string) => /^[xyz]/.test(m);
 export const usesSlice = (alg: string) => /(^|[\s(])[MES]/.test(alg);
+export const hasRotation = (alg: string) => /(^|\s)[xyz]/.test(alg.replace(/^\(.*?\)/, ""));
 export const isTwoGen = (alg: string) =>
   alg
     .replace(/[()]/g, "")

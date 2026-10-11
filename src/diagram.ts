@@ -1,16 +1,17 @@
 import { caseState, stickerMap, stickerAt, type Face, type Sticker, type Vec } from "./cube";
 import type { CaseView } from "./data/types";
 
+/** Sticker colors are CSS custom properties defined per theme. */
 export const FACE_COLORS: Record<Face, string> = {
-  U: "#fde047",
-  D: "#f8fafc",
-  F: "#22c55e",
-  B: "#3b82f6",
-  R: "#f97316",
-  L: "#ef4444",
+  U: "var(--st-u)",
+  D: "var(--st-d)",
+  F: "var(--st-f)",
+  B: "var(--st-b)",
+  R: "var(--st-r)",
+  L: "var(--st-l)",
 };
-const GRAY = "#4b5563";
-const STROKE = "#0b0d12";
+const GRAY = "var(--st-gray)";
+const STROKE = "var(--st-stroke)";
 
 function llColor(s: Sticker, view: CaseView, onTop: boolean): string {
   if (view === "pll") return FACE_COLORS[s.color];
@@ -21,7 +22,7 @@ function llColor(s: Sticker, view: CaseView, onTop: boolean): string {
   return onTop ? GRAY : "none";
 }
 
-function lastLayerSvg(setup: string, view: CaseView): string {
+function lastLayerSvg(setup: string, view: CaseView, label: string): string {
   const map = stickerMap(caseState(setup));
   const cell = 20;
   const gap = 2;
@@ -52,13 +53,13 @@ function lastLayerSvg(setup: string, view: CaseView): string {
     parts.push(rect(gap, along, strip, cell, llColor(left, view, false)));
     parts.push(rect(size - gap - strip, along, strip, cell, llColor(right, view, false)));
   }
-  return `<svg viewBox="0 0 ${size} ${size}" class="diagram" role="img" aria-label="Układ ostatniej warstwy">${parts.join("")}</svg>`;
+  return `<svg viewBox="0 0 ${size} ${size}" class="diagram" role="img" aria-label="${label}">${parts.join("")}</svg>`;
 }
 
 const COS30 = Math.cos(Math.PI / 6);
 const project = ([x, y, z]: Vec, s: number): [number, number] => [(x - z) * COS30 * s, (-y + (x + z) * 0.5) * s];
 
-function f2lSvg(setup: string): string {
+function f2lSvg(setup: string, label: string): string {
   const cube = caseState(setup);
   const map = stickerMap(cube);
   const s = 15;
@@ -100,16 +101,16 @@ function f2lSvg(setup: string): string {
   // Visible coordinates span [-1.5, 1.5]: screen x spans ±3·cos30·s, screen y spans ±3·s.
   const hx = 3 * COS30 * s + 2;
   const hy = 3 * s + 2;
-  return `<svg viewBox="${-hx} ${-hy} ${2 * hx} ${2 * hy}" class="diagram" role="img" aria-label="Układ F2L">${polys.join("")}</svg>`;
+  return `<svg viewBox="${-hx} ${-hy} ${2 * hx} ${2 * hy}" class="diagram" role="img" aria-label="${label}">${polys.join("")}</svg>`;
 }
 
 const cache = new Map<string, string>();
 
-export function caseDiagram(setup: string, view: CaseView): string {
-  const k = `${view}|${setup}`;
+export function caseDiagram(setup: string, view: CaseView, label: string): string {
+  const k = `${view}|${setup}|${label}`;
   let svg = cache.get(k);
   if (!svg) {
-    svg = view === "f2l" ? f2lSvg(setup) : lastLayerSvg(setup, view);
+    svg = view === "f2l" ? f2lSvg(setup, label) : lastLayerSvg(setup, view, label);
     cache.set(k, svg);
   }
   return svg;

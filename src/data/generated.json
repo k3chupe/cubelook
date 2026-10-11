@@ -1,27 +1,25 @@
 [
  {
   "id": "f2l-beginner",
-  "title": "F2L dla początkujących – 5 przypadków",
-  "description": "Intuicyjne F2L wg ParadoxCubing: każdą parę sprowadzasz do jednego z 5 podstawowych przypadków (róg i krawędź w górnej warstwie, nie stykają się). Slot docelowy zawsze z przodu po prawej, róg nad slotem.",
+  "basedOn": [
+   "paradox"
+  ],
   "tips": [
    {
-    "title": "Krok 1: róg w slocie → wyciągnij go na górę",
-    "body": "Jeśli róg siedzi na dole w slocie, ustaw go z przodu po prawej i wyciągnij.",
+    "id": "beg-step1",
     "algs": [
      "R U R'"
     ]
    },
    {
-    "title": "Krok 2: krawędź w środkowej warstwie → wyciągnij ją",
-    "body": "Ustaw slot z krawędzią z przodu po prawej i wybierz wersję, po której krawędź NIE dotyka rogu.",
+    "id": "beg-step2",
     "algs": [
      "R U R'",
      "R U' R'"
     ]
    },
    {
-    "title": "Krok 3: róg i krawędź się stykają → trik z chowaniem",
-    "body": "Wariant 1 (róg UFR, krawędź UF): schowaj róg R', przesuń krawędź w lewo/do tyłu, wyjmij róg R. Wariant 2 (róg UFR, krawędź UR): najpierw U', potem schowaj R, przesuń krawędź, R'.",
+    "id": "beg-step3",
     "algs": [
      "R' U R",
      "R' U2 R",
@@ -30,12 +28,10 @@
     ]
    },
    {
-    "title": "Złota zasada chowania",
-    "body": "Slot, który podnosisz chowając róg, musi być jeszcze NIEułożony. R' podnosi slot z tyłu po prawej, R podnosi slot z przodu po prawej. Przy ostatniej parze obróć kostkę tak, żeby wolny slot był z tyłu po prawej."
+    "id": "beg-golden"
    },
    {
-    "title": "Myśl do przodu",
-    "body": "Zrób U przed R U R', żeby róg wyszedł już oddzielony od krawędzi – pominiesz krok 3.",
+    "id": "beg-ahead",
     "algs": [
      "U R U R'"
     ]
@@ -44,231 +40,305 @@
   "groups": [
    {
     "id": "beg-basic",
-    "title": "5 podstawowych przypadków",
-    "description": "Róg nad slotem (UFR). „Dopasowane” = górne naklejki rogu i krawędzi mają ten sam kolor.",
     "goal": "f2l",
     "view": "f2l",
     "cases": [
      {
       "id": "beg-1a",
-      "name": "1. Dopasowane",
-      "subtitle": "biały w prawo, krawędź z tyłu",
+      "name": "beg-1a",
       "setup": "r' U' R2 U' R2 U2 r",
       "algs": [
        {
         "alg": "R' U2 R U' F' U F",
-        "note": "schowaj róg R', krawędź na przód, wyjmij R, wstaw w lewo"
+        "note": "beg-1a",
+        "source": "paradox",
+        "sourceUrl": "https://www.youtube.com/watch?v=Hx9ZbPdX8zM"
        },
        {
-        "alg": "R' U2 R y U' L' U L"
+        "alg": "R' U2 R y U' L' U L",
+        "source": "paradox",
+        "sourceUrl": "https://www.youtube.com/watch?v=Hx9ZbPdX8zM"
        },
        {
-        "alg": "r' U2 R2 U R2 U r"
+        "alg": "r' U2 R2 U R2 U r",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_8"
        },
        {
-        "alg": "d R' U2 R U R' U2 R"
+        "alg": "d R' U2 R U R' U2 R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_8"
        },
        {
-        "alg": "y' U R' U2 R U2 R' U R"
+        "alg": "y' U R' U2 R U2 R' U R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_8"
        }
       ],
       "sameAs": "F2L 8"
      },
      {
       "id": "beg-1b",
-      "name": "1. Dopasowane",
-      "subtitle": "biały w prawo, krawędź z lewej",
+      "name": "beg-1b",
       "setup": "F' U' F U2 F' U F U'",
       "algs": [
        {
-        "alg": "R' U' R U' F' U F"
+        "alg": "R' U' R U' F' U F",
+        "source": "paradox",
+        "sourceUrl": "https://www.youtube.com/watch?v=Hx9ZbPdX8zM"
        },
        {
-        "alg": "R' U' R y U' L' U L"
+        "alg": "R' U' R y U' L' U L",
+        "source": "paradox",
+        "sourceUrl": "https://www.youtube.com/watch?v=Hx9ZbPdX8zM"
        },
        {
-        "alg": "U' r U' R' U R U r'"
+        "alg": "U' r U' R' U R U r'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_6"
        },
        {
-        "alg": "d R' U' R U2 R' U R"
+        "alg": "d R' U' R U2 R' U R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_6"
        },
        {
-        "alg": "y' U R' U' R U2 R' U R"
+        "alg": "y' U R' U' R U2 R' U R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_6"
        }
       ],
       "sameAs": "F2L 6"
      },
      {
       "id": "beg-2",
-      "name": "2. Niedopasowane",
-      "subtitle": "biały w prawo, krawędź z tyłu",
+      "name": "beg-2",
       "setup": "R U' R'",
       "algs": [
        {
         "alg": "R U R'",
-        "note": "najprostszy – 3 ruchy"
+        "note": "beg-2",
+        "source": "paradox",
+        "sourceUrl": "https://www.youtube.com/watch?v=Hx9ZbPdX8zM"
        },
        {
-        "alg": "y' f R f'"
+        "alg": "y' f R f'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_4"
        },
        {
-        "alg": "y F U F'"
+        "alg": "y F U F'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_4"
        },
        {
-        "alg": "y2 L U L'"
+        "alg": "y2 L U L'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_4"
        }
       ],
       "sameAs": "F2L 4"
      },
      {
       "id": "beg-3a",
-      "name": "3. Biały na górze",
-      "subtitle": "krawędź z tyłu",
+      "name": "beg-3a",
       "setup": "R U R' U' R U2 R' U'",
       "algs": [
        {
         "alg": "U R U2 R' U R U' R'",
-        "note": "krawędź nad jej centrum, zrób parę, wstaw"
+        "note": "beg-3a",
+        "source": "paradox",
+        "sourceUrl": "https://www.youtube.com/watch?v=Hx9ZbPdX8zM"
        },
        {
-        "alg": "U R U2 R2 F R F'"
+        "alg": "U R U2 R2 F R F'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_19"
        },
        {
-        "alg": "d f R2 f' U f R' f'"
+        "alg": "d f R2 f' U f R' f'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_19"
        },
        {
-        "alg": "R U' R' U R U' R' U R U R'"
+        "alg": "R U' R' U R U' R' U R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_19"
        }
       ],
       "sameAs": "F2L 19"
      },
      {
       "id": "beg-3b",
-      "name": "3. Biały na górze",
-      "subtitle": "krawędź z lewej",
+      "name": "beg-3b",
       "setup": "R U R' F R' F' R2 U R' U",
       "algs": [
        {
-        "alg": "U' F' U2 F U' F' U F"
+        "alg": "U' F' U2 F U' F' U F",
+        "source": "paradox",
+        "sourceUrl": "https://www.youtube.com/watch?v=Hx9ZbPdX8zM"
        },
        {
-        "alg": "y U' L' U2 L U' L' U L"
+        "alg": "y U' L' U2 L U' L' U L",
+        "source": "paradox",
+        "sourceUrl": "https://www.youtube.com/watch?v=Hx9ZbPdX8zM"
        },
        {
-        "alg": "U' R U' R2 F R F' R U' R'"
+        "alg": "U' R U' R2 F R F' R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_20"
        },
        {
-        "alg": "y' U' R' U2 R U' R' U R"
+        "alg": "y' U' R' U2 R U' R' U R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_20"
        }
       ],
       "sameAs": "F2L 20"
      },
      {
       "id": "beg-3c",
-      "name": "3. Biały na górze",
-      "subtitle": "krawędź z lewej (druga strona)",
+      "name": "beg-3c",
       "setup": "R U' R' U2 R U R'",
       "algs": [
        {
-        "alg": "U2 R U R' U R U' R'"
+        "alg": "U2 R U R' U R U' R'",
+        "source": "paradox",
+        "sourceUrl": "https://www.youtube.com/watch?v=Hx9ZbPdX8zM"
        },
        {
-        "alg": "R U' R' U2 R U R'"
+        "alg": "R U' R' U2 R U R'",
+        "source": "paradox",
+        "sourceUrl": "https://www.youtube.com/watch?v=Hx9ZbPdX8zM"
        },
        {
-        "alg": "R B U2 B' R'"
+        "alg": "R B U2 B' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_21"
        },
        {
-        "alg": "y' f R' f' U2 f R f'"
+        "alg": "y' f R' f' U2 f R f'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_21"
        }
       ],
       "sameAs": "F2L 21"
      },
      {
       "id": "beg-3d",
-      "name": "3. Biały na górze",
-      "subtitle": "krawędź z tyłu (druga strona)",
+      "name": "beg-3d",
       "setup": "F' L' U2 L F",
       "algs": [
        {
-        "alg": "U2 F' U' F U' F' U F"
+        "alg": "U2 F' U' F U' F' U F",
+        "source": "paradox",
+        "sourceUrl": "https://www.youtube.com/watch?v=Hx9ZbPdX8zM"
        },
        {
-        "alg": "y U2 L' U' L U' L' U L"
+        "alg": "y U2 L' U' L U' L' U L",
+        "source": "paradox",
+        "sourceUrl": "https://www.youtube.com/watch?v=Hx9ZbPdX8zM"
        },
        {
-        "alg": "r U' r' U2 r U r'"
+        "alg": "r U' r' U2 r U r'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_22"
        },
        {
-        "alg": "F' L' U2 L F"
+        "alg": "F' L' U2 L F",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_22"
        },
        {
-        "alg": "y' U2 R' U' R U' R' U R"
+        "alg": "y' U2 R' U' R U' R' U R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_22"
        }
       ],
       "sameAs": "F2L 22"
      },
      {
       "id": "beg-4a",
-      "name": "4. Lustrzane dopasowane",
-      "subtitle": "biały do przodu, krawędź z lewej",
+      "name": "beg-4a",
       "setup": "R U R' U2 R U2 R' U",
       "algs": [
        {
         "alg": "U' R U2 R' U2 R U' R'",
-        "note": "U', schowaj R, krawędź do tyłu, R', U2, wstaw"
+        "note": "beg-4a",
+        "source": "paradox",
+        "sourceUrl": "https://www.youtube.com/watch?v=Hx9ZbPdX8zM"
        },
        {
-        "alg": "U' R U2 R' U' R U2 R'"
+        "alg": "U' R U2 R' U' R U2 R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_7"
        },
        {
-        "alg": "U' R U2 R' U R' F R F'"
+        "alg": "U' R U2 R' U R' F R F'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_7"
        },
        {
-        "alg": "M' U' M U2 r U' r'"
+        "alg": "M' U' M U2 r U' r'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_7"
        }
       ],
       "sameAs": "F2L 7"
      },
      {
       "id": "beg-4b",
-      "name": "4. Lustrzane dopasowane",
-      "subtitle": "biały do przodu, krawędź z tyłu",
+      "name": "beg-4b",
       "setup": "R U R' U2 R U' R' U",
       "algs": [
        {
-        "alg": "U' R U R' U2 R U' R'"
+        "alg": "U' R U R' U2 R U' R'",
+        "source": "paradox",
+        "sourceUrl": "https://www.youtube.com/watch?v=Hx9ZbPdX8zM"
        },
        {
-        "alg": "F2 L' U' L U F2"
+        "alg": "F2 L' U' L U F2",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_5"
        },
        {
-        "alg": "U' R U R' U' R U2 R'"
+        "alg": "U' R U R' U' R U2 R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_5"
        },
        {
-        "alg": "U' R U R' U R' F R F'"
+        "alg": "U' R U R' U R' F R F'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_5"
        }
       ],
       "sameAs": "F2L 5"
      },
      {
       "id": "beg-5",
-      "name": "5. Lustrzane niedopasowane",
-      "subtitle": "biały do przodu, krawędź z lewej",
+      "name": "beg-5",
       "setup": "F' U F",
       "algs": [
        {
         "alg": "F' U' F",
-        "note": "lustro przypadku 2"
+        "note": "beg-5",
+        "source": "paradox",
+        "sourceUrl": "https://www.youtube.com/watch?v=Hx9ZbPdX8zM"
        },
        {
-        "alg": "y L' U' L"
+        "alg": "y L' U' L",
+        "source": "paradox",
+        "sourceUrl": "https://www.youtube.com/watch?v=Hx9ZbPdX8zM"
        },
        {
-        "alg": "y' R' U' R"
+        "alg": "y' R' U' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_3"
        },
        {
-        "alg": "S U R U' R' S'"
+        "alg": "S U R U' R' S'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_3"
        }
       ],
       "sameAs": "F2L 3"
@@ -277,49 +347,61 @@
    },
    {
     "id": "beg-pairs",
-    "title": "Gotowa para – wstawianie",
-    "description": "Te ruchy kończą przypadki 1, 3 i 4.",
     "goal": "f2l",
     "view": "f2l",
     "cases": [
      {
       "id": "beg-ins-r",
-      "name": "Para z prawej",
-      "subtitle": "wstawka prawą ręką",
+      "name": "beg-ins-r",
       "setup": "F R' F' R",
       "algs": [
        {
-        "alg": "U R U' R'"
+        "alg": "U R U' R'",
+        "source": "paradox",
+        "sourceUrl": "https://www.youtube.com/watch?v=Hx9ZbPdX8zM"
        },
        {
-        "alg": "R' F R F'"
+        "alg": "R' F R F'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_1"
        },
        {
-        "alg": "y U F' L F L2 U L"
+        "alg": "y U F' L F L2 U L",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_1"
        },
        {
-        "alg": "y' r' U' R U M'"
+        "alg": "y' r' U' R U M'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_1"
        }
       ],
       "sameAs": "F2L 1"
      },
      {
       "id": "beg-ins-l",
-      "name": "Para z przodu",
-      "subtitle": "wstawka lewą stroną",
+      "name": "beg-ins-l",
       "setup": "R' F R F'",
       "algs": [
        {
-        "alg": "U' F' U F"
+        "alg": "U' F' U F",
+        "source": "paradox",
+        "sourceUrl": "https://www.youtube.com/watch?v=Hx9ZbPdX8zM"
        },
        {
-        "alg": "y U' L' U L"
+        "alg": "y U' L' U L",
+        "source": "paradox",
+        "sourceUrl": "https://www.youtube.com/watch?v=Hx9ZbPdX8zM"
        },
        {
-        "alg": "F R' F' R"
+        "alg": "F R' F' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_2"
        },
        {
-        "alg": "y' U' R' U R"
+        "alg": "y' U' R' U R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_2"
        }
       ],
       "sameAs": "F2L 2"
@@ -330,21 +412,20 @@
  },
  {
   "id": "f2l-intermediate",
-  "title": "F2L średniozaawansowane – 41 przypadków",
-  "description": "Wszystkie przypadki F2L dla slotu przód-prawo (numeracja jak na speedcubedb.com). Po kilka algorytmów na przypadek – wersje z M/S są na końcu.",
   "defaultCollapsed": true,
+  "basedOn": [
+   "speedcubedb"
+  ],
   "tips": [
    {
-    "title": "Ruch U zamiast obrotu kostki",
-    "body": "Zamiast y / y' ustaw parę ruchem U i wstaw ją ruchem F lub lewą stroną bez obracania – szybciej i nie gubisz elementów z oczu.",
+    "id": "int-no-rotation",
     "algs": [
      "U' F' U F",
      "y U' L' U L"
     ]
    },
    {
-    "title": "Wstawki do tylnych slotów",
-    "body": "Tylne sloty możesz robić bez obrotu: tył-prawo R' … R, tył-lewo L … L'.",
+    "id": "int-back-slots",
     "algs": [
      "R' U' R",
      "R' U R",
@@ -353,35 +434,29 @@
     ]
    },
    {
-    "title": "Sledgehammer jako wstawka",
-    "body": "Gdy para stoi „odwrotnie” w górze, R' F R F' (sledgehammer) wstawia ją bez ruchu U.",
+    "id": "int-sledge",
     "algs": [
      "R' F R F'",
      "F R' F' R"
     ]
    },
    {
-    "title": "Wykorzystaj pusty slot (keyhole)",
-    "body": "Jeśli sąsiedni slot jest pusty, rozdzielaj pary przez niego, a nie przez slot docelowy. Przykład: krawędź dobrze, róg na górze – wstaw róg przez „dziurkę od klucza”.",
+    "id": "int-keyhole",
     "algs": [
      "d R' U' R d'",
      "R U' R' d R' U' R"
     ]
    },
    {
-    "title": "Najpierw szukaj par, które są już prawie gotowe",
-    "body": "Rób najpierw pary z przypadków 3-4 ruchowych, a trudne zostaw na koniec – często same się „naprawią”."
+    "id": "int-easy-first"
    },
    {
-    "title": "Lookahead",
-    "body": "Kręć wolniej i równo. Podczas wstawiania jednej pary szukaj wzrokiem rogu i krawędzi następnej."
+    "id": "int-lookahead"
    }
   ],
   "groups": [
    {
     "id": "f2l-free-pairs",
-    "title": "Proste wstawki",
-    "description": "Para gotowa lub rozdzielona tylko jednym ruchem.",
     "goal": "f2l",
     "view": "f2l",
     "cases": [
@@ -391,16 +466,24 @@
       "setup": "F R' F' R",
       "algs": [
        {
-        "alg": "U R U' R'"
+        "alg": "U R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_1"
        },
        {
-        "alg": "R' F R F'"
+        "alg": "R' F R F'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_1"
        },
        {
-        "alg": "y U F' L F L2 U L"
+        "alg": "y U F' L F L2 U L",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_1"
        },
        {
-        "alg": "y' r' U' R U M'"
+        "alg": "y' r' U' R U M'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_1"
        }
       ]
      },
@@ -410,16 +493,24 @@
       "setup": "R' F R F'",
       "algs": [
        {
-        "alg": "F R' F' R"
+        "alg": "F R' F' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_2"
        },
        {
-        "alg": "U' F' U F"
+        "alg": "U' F' U F",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_2"
        },
        {
-        "alg": "y' U' R' U R"
+        "alg": "y' U' R' U R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_2"
        },
        {
-        "alg": "y U' L' U L"
+        "alg": "y U' L' U L",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_2"
        }
       ]
      },
@@ -429,16 +520,24 @@
       "setup": "F' U F",
       "algs": [
        {
-        "alg": "F' U' F"
+        "alg": "F' U' F",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_3"
        },
        {
-        "alg": "y' R' U' R"
+        "alg": "y' R' U' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_3"
        },
        {
-        "alg": "y L' U' L"
+        "alg": "y L' U' L",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_3"
        },
        {
-        "alg": "S U R U' R' S'"
+        "alg": "S U R U' R' S'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_3"
        }
       ]
      },
@@ -448,16 +547,24 @@
       "setup": "R U' R'",
       "algs": [
        {
-        "alg": "R U R'"
+        "alg": "R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_4"
        },
        {
-        "alg": "y' f R f'"
+        "alg": "y' f R f'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_4"
        },
        {
-        "alg": "y F U F'"
+        "alg": "y F U F'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_4"
        },
        {
-        "alg": "y2 L U L'"
+        "alg": "y2 L U L'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_4"
        }
       ]
      }
@@ -465,8 +572,6 @@
    },
    {
     "id": "f2l-disconnected-pairs",
-    "title": "Rozłączone pary",
-    "description": "Róg i krawędź na górze, osobno.",
     "goal": "f2l",
     "view": "f2l",
     "cases": [
@@ -476,16 +581,24 @@
       "setup": "R U R' U2 R U' R' U",
       "algs": [
        {
-        "alg": "U' R U R' U2 R U' R'"
+        "alg": "U' R U R' U2 R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_5"
        },
        {
-        "alg": "F2 L' U' L U F2"
+        "alg": "F2 L' U' L U F2",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_5"
        },
        {
-        "alg": "U' R U R' U' R U2 R'"
+        "alg": "U' R U R' U' R U2 R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_5"
        },
        {
-        "alg": "U' R U R' U R' F R F'"
+        "alg": "U' R U R' U R' F R F'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_5"
        }
       ]
      },
@@ -495,16 +608,24 @@
       "setup": "F' U' F U2 F' U F U'",
       "algs": [
        {
-        "alg": "U' r U' R' U R U r'"
+        "alg": "U' r U' R' U R U r'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_6"
        },
        {
-        "alg": "d R' U' R U2 R' U R"
+        "alg": "d R' U' R U2 R' U R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_6"
        },
        {
-        "alg": "y' U R' U' R U2 R' U R"
+        "alg": "y' U R' U' R U2 R' U R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_6"
        },
        {
-        "alg": "y U L' U' L U2 L' U L"
+        "alg": "y U L' U' L U2 L' U L",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_6"
        }
       ]
      },
@@ -514,16 +635,24 @@
       "setup": "R U R' U2 R U2 R' U",
       "algs": [
        {
-        "alg": "U' R U2 R' U' R U2 R'"
+        "alg": "U' R U2 R' U' R U2 R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_7"
        },
        {
-        "alg": "U' R U2 R' U2 R U' R'"
+        "alg": "U' R U2 R' U2 R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_7"
        },
        {
-        "alg": "U' R U2 R' U R' F R F'"
+        "alg": "U' R U2 R' U R' F R F'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_7"
        },
        {
-        "alg": "M' U' M U2 r U' r'"
+        "alg": "M' U' M U2 r U' r'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_7"
        }
       ]
      },
@@ -533,16 +662,24 @@
       "setup": "r' U' R2 U' R2 U2 r",
       "algs": [
        {
-        "alg": "r' U2 R2 U R2 U r"
+        "alg": "r' U2 R2 U R2 U r",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_8"
        },
        {
-        "alg": "d R' U2 R U R' U2 R"
+        "alg": "d R' U2 R U R' U2 R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_8"
        },
        {
-        "alg": "y' U R' U2 R U2 R' U R"
+        "alg": "y' U R' U2 R U2 R' U R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_8"
        },
        {
-        "alg": "y U L' U2 L U2 L' U L"
+        "alg": "y U L' U2 L U2 L' U L",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_8"
        }
       ]
      },
@@ -552,16 +689,24 @@
       "setup": "F' U F U' R U R' U",
       "algs": [
        {
-        "alg": "U' R U' R' U F' U' F"
+        "alg": "U' R U' R' U F' U' F",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_9"
        },
        {
-        "alg": "F R U R' U' F' R U' R'"
+        "alg": "F R U R' U' F' R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_9"
        },
        {
-        "alg": "U' R U' R' d R' U' R"
+        "alg": "U' R U' R' d R' U' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_9"
        },
        {
-        "alg": "d R' U' R U' R' U' R"
+        "alg": "d R' U' R U' R' U' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_9"
        }
       ]
      },
@@ -571,16 +716,24 @@
       "setup": "R U' R' U' R U' R' U",
       "algs": [
        {
-        "alg": "U' R U R' U R U R'"
+        "alg": "U' R U R' U R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_10"
        },
        {
-        "alg": "U2 R U' R' U' R U R'"
+        "alg": "U2 R U' R' U' R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_10"
        },
        {
-        "alg": "d R' U R d' R U R'"
+        "alg": "d R' U R d' R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_10"
        },
        {
-        "alg": "y' U R' U R U' f R f'"
+        "alg": "y' U R' U R U' f R f'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_10"
        }
       ]
      },
@@ -590,16 +743,24 @@
       "setup": "R U R' U' R U2 R' U'",
       "algs": [
        {
-        "alg": "U R U2 R' U R U' R'"
+        "alg": "U R U2 R' U R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_19"
        },
        {
-        "alg": "U R U2 R2 F R F'"
+        "alg": "U R U2 R2 F R F'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_19"
        },
        {
-        "alg": "d f R2 f' U f R' f'"
+        "alg": "d f R2 f' U f R' f'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_19"
        },
        {
-        "alg": "R U' R' U R U' R' U R U R'"
+        "alg": "R U' R' U R U' R' U R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_19"
        }
       ]
      },
@@ -609,16 +770,24 @@
       "setup": "R U R' F R' F' R2 U R' U",
       "algs": [
        {
-        "alg": "U' R U' R2 F R F' R U' R'"
+        "alg": "U' R U' R2 F R F' R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_20"
        },
        {
-        "alg": "U' F' U2 F U' F' U F"
+        "alg": "U' F' U2 F U' F' U F",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_20"
        },
        {
-        "alg": "y' U' R' U2 R U' R' U R"
+        "alg": "y' U' R' U2 R U' R' U R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_20"
        },
        {
-        "alg": "y U' L' U2 L U' L' U L"
+        "alg": "y U' L' U2 L U' L' U L",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_20"
        }
       ]
      },
@@ -628,16 +797,24 @@
       "setup": "R U' R' U2 R U R'",
       "algs": [
        {
-        "alg": "U2 R U R' U R U' R'"
+        "alg": "U2 R U R' U R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_21"
        },
        {
-        "alg": "R U' R' U2 R U R'"
+        "alg": "R U' R' U2 R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_21"
        },
        {
-        "alg": "R B U2 B' R'"
+        "alg": "R B U2 B' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_21"
        },
        {
-        "alg": "y' f R' f' U2 f R f'"
+        "alg": "y' f R' f' U2 f R f'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_21"
        }
       ]
      },
@@ -647,16 +824,24 @@
       "setup": "F' L' U2 L F",
       "algs": [
        {
-        "alg": "r U' r' U2 r U r'"
+        "alg": "r U' r' U2 r U r'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_22"
        },
        {
-        "alg": "F' L' U2 L F"
+        "alg": "F' L' U2 L F",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_22"
        },
        {
-        "alg": "y' U2 R' U' R U' R' U R"
+        "alg": "y' U2 R' U' R U' R' U R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_22"
        },
        {
-        "alg": "y U2 L' U' L U' L' U L"
+        "alg": "y U2 L' U' L U' L' U L",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_22"
        }
       ]
      }
@@ -664,8 +849,6 @@
    },
    {
     "id": "f2l-connected-pairs",
-    "title": "Połączone pary",
-    "description": "Róg i krawędź na górze, stykają się, ale źle.",
     "goal": "f2l",
     "view": "f2l",
     "cases": [
@@ -675,16 +858,24 @@
       "setup": "F' U F U' R U2 R' U",
       "algs": [
        {
-        "alg": "U' R U2 R' U F' U' F"
+        "alg": "U' R U2 R' U F' U' F",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_11"
        },
        {
-        "alg": "U' R U2 R' d R' U' R"
+        "alg": "U' R U2 R' d R' U' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_11"
        },
        {
-        "alg": "F' U L' U2 L U2 F"
+        "alg": "F' U L' U2 L U2 F",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_11"
        },
        {
-        "alg": "y' R U2 R2 U' R2 U' R'"
+        "alg": "y' R U2 R2 U' R2 U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_11"
        }
       ]
      },
@@ -694,16 +885,24 @@
       "setup": "R U R' U2 R U R' U' R U R'",
       "algs": [
        {
-        "alg": "R U' R' U R U' R' U2 R U' R'"
+        "alg": "R U' R' U R U' R' U2 R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_12"
        },
        {
-        "alg": "R' U2 R2 U R2 U R"
+        "alg": "R' U2 R2 U R2 U R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_12"
        },
        {
-        "alg": "U F' U2 F U' R U R'"
+        "alg": "U F' U2 F U' R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_12"
        },
        {
-        "alg": "U R U' R' U' R U R' U' R U R'"
+        "alg": "U R U' R' U' R U R' U' R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_12"
        }
       ]
      },
@@ -713,16 +912,24 @@
       "setup": "r U2 R' U R U' R' U M",
       "algs": [
        {
-        "alg": "R U' R' U R' F R F' R U' R'"
+        "alg": "R U' R' U R' F R F' R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_13"
        },
        {
-        "alg": "d R' U R U' R' U' R"
+        "alg": "d R' U R U' R' U' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_13"
        },
        {
-        "alg": "y' U R' U R U' R' U' R"
+        "alg": "y' U R' U R U' R' U' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_13"
        },
        {
-        "alg": "M' U' R U R' U2 R U' r'"
+        "alg": "M' U' R U R' U2 R U' r'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_13"
        }
       ]
      },
@@ -732,16 +939,24 @@
       "setup": "R U' R' U' R U R' U",
       "algs": [
        {
-        "alg": "U' R U' R' U R U R'"
+        "alg": "U' R U' R' U R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_14"
        },
        {
-        "alg": "R U2 R' U2 R U R' U2 R U' R'"
+        "alg": "R U2 R' U2 R U R' U2 R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_14"
        },
        {
-        "alg": "U' R2 D R' U R D' R2"
+        "alg": "U' R2 D R' U R D' R2",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_14"
        },
        {
-        "alg": "U2 R2 U R' U R U2 R2"
+        "alg": "U2 R2 U R' U R U2 R2",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_14"
        }
       ]
      },
@@ -751,16 +966,24 @@
       "setup": "R U R' U' R U R' U2 R U' R'",
       "algs": [
        {
-        "alg": "R U R' U2 R U' R' U R U' R'"
+        "alg": "R U R' U2 R U' R' U R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_15"
        },
        {
-        "alg": "R' D' R U' R' D R U R U' R'"
+        "alg": "R' D' R U' R' D R U R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_15"
        },
        {
-        "alg": "F' U F U2 R U R'"
+        "alg": "F' U F U2 R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_15"
        },
        {
-        "alg": "M U r U' r' U' M'"
+        "alg": "M U r U' r' U' M'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_15"
        }
       ]
      },
@@ -770,16 +993,24 @@
       "setup": "F' U F U2 R U R'",
       "algs": [
        {
-        "alg": "R U' R' U2 F' U' F"
+        "alg": "R U' R' U2 F' U' F",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_16"
        },
        {
-        "alg": "U F U R U' R' F' R U R'"
+        "alg": "U F U R U' R' F' R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_16"
        },
        {
-        "alg": "R U' R' U2 y' R' U' R"
+        "alg": "R U' R' U2 y' R' U' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_16"
        },
        {
-        "alg": "U M' U R U' r' U' R U R'"
+        "alg": "U M' U R U' r' U' R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_16"
        }
       ]
      },
@@ -789,16 +1020,24 @@
       "setup": "R U' R' U R U2 R'",
       "algs": [
        {
-        "alg": "R U2 R' U' R U R'"
+        "alg": "R U2 R' U' R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_17"
        },
        {
-        "alg": "R U R' U' R U2 R' U2 R U R'"
+        "alg": "R U R' U' R U2 R' U2 R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_17"
        },
        {
-        "alg": "y2 L U2 L' U' L U L'"
+        "alg": "y2 L U2 L' U' L U L'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_17"
        },
        {
-        "alg": "y L F' L' F L' U L U' L' U L"
+        "alg": "y L F' L' F L' U L U' L' U L",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_17"
        }
       ]
      },
@@ -808,16 +1047,24 @@
       "setup": "R U R' U' R U R' F R' F' R",
       "algs": [
        {
-        "alg": "F' U2 F U F' U' F"
+        "alg": "F' U2 F U F' U' F",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_18"
        },
        {
-        "alg": "R' F R F' R U' R' U R U' R'"
+        "alg": "R' F R F' R U' R' U R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_18"
        },
        {
-        "alg": "y' R' U2 R U R' U' R"
+        "alg": "y' R' U2 R U R' U' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_18"
        },
        {
-        "alg": "y L' U2 L U L' U' L"
+        "alg": "y L' U2 L U L' U' L",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_18"
        }
       ]
      },
@@ -827,16 +1074,24 @@
       "setup": "R U' R' U R U' R' U2 R U' R'",
       "algs": [
        {
-        "alg": "U R U' R' U' R U' R' U R U' R'"
+        "alg": "U R U' R' U' R U' R' U R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_23"
        },
        {
-        "alg": "R U R' U2 R U R' U' R U R'"
+        "alg": "R U R' U2 R U R' U' R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_23"
        },
        {
-        "alg": "U2 R2 U2 R' U' R U' R2"
+        "alg": "U2 R2 U2 R' U' R U' R2",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_23"
        },
        {
-        "alg": "R U' R2 D' R U2 R' D R"
+        "alg": "R U' R2 D' R U2 R' D R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_23"
        }
       ]
      },
@@ -846,16 +1101,24 @@
       "setup": "R U R' F R U R' U' F'",
       "algs": [
        {
-        "alg": "F U R U' R' F' R U' R'"
+        "alg": "F U R U' R' F' R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_24"
        },
        {
-        "alg": "U' R U R2 F R F' R U' R'"
+        "alg": "U' R U R2 F R F' R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_24"
        },
        {
-        "alg": "U F' L' U L F R U R'"
+        "alg": "U F' L' U L F R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_24"
        },
        {
-        "alg": "y' R' U' R U2 R' U' R U R' U' R"
+        "alg": "y' R' U' R U2 R' U' R U R' U' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_24"
        }
       ]
      }
@@ -863,8 +1126,6 @@
    },
    {
     "id": "f2l-corner-in-slot",
-    "title": "Róg w slocie",
-    "description": "Krawędź na górze, róg na dole w slocie.",
     "goal": "f2l",
     "view": "f2l",
     "cases": [
@@ -874,16 +1135,24 @@
       "setup": "F' R U R' U' R' F R",
       "algs": [
        {
-        "alg": "U' R' F R F' R U R'"
+        "alg": "U' R' F R F' R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_25"
        },
        {
-        "alg": "R' F' R U R U' R' F"
+        "alg": "R' F' R U R U' R' F",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_25"
        },
        {
-        "alg": "U' F' U F U R U' R'"
+        "alg": "U' F' U F U R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_25"
        },
        {
-        "alg": "l' U' l U l F' l' F"
+        "alg": "l' U' l U l F' l' F",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_25"
        }
       ]
      },
@@ -893,16 +1162,24 @@
       "setup": "F' U' F U R U R' U'",
       "algs": [
        {
-        "alg": "U R U' R' F R' F' R"
+        "alg": "U R U' R' F R' F' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_26"
        },
        {
-        "alg": "U R U' R' U' F' U F"
+        "alg": "U R U' R' U' F' U F",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_26"
        },
        {
-        "alg": "U R U R' U' y L' U' L"
+        "alg": "U R U R' U' y L' U' L",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_26"
        },
        {
-        "alg": "R S' R' U R S R'"
+        "alg": "R S' R' U R S R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_26"
        }
       ]
      },
@@ -912,16 +1189,24 @@
       "setup": "R U R' U' R U R'",
       "algs": [
        {
-        "alg": "R U' R' U R U' R'"
+        "alg": "R U' R' U R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_27"
        },
        {
-        "alg": "F' U' F U2 R U' R'"
+        "alg": "F' U' F U2 R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_27"
        },
        {
-        "alg": "y' f R' f' U f R' f'"
+        "alg": "y' f R' f' U f R' f'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_27"
        },
        {
-        "alg": "y' f R' f' r' U' R U M'"
+        "alg": "y' f R' f' r' U' R U M'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_27"
        }
       ]
      },
@@ -931,16 +1216,24 @@
       "setup": "R' F R F' U R U' R'",
       "algs": [
        {
-        "alg": "R U R' U' F R' F' R"
+        "alg": "R U R' U' F R' F' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_28"
        },
        {
-        "alg": "F' U F U' F' U F"
+        "alg": "F' U F U' F' U F",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_28"
        },
        {
-        "alg": "y L' U L U' L' U L"
+        "alg": "y L' U L U' L' U L",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_28"
        },
        {
-        "alg": "y' R' U R U' R' U R"
+        "alg": "y' R' U R U' R' U R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_28"
        }
       ]
      },
@@ -950,16 +1243,24 @@
       "setup": "F R' F' R F R' F' R",
       "algs": [
        {
-        "alg": "R' F R F' U R U' R'"
+        "alg": "R' F R F' U R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_29"
        },
        {
-        "alg": "R' F R F' R' F R F'"
+        "alg": "R' F R F' R' F R F'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_29"
        },
        {
-        "alg": "y L' U' L U L' U' L"
+        "alg": "y L' U' L U L' U' L",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_29"
        },
        {
-        "alg": "y' R' U' R U R' U' R"
+        "alg": "y' R' U' R U R' U' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_29"
        }
       ]
      },
@@ -969,16 +1270,24 @@
       "setup": "R U' R' U R U' R'",
       "algs": [
        {
-        "alg": "R U R' U' R U R'"
+        "alg": "R U R' U' R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_30"
        },
        {
-        "alg": "U' R U2 R' U2 R U R'"
+        "alg": "U' R U2 R' U2 R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_30"
        },
        {
-        "alg": "U' F R' F' R2 U R'"
+        "alg": "U' F R' F' R2 U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_30"
        },
        {
-        "alg": "U2 F' U F R U R'"
+        "alg": "U2 F' U F R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_30"
        }
       ]
      }
@@ -986,8 +1295,6 @@
    },
    {
     "id": "f2l-edge-in-slot",
-    "title": "Krawędź w slocie",
-    "description": "Róg na górze, krawędź w środkowej warstwie.",
     "goal": "f2l",
     "view": "f2l",
     "cases": [
@@ -997,16 +1304,24 @@
       "setup": "R U R' F R' F' R U",
       "algs": [
        {
-        "alg": "U' R' F R F' R U' R'"
+        "alg": "U' R' F R F' R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_31"
        },
        {
-        "alg": "F' U F R U2 R'"
+        "alg": "F' U F R U2 R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_31"
        },
        {
-        "alg": "R U' R' U y' R' U R"
+        "alg": "R U' R' U y' R' U R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_31"
        },
        {
-        "alg": "R U' R' U y L' U L"
+        "alg": "R U' R' U y L' U L",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_31"
        }
       ]
      },
@@ -1016,16 +1331,24 @@
       "setup": "R U' R' U R U' R' U R U' R'",
       "algs": [
        {
-        "alg": "U R U' R' U R U' R' U R U' R'"
+        "alg": "U R U' R' U R U' R' U R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_32"
        },
        {
-        "alg": "R U R' U' R U R' U' R U R'"
+        "alg": "R U R' U' R U R' U' R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_32"
        },
        {
-        "alg": "R2 U R2 U R2 U2 R2"
+        "alg": "R2 U R2 U R2 U2 R2",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_32"
        },
        {
-        "alg": "U' F R' F' R U' R U R'"
+        "alg": "U' F R' F' R U' R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_32"
        }
       ]
      },
@@ -1035,16 +1358,24 @@
       "setup": "R U R' U2 R U R' U",
       "algs": [
        {
-        "alg": "U' R U' R' U2 R U' R'"
+        "alg": "U' R U' R' U2 R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_33"
        },
        {
-        "alg": "R U R' U' R U' R' U R U' R'"
+        "alg": "R U R' U' R U' R' U R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_33"
        },
        {
-        "alg": "U' R U' R' U' R U2 R'"
+        "alg": "U' R U' R' U' R U2 R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_33"
        },
        {
-        "alg": "y R' D R U' R' D' R"
+        "alg": "y R' D R U' R' D' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_33"
        }
       ]
      },
@@ -1054,16 +1385,24 @@
       "setup": "R U' R' U2 R U' R' U'",
       "algs": [
        {
-        "alg": "U R U R' U2 R U R'"
+        "alg": "U R U R' U2 R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_34"
        },
        {
-        "alg": "U' R U2 R' U R U R'"
+        "alg": "U' R U2 R' U R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_34"
        },
        {
-        "alg": "U R' D' R U' R' D R"
+        "alg": "U R' D' R U' R' D R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_34"
        },
        {
-        "alg": "y U L' U L U2 L' U L"
+        "alg": "y U L' U L U2 L' U L",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_34"
        }
       ]
      },
@@ -1073,16 +1412,24 @@
       "setup": "F' U F U' R U' R' U",
       "algs": [
        {
-        "alg": "U' R U R' U F' U' F"
+        "alg": "U' R U R' U F' U' F",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_35"
        },
        {
-        "alg": "U' R U R' d R' U' R"
+        "alg": "U' R U R' d R' U' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_35"
        },
        {
-        "alg": "U2 R U R' F R' F' R"
+        "alg": "U2 R U R' F R' F' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_35"
        },
        {
-        "alg": "U' R U R' U y' R' U' R"
+        "alg": "U' R U R' U y' R' U' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_35"
        }
       ]
      },
@@ -1092,16 +1439,24 @@
       "setup": "R U' R' U2 F R' F' R U2",
       "algs": [
        {
-        "alg": "U F' U' F U' R U R'"
+        "alg": "U F' U' F U' R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_36"
        },
        {
-        "alg": "U2 R' F R F' U2 R U R'"
+        "alg": "U2 R' F R F' U2 R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_36"
        },
        {
-        "alg": "R U R' U R U R' U' F' U' F"
+        "alg": "R U R' U R U R' U' F' U' F",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_36"
        },
        {
-        "alg": "R2 u R U R' U' u' R' U R'"
+        "alg": "R2 u R U R' U' u' R' U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_36"
        }
       ]
      }
@@ -1109,8 +1464,6 @@
    },
    {
     "id": "f2l-pieces-in-slot",
-    "title": "Oba elementy w slocie",
-    "description": "Róg i krawędź siedzą w slocie, ale źle.",
     "goal": "f2l",
     "view": "f2l",
     "cases": [
@@ -1120,16 +1473,24 @@
       "setup": "R U' R U2 F R2 F' U2 R2",
       "algs": [
        {
-        "alg": "R2 U2 F R2 F' U2 R' U R'"
+        "alg": "R2 U2 F R2 F' U2 R' U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_37"
        },
        {
-        "alg": "R' F R F' R U' R' U R U' R' U2 R U' R'"
+        "alg": "R' F R F' R U' R' U R U' R' U2 R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_37"
        },
        {
-        "alg": "R U2 R' U R U2 R' U F' U' F"
+        "alg": "R U2 R' U R U2 R' U F' U' F",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_37"
        },
        {
-        "alg": "R U R' U2 R U2 R' U y' R' U' R"
+        "alg": "R U R' U2 R U2 R' U y' R' U' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_37"
        }
       ]
      },
@@ -1139,16 +1500,24 @@
       "setup": "R U' R' U R U2 R' U R U' R'",
       "algs": [
        {
-        "alg": "R U' R' U' R U R' U2 R U' R'"
+        "alg": "R U' R' U' R U R' U2 R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_38"
        },
        {
-        "alg": "R U R' U' R U2 R' U' R U R'"
+        "alg": "R U R' U' R U2 R' U' R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_38"
        },
        {
-        "alg": "R2 U2 R' U' R U' R' U2 R'"
+        "alg": "R2 U2 R' U' R U' R' U2 R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_38"
        },
        {
-        "alg": "R U' R' U' R U R' U' R U2 R'"
+        "alg": "R U' R' U' R U R' U' R U2 R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_38"
        }
       ]
      },
@@ -1158,16 +1527,24 @@
       "setup": "R U' R' U' R U R' U2 R U' R'",
       "algs": [
        {
-        "alg": "R U' R' U R U2 R' U R U' R'"
+        "alg": "R U' R' U R U2 R' U R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_39"
        },
        {
-        "alg": "R U2 R U R' U R U2 R2"
+        "alg": "R U2 R U R' U R U2 R2",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_39"
        },
        {
-        "alg": "R U R' U2 R U' R' U R U R'"
+        "alg": "R U R' U2 R U' R' U R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_39"
        },
        {
-        "alg": "R U2 R' U R U' R' U R U R'"
+        "alg": "R U2 R' U R U' R' U R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_39"
        }
       ]
      },
@@ -1177,16 +1554,24 @@
       "setup": "R U R' F U R U' R' F' R U R'",
       "algs": [
        {
-        "alg": "r U' r' U2 r U r' R U R'"
+        "alg": "r U' r' U2 r U r' R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_40"
        },
        {
-        "alg": "F' L' U2 L F R U R'"
+        "alg": "F' L' U2 L F R U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_40"
        },
        {
-        "alg": "R U' R' F R U R' U' F' R U' R'"
+        "alg": "R U' R' F R U R' U' F' R U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_40"
        },
        {
-        "alg": "R U' R' U' R U' R' U y' R' U' R"
+        "alg": "R U' R' U' R U' R' U y' R' U' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_40"
        }
       ]
      },
@@ -1196,16 +1581,24 @@
       "setup": "R F U R U' R' F' U' R'",
       "algs": [
        {
-        "alg": "R U' R' r U' r' U2 r U r'"
+        "alg": "R U' R' r U' r' U2 r U r'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_41"
        },
        {
-        "alg": "R U' R' F' L' U2 L F"
+        "alg": "R U' R' F' L' U2 L F",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_41"
        },
        {
-        "alg": "R U R' U' R U' R' U2 y' R' U' R"
+        "alg": "R U R' U' R U' R' U2 y' R' U' R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_41"
        },
        {
-        "alg": "R U R' U' y M U' R' F R U M'"
+        "alg": "R U R' U' y M U' R' F R U M'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/F2L/F2L_41"
        }
       ]
      }
@@ -1215,16 +1608,17 @@
  },
  {
   "id": "4lll",
-  "title": "4LLL – ostatnia warstwa w 4 krokach",
-  "description": "2-look OLL + 2-look PLL. Na start ustawiłem wersje bez M/M2 (tylko R, U, F, D), wersje ze środkiem zostają jako alternatywy.",
+  "basedOn": [
+   "cubingcheatsheet",
+   "speedcubedb",
+   "reddit"
+  ],
   "tips": [
    {
-    "title": "Kolejność kroków",
-    "body": "1) Krzyż na górze (krawędzie) → 2) cała góra żółta (rogi) → 3) rogi na miejsca → 4) krawędzie na miejsca. Przed każdym algorytmem ustaw górę ruchem U tak jak na obrazku."
+    "id": "lll-order"
    },
    {
-    "title": "Kropka = linia + L",
-    "body": "Zamiast osobnego algorytmu na kropkę możesz zrobić linię, a potem L – nic nowego do nauczenia.",
+    "id": "lll-dot",
     "algs": [
      "F R U R' U' F'",
      "f R U R' U' f'"
@@ -1234,55 +1628,67 @@
   "groups": [
    {
     "id": "eoll",
-    "title": "1. Krzyż na górze (EOLL)",
     "goal": "eo",
     "view": "eoll",
     "cases": [
      {
       "id": "eoll-line",
-      "name": "Linia",
-      "subtitle": "linia poziomo",
+      "name": "OLL 45",
       "setup": "F U R U' R' F'",
       "algs": [
        {
-        "alg": "F R U R' U' F'"
+        "alg": "F R U R' U' F'",
+        "source": "cubingcheatsheet",
+        "sourceUrl": "https://cubingcheatsheet.com/algs3x_4lll.html"
        },
        {
-        "alg": "f U R U' R' f'"
+        "alg": "f U R U' R' f'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_45"
        }
       ]
      },
      {
       "id": "eoll-l",
-      "name": "Małe L",
-      "subtitle": "L z tyłu po lewej",
+      "name": "OLL 44",
       "setup": "f U R U' R' f'",
       "algs": [
        {
-        "alg": "f R U R' U' f'"
+        "alg": "f R U R' U' f'",
+        "source": "cubingcheatsheet",
+        "sourceUrl": "https://cubingcheatsheet.com/algs3x_4lll.html"
        },
        {
-        "alg": "(U2) F U R U' R' F'"
+        "alg": "(U2) F U R U' R' F'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_44"
        },
        {
-        "alg": "(U2) f U R U' R' f' U F R U R' U' F'"
+        "alg": "(U2) f U R U' R' f' U F R U R' U' F'",
+        "source": "community"
        }
       ]
      },
      {
       "id": "eoll-dot",
-      "name": "Kropka",
+      "name": "OLL 2",
       "setup": "f U R U' R' f' F U R U' R' F'",
       "algs": [
        {
         "alg": "F R U R' U' F' f R U R' U' f'",
-        "note": "linia + L"
+        "note": "line-plus-l",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_2"
        },
        {
-        "alg": "F R U R' U' S R U R' U' f'"
+        "alg": "F R U R' U' S R U R' U' f'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_2"
        },
        {
-        "alg": "R U2 R2 F R F' U2 R' F R F'"
+        "alg": "R U2 R2 F R F' U2 R' F R F'",
+        "source": "cubingcheatsheet",
+        "sourceUrl": "https://cubingcheatsheet.com/algs3x_4lll.html"
        }
       ]
      }
@@ -1290,135 +1696,171 @@
    },
    {
     "id": "ocll",
-    "title": "2. Cała góra żółta (OCLL)",
     "goal": "oll",
     "view": "oll",
     "cases": [
      {
       "id": "oll-27",
-      "name": "Sune",
-      "subtitle": "OLL 27",
+      "name": "OLL 27",
       "setup": "R U2 R' U' R U' R'",
       "algs": [
        {
-        "alg": "R U R' U R U2 R'"
+        "alg": "R U R' U R U2 R'",
+        "source": "cubingcheatsheet",
+        "sourceUrl": "https://cubingcheatsheet.com/algs3x_4lll.html"
        },
        {
-        "alg": "(U) L' U2 L U L' U L"
+        "alg": "(U) L' U2 L U L' U L",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_27"
        },
        {
-        "alg": "y' R' U2 R U R' U R"
+        "alg": "y' R' U2 R U R' U R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_27"
        }
       ]
      },
      {
       "id": "oll-26",
-      "name": "Antysune",
-      "subtitle": "OLL 26",
+      "name": "OLL 26",
       "setup": "R U R' U R U2 R'",
       "algs": [
        {
         "alg": "R U2 R' U' R U' R'",
-        "note": "ulubiona wersja z r/Cubers – prawa ręka jak Sune"
+        "note": "antisune-ru",
+        "source": "reddit",
+        "sourceUrl": "https://www.reddit.com/r/Cubers/comments/boukt3/"
        },
        {
-        "alg": "(U') R' U' R U' R' U2 R"
+        "alg": "(U') R' U' R U' R' U2 R",
+        "source": "reddit",
+        "sourceUrl": "https://www.reddit.com/r/Cubers/comments/boukt3/"
        },
        {
-        "alg": "(U) L' U' L U' L' U2 L"
+        "alg": "(U) L' U' L U' L' U2 L",
+        "source": "cubingcheatsheet",
+        "sourceUrl": "https://cubingcheatsheet.com/algs3x_4lll.html"
        }
       ]
      },
      {
       "id": "oll-21",
-      "name": "H (dwie pary świateł)",
-      "subtitle": "OLL 21",
+      "name": "OLL 21",
       "setup": "R U R' U R U' R' U R U2 R'",
       "algs": [
        {
-        "alg": "R U2 R' U' R U R' U' R U' R'"
+        "alg": "R U2 R' U' R U R' U' R U' R'",
+        "source": "reddit",
+        "sourceUrl": "https://www.reddit.com/r/Cubers/comments/boukt3/"
        },
        {
-        "alg": "(U) R U R' U R U' R' U R U2 R'"
+        "alg": "(U) R U R' U R U' R' U R U2 R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_21"
        },
        {
-        "alg": "(U) R' U' R U' R' U R U' R' U2 R"
+        "alg": "(U) R' U' R U' R' U R U' R' U2 R",
+        "source": "reddit",
+        "sourceUrl": "https://www.reddit.com/r/Cubers/comments/boukt3/"
        },
        {
         "alg": "F R U R' U' R U R' U' R U R' U' F'",
-        "note": "F + 3× sexy + F' – łatwy do zapamiętania"
+        "note": "triple-sexy",
+        "source": "cubingcheatsheet",
+        "sourceUrl": "https://cubingcheatsheet.com/algs3x_4lll.html"
        }
       ]
      },
      {
       "id": "oll-22",
-      "name": "Pi (bruno)",
-      "subtitle": "OLL 22",
+      "name": "OLL 22",
       "setup": "R' U2 R2 U R2 U R2 U2 R'",
       "algs": [
        {
-        "alg": "R U2 R2 U' R2 U' R2 U2 R"
+        "alg": "R U2 R2 U' R2 U' R2 U2 R",
+        "source": "cubingcheatsheet",
+        "sourceUrl": "https://cubingcheatsheet.com/algs3x_4lll.html"
        },
        {
-        "alg": "R' U2 R2 U R2 U R2 U2 R'"
+        "alg": "R' U2 R2 U R2 U R2 U2 R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_22"
        },
        {
-        "alg": "f R U R' U' f' F R U R' U' F'"
+        "alg": "f R U R' U' f' F R U R' U' F'",
+        "source": "reddit",
+        "sourceUrl": "https://www.reddit.com/r/Cubers/comments/boukt3/"
        }
       ]
      },
      {
       "id": "oll-23",
-      "name": "Światła (headlights)",
-      "subtitle": "OLL 23",
+      "name": "OLL 23",
       "setup": "R' U2 R' D' R U2 R' D R2",
       "algs": [
        {
-        "alg": "R2 D' R U2 R' D R U2 R"
+        "alg": "R2 D' R U2 R' D R U2 R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_23"
        },
        {
-        "alg": "(U2) R2 D R' U2 R D' R' U2 R'"
+        "alg": "(U2) R2 D R' U2 R D' R' U2 R'",
+        "source": "cubingcheatsheet",
+        "sourceUrl": "https://cubingcheatsheet.com/algs3x_4lll.html"
        },
        {
         "alg": "(U) R U2 R' U' R U' R' U2 R' U2 R U R' U R",
-        "note": "antysune + lewe sune – bez D"
+        "note": "no-d",
+        "source": "community"
        }
       ]
      },
      {
       "id": "oll-24",
-      "name": "T (czołg)",
-      "subtitle": "OLL 24",
+      "name": "OLL 24",
       "setup": "F R' F' r U R U' r'",
       "algs": [
        {
-        "alg": "r U R' U' r' F R F'"
+        "alg": "r U R' U' r' F R F'",
+        "source": "cubingcheatsheet",
+        "sourceUrl": "https://cubingcheatsheet.com/algs3x_4lll.html"
        },
        {
-        "alg": "(U) R U R D R' U' R D' R2"
+        "alg": "(U) R U R D R' U' R D' R2",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_24"
        },
        {
-        "alg": "y2 R' F' r U R U' r' F"
+        "alg": "y2 R' F' r U R U' r' F",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_24"
        }
       ]
      },
      {
       "id": "oll-25",
-      "name": "Muszka (bowtie)",
-      "subtitle": "OLL 25",
+      "name": "OLL 25",
       "setup": "R' F' r U R U' r' F",
       "algs": [
        {
-        "alg": "F' r U R' U' r' F R"
+        "alg": "F' r U R' U' r' F R",
+        "source": "cubingcheatsheet",
+        "sourceUrl": "https://cubingcheatsheet.com/algs3x_4lll.html"
        },
        {
-        "alg": "(U') R' F R B' R' F' R B"
+        "alg": "(U') R' F R B' R' F' R B",
+        "source": "community"
        },
        {
-        "alg": "(U') F R' F' r U R U' r'"
+        "alg": "(U') F R' F' r U R U' r'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_25"
        },
        {
-        "alg": "(U') R U2 R D R' U2 R D' R2"
+        "alg": "(U') R U2 R D R' U2 R D' R2",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_25"
        }
       ]
      }
@@ -1426,49 +1868,60 @@
    },
    {
     "id": "cpll",
-    "title": "3. Rogi na miejsca (CPLL)",
     "goal": "cp",
     "view": "pll",
     "cases": [
      {
       "id": "pll-a",
-      "name": "Światła z tyłu",
-      "subtitle": "A-perm (Aa)",
+      "name": "Aa",
       "setup": "x R2 D2 R U R' D2 R U' R x'",
       "algs": [
        {
         "alg": "x R' U R' D2 R U' R' D2 R2 x'",
-        "note": "faworyt z r/Cubers"
+        "note": "reddit-fav",
+        "source": "reddit",
+        "sourceUrl": "https://www.reddit.com/r/Cubers/comments/boukt3/"
        },
        {
-        "alg": "R' F R' B2 R F' R' B2 R2"
+        "alg": "R' F R' B2 R F' R' B2 R2",
+        "source": "community"
        },
        {
         "alg": "(U') R U R' U' R' F R2 U' R' U' R U R' F'",
-        "note": "T-perm też działa (przy okazji zamienia krawędzie)"
+        "note": "t-perm",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/T"
        },
        {
-        "alg": "(U') R U R' F' R U R' U' R' F R2 U' R'"
+        "alg": "(U') R U R' F' R U R' U' R' F R2 U' R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Jb"
        },
        {
-        "alg": "x' R' D R' U2 R D' R' U2 R2 x"
+        "alg": "x' R' D R' U2 R D' R' U2 R2 x",
+        "source": "community"
        }
       ]
      },
      {
       "id": "pll-y",
-      "name": "Bez świateł",
-      "subtitle": "Y-perm (zamiana po przekątnej)",
+      "name": "Y",
       "setup": "F R' F' R U R U' R' F R U' R' U R U R' F'",
       "algs": [
        {
-        "alg": "F R U' R' U' R U R' F' R U R' U' R' F R F'"
+        "alg": "F R U' R' U' R U R' F' R U R' U' R' F R F'",
+        "source": "cubingcheatsheet",
+        "sourceUrl": "https://cubingcheatsheet.com/algs3x_4lll.html"
        },
        {
-        "alg": "F R' F R2 U' R' U' R U R' F' R U R' U' F'"
+        "alg": "F R' F R2 U' R' U' R U R' F' R U R' U' F'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Y"
        },
        {
-        "alg": "R2 U' R2 U' R2 U F U F' R2 F U' F'"
+        "alg": "R2 U' R2 U' R2 U F U F' R2 F U' F'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Y"
        }
       ]
      }
@@ -1476,84 +1929,104 @@
    },
    {
     "id": "epll",
-    "title": "4. Krawędzie na miejsca (EPLL)",
     "goal": "pll",
     "view": "pll",
     "cases": [
      {
       "id": "pll-ua",
       "name": "Ua",
-      "subtitle": "3 krawędzie w prawo",
       "setup": "R2 U R U R' U' R' U' R' U R'",
       "algs": [
        {
-        "alg": "R U' R U R U R U' R' U' R2"
+        "alg": "R U' R U R U R U' R' U' R2",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Ua"
        },
        {
-        "alg": "(U2) R2 U' R' U' R U R U R U' R"
+        "alg": "(U2) R2 U' R' U' R U R U R U' R",
+        "source": "community"
        },
        {
-        "alg": "(U2) R U R' U R' U' R2 U' R' U R' U R"
+        "alg": "(U2) R U R' U R' U' R2 U' R' U R' U R",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Ua"
        },
        {
-        "alg": "M2 U M U2 M' U M2"
+        "alg": "M2 U M U2 M' U M2",
+        "source": "cubingcheatsheet",
+        "sourceUrl": "https://cubingcheatsheet.com/algs3x_4lll.html"
        },
        {
-        "alg": "(U') R2 U' S' U2 S U' R2"
+        "alg": "(U') R2 U' S' U2 S U' R2",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Ua"
        }
       ]
      },
      {
       "id": "pll-ub",
       "name": "Ub",
-      "subtitle": "3 krawędzie w lewo",
       "setup": "R U' R U R U R U' R' U' R2",
       "algs": [
        {
-        "alg": "R2 U R U R' U' R' U' R' U R'"
+        "alg": "R2 U R U R' U' R' U' R' U R'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Ub"
        },
        {
-        "alg": "(U2) R' U R' U' R' U' R' U R U R2"
+        "alg": "(U2) R' U R' U' R' U' R' U R U R2",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Ub"
        },
        {
-        "alg": "M2 U' M U2 M' U' M2"
+        "alg": "M2 U' M U2 M' U' M2",
+        "source": "cubingcheatsheet",
+        "sourceUrl": "https://cubingcheatsheet.com/algs3x_4lll.html"
        }
       ]
      },
      {
       "id": "pll-h",
       "name": "H",
-      "subtitle": "zamiana naprzeciwko ×2",
       "setup": "R2 U2 R' U2 R2 U2 R2 U2 R' U2 R2",
       "algs": [
        {
-        "alg": "R2 U2 R U2 R2 U2 R2 U2 R U2 R2"
+        "alg": "R2 U2 R U2 R2 U2 R2 U2 R U2 R2",
+        "source": "community"
        },
        {
-        "alg": "M2 U M2 U2 M2 U M2"
+        "alg": "M2 U M2 U2 M2 U M2",
+        "source": "cubingcheatsheet",
+        "sourceUrl": "https://cubingcheatsheet.com/algs3x_4lll.html"
        },
        {
-        "alg": "R2 S2 R2 U R2 S2 R2"
+        "alg": "R2 S2 R2 U R2 S2 R2",
+        "source": "community"
        }
       ]
      },
      {
       "id": "pll-z",
       "name": "Z",
-      "subtitle": "zamiana sąsiednich ×2",
       "setup": "R U R2 U' R' U' R U R' U' R' U R' U R",
       "algs": [
        {
-        "alg": "R' U' R U' R U R U' R' U R U R2 U' R'"
+        "alg": "R' U' R U' R U R U' R' U R U R2 U' R'",
+        "source": "community"
        },
        {
-        "alg": "(U) R U R' U R' U' R' U R U' R' U' R2 U R"
+        "alg": "(U) R U R' U R' U' R' U R U' R' U' R2 U R",
+        "source": "community"
        },
        {
-        "alg": "M' U M2 U M2 U M' U2 M2"
+        "alg": "M' U M2 U M2 U M' U2 M2",
+        "source": "reddit",
+        "sourceUrl": "https://www.reddit.com/r/Cubers/comments/boukt3/"
        },
        {
-        "alg": "(U) M2 U M2 U M' U2 M2 U2 M'"
+        "alg": "(U) M2 U M2 U M' U2 M2 U2 M'",
+        "source": "speedcubedb",
+        "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Z"
        }
       ]
      }

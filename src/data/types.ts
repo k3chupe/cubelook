@@ -1,17 +1,19 @@
 import type { Goal } from "../cube";
+import type { SourceId } from "./sources";
 
 export type CaseView = "f2l" | "eoll" | "oll" | "pll";
 
+/** All human-readable text lives in src/i18n/locales/*, keyed by the ids below. */
 export interface AlgSource {
   alg: string;
-  /** Short hint shown under the algorithm. */
+  /** Key in `content.notes`. */
   note?: string;
+  source?: SourceId;
 }
 
 export interface CaseSource {
+  /** Also the key in `content.cases`. */
   id: string;
-  name: string;
-  subtitle?: string;
   /** Moves that create the case from a solved cube. Defaults to the inverse of the first alg. */
   setup?: string;
   algs: (string | AlgSource)[];
@@ -19,51 +21,54 @@ export interface CaseSource {
   strict?: boolean;
   /** Numbered F2L case (e.g. "F2L 8") this beginner case must correspond to. */
   expect?: string;
+  /** SpeedCubeDB case name (e.g. "OLL 27", "Ua") used for attribution. */
+  ref?: { set: "OLL" | "PLL"; name: string };
+  /** Default source for this case's own algorithms. */
+  source?: SourceId;
 }
 
 export interface GroupSource {
+  /** Also the key in `content.groups`. */
   id: string;
-  title: string;
-  description?: string;
   goal: Goal;
   view: CaseView;
   cases: CaseSource[];
 }
 
-export interface Tip {
-  title: string;
-  body: string;
+export interface TipSource {
+  /** Key in `content.tips`. */
+  id: string;
   algs?: string[];
 }
 
 export interface SectionSource {
+  /** Also the key in `content.sections`. */
   id: string;
-  title: string;
-  description: string;
   defaultCollapsed?: boolean;
-  tips?: Tip[];
+  basedOn: SourceId[];
+  tips?: TipSource[];
   groups: GroupSource[];
 }
 
 export interface AlgOut {
   alg: string;
   note?: string;
+  source: SourceId;
+  sourceUrl?: string;
 }
 
 export interface CaseOut {
   id: string;
+  /** Language-neutral name (e.g. "F2L 8"); translated names come from `content.cases`. */
   name: string;
-  subtitle?: string;
   setup: string;
   algs: AlgOut[];
-  /** Other cases (e.g. numbered F2L cases) that are the same position. */
+  /** Numbered F2L case that is the same position. */
   sameAs?: string;
 }
 
 export interface GroupOut {
   id: string;
-  title: string;
-  description?: string;
   goal: Goal;
   view: CaseView;
   cases: CaseOut[];
@@ -71,9 +76,8 @@ export interface GroupOut {
 
 export interface SectionOut {
   id: string;
-  title: string;
-  description: string;
   defaultCollapsed?: boolean;
-  tips?: Tip[];
+  basedOn: SourceId[];
+  tips?: TipSource[];
   groups: GroupOut[];
 }
