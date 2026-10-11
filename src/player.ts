@@ -42,8 +42,8 @@ export async function openPlayer(req: PlayerRequest) {
       <div class="player-stage"><div class="player-loading" role="status">${esc(m.ui.loading3d)}</div></div>
       <div class="alg big" translate="no">${req.algHtml}</div>
       <div class="player-links">
-        <a class="link-btn" href="${algCubingNetUrl(req.alg, req.title)}" target="_blank" rel="noopener">alg.cubing.net ${icons.external}</a>
-        <a class="link-btn alt" href="${twizzleUrl(req.alg, req.view, req.title)}" target="_blank" rel="noopener">Twizzle ${icons.external}</a>
+        <a class="link-btn" href="${twizzleUrl(req.alg, req.view, req.title)}" target="_blank" rel="noopener">Twizzle ${icons.external}</a>
+        <a class="link-btn alt" href="${algCubingNetUrl(req.alg, req.title)}" target="_blank" rel="noopener">alg.cubing.net ${icons.external}</a>
       </div>
     </div>`;
   d.showModal();
