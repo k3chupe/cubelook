@@ -30,3 +30,12 @@ describe("trigger detection", () => {
     expect(isTwoGen("R U' R U R U R U' R' U' R2")).toBe(true);
   });
 });
+
+describe("sune family naming", () => {
+  it("gives mirror images their own names", () => {
+    expect(labels("R U2 R' U' R U' R'")).toEqual(["antisune"]);
+    expect(labels("L' U' L U' L' U2 L")).toEqual(["leftSune"]);
+    expect(labels("R' U' R U' R' U2 R")).toEqual(["leftSune"]);
+    expect(labels("L' U2 L U L' U L")).toEqual(["leftAntisune"]);
+  });
+});

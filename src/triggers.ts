@@ -32,8 +32,10 @@ const P = (kind: string, labelKey: string, seqs: string[]): Pattern[] =>
 
 const PATTERNS: Pattern[] = [
   ...P("sune", "sune", ["R U R' U R U2 R'"]),
-  ...P("sune", "antisune", ["R U2 R' U' R U' R'", "R' U' R U' R' U2 R"]),
-  ...P("sune", "leftSune", ["L' U' L U' L' U2 L", "L' U2 L U L' U L"]),
+  ...P("sune", "antisune", ["R U2 R' U' R U' R'"]),
+  // Mirror images; the R' versions are the same moves done with the right hand from the back (y2).
+  ...P("sune", "leftSune", ["L' U' L U' L' U2 L", "R' U' R U' R' U2 R"]),
+  ...P("sune", "leftAntisune", ["L' U2 L U L' U L", "R' U2 R U R' U R"]),
   ...P("sexy", "sexy", ["R U R' U'"]),
   ...P("sexy", "wideSexy", ["r U R' U'"]),
   ...P("sexy", "leftSexy", ["L' U' L U"]),

@@ -41,13 +41,21 @@ export const fourLLL: SectionSource = {
           id: "oll-27",
           ref: { set: "OLL", name: "OLL 27" },
           strict: true,
-          algs: ["R U R' U R U2 R'", "L' U2 L U L' U L", "y' R' U2 R U R' U R"],
+          algs: [
+            "R U R' U R U2 R'",
+            { alg: "L' U2 L U L' U L", note: "mirror-antisune" },
+            { alg: "y' R' U2 R U R' U R", note: "mirror-antisune-back" },
+          ],
         },
         {
           id: "oll-26",
           ref: { set: "OLL", name: "OLL 26" },
           strict: true,
-          algs: [{ alg: "R U2 R' U' R U' R'", note: "antisune-ru" }, "R' U' R U' R' U2 R", "L' U' L U' L' U2 L"],
+          algs: [
+            { alg: "R U2 R' U' R U' R'", note: "antisune-ru" },
+            { alg: "R' U' R U' R' U2 R", note: "mirror-sune-back" },
+            { alg: "L' U' L U' L' U2 L", note: "mirror-sune" },
+          ],
         },
         {
           id: "oll-21",

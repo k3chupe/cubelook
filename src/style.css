@@ -36,6 +36,8 @@
   --st-gray: #4a4d55;
   --st-stroke: #0b0c0e;
   --diagram-bg: #141518;
+  --arrow: #111214;
+  --arrow-halo: rgba(255, 255, 255, 0.55);
   --t-sexy: #60a5fa;
   --t-rsexy: #22d3ee;
   --t-sledge: #fb923c;
@@ -75,6 +77,8 @@
   --st-gray: #a7abb3;
   --st-stroke: #1d1f24;
   --diagram-bg: #eceef1;
+  --arrow: #111214;
+  --arrow-halo: rgba(255, 255, 255, 0.7);
   --t-sexy: #1d4ed8;
   --t-rsexy: #0e7490;
   --t-sledge: #c2410c;
@@ -1212,6 +1216,8 @@ dialog.player::backdrop {
   --st-gray: #a7abb3;
   --st-stroke: #1d1f24;
   --diagram-bg: #eceef1;
+  --arrow: #111214;
+  --arrow-halo: rgba(255, 255, 255, 0.7);
   --t-sexy: #1d4ed8;
   --t-rsexy: #0e7490;
   --t-sledge: #c2410c;

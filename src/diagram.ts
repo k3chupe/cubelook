@@ -53,7 +53,73 @@ function lastLayerSvg(setup: string, view: CaseView, label: string): string {
     parts.push(rect(gap, along, strip, cell, llColor(left, view, false)));
     parts.push(rect(size - gap - strip, along, strip, cell, llColor(right, view, false)));
   }
-  return `<svg viewBox="0 0 ${size} ${size}" class="diagram" role="img" aria-label="${label}">${parts.join("")}</svg>`;
+  if (view === "pll") {
+    const center = (p: Vec): [number, number] => [
+      off + (p[0] + 1) * (cell + gap) + cell / 2,
+      off + (p[2] + 1) * (cell + gap) + cell / 2,
+    ];
+    parts.push(...pllArrows(map, center));
+  }
+  return `<svg viewBox="0 0 ${size} ${size}" class="diagram" role="img" aria-label="${label}">${ARROW_DEFS}${parts.join("")}</svg>`;
+}
+
+const ARROW_DEFS =
+  '<defs><marker id="cl-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--arrow)"/></marker></defs>';
+
+/** Arrows from each top-layer piece to the place it has to go (double-headed for swaps). */
+function pllArrows(map: Map<string, Sticker>, center: (p: Vec) => [number, number]): string[] {
+  const key = (p: Vec) => p.join(",");
+  const turnU = ([x, y, z]: Vec, k: number): Vec => {
+    for (let i = 0; i < k; i++) [x, z] = [-z, x];
+    return [x, y, z];
+  };
+  const pieces: Sticker[] = [];
+  for (const x of [-1, 0, 1])
+    for (const z of [-1, 0, 1]) if (x !== 0 || z !== 0) pieces.push(stickerAt(map, [x, 1, z], [0, 1, 0]));
+  // The algorithm may finish with an AUF; show the permutation relative to the AUF that moves the fewest pieces.
+  let best = new Map<string, Vec>();
+  for (let k = 0; k < 4; k++) {
+    const target = new Map<string, Vec>();
+    for (const s of pieces) {
+      const dest = turnU(s.home, k);
+      if (key(dest) !== key(s.pos)) target.set(key(s.pos), dest);
+    }
+    if (k === 0 || target.size < best.size) best = target;
+  }
+  const target = best;
+  const out: string[] = [];
+  const drawn = new Set<string>();
+  for (const [fromKey, to] of target) {
+    const from = fromKey.split(",").map(Number) as Vec;
+    const back = target.get(key(to));
+    const swap = !!back && key(back) === fromKey;
+    const pairKey = [fromKey, key(to)].sort().join("|");
+    if (swap && drawn.has(pairKey)) continue;
+    drawn.add(pairKey);
+    const [x1, y1] = center(from);
+    const [x2, y2] = center(to);
+    // Arrows that don't pass through the middle bow outward so they never lie on top of arrows that do.
+    const [cx, cy] = center([0, 1, 0]);
+    const mx = (x1 + x2) / 2;
+    const my = (y1 + y2) / 2;
+    const bow = Math.hypot(mx - cx, my - cy) > 4 ? 0.5 : 0;
+    const qx = mx + (mx - cx) * bow;
+    const qy = my + (my - cy) * bow;
+    const trimTo = (px: number, py: number, tx: number, ty: number) => {
+      const l = Math.hypot(tx - px, ty - py);
+      return [px + ((tx - px) * 5) / l, py + ((ty - py) * 5) / l];
+    };
+    const a = trimTo(x1, y1, qx, qy);
+    const b = trimTo(x2, y2, qx, qy);
+    const f = (n: number) => n.toFixed(1);
+    const d = `M${f(a[0])} ${f(a[1])}Q${f(qx)} ${f(qy)} ${f(b[0])} ${f(b[1])}`;
+    out.push(
+      `<path d="${d}" stroke="var(--arrow)" stroke-width="1.8" stroke-linecap="round" fill="none" marker-end="url(#cl-arrow)"${
+        swap ? ' marker-start="url(#cl-arrow)"' : ""
+      }/>`,
+    );
+  }
+  return out;
 }
 
 const COS30 = Math.cos(Math.PI / 6);
