@@ -1094,6 +1094,14 @@ dialog.player::backdrop {
     width: 40px;
     height: 40px;
   }
+  .segmented button {
+    min-height: 40px;
+  }
+  .src {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+  }
   [data-density="compact"] .case-top > .icon-btn.learn {
     width: 40px;
     height: 40px;

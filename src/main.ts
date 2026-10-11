@@ -117,8 +117,8 @@ function renderAlgRow(ref: CaseRef, a: AlgOut, index: number, count: number, sho
           : ""
       }
       ${iconButton("play", m.playHere, icons.play, "play", data)}
-      <a class="link-btn" href="${algCubingNetUrl(a.alg, title)}" target="_blank" rel="noopener" title="${esc(m.openCubeHint)}">${esc(m.openCube)} ${icons.external}</a>
-      <a class="link-btn alt" href="${twizzleUrl(a.alg, ref.group.view, title)}" target="_blank" rel="noopener">${esc(m.openTwizzle)}</a>
+      <a class="link-btn" href="${twizzleUrl(a.alg, ref.group.view, title)}" target="_blank" rel="noopener" title="${esc(m.openCubeHint)}">${esc(m.openCube)} ${icons.external}</a>
+      <a class="link-btn alt" href="${algCubingNetUrl(a.alg, title)}" target="_blank" rel="noopener">${esc(m.openTwizzle)}</a>
     </div>
   </li>`;
 }
@@ -183,7 +183,7 @@ function renderTip(tip: TipSource): string {
         ? `<div class="tip-algs">${tip.algs
             .map(
               (a) =>
-                `<a class="tip-alg" href="${algCubingNetUrl(a, text.title)}" target="_blank" rel="noopener" title="${esc(t().ui.seeOnCube)}"><span class="alg" translate="no">${renderAlg(a)}</span>${icons.external}</a>`,
+                `<a class="tip-alg" href="${twizzleUrl(a, "f2l", text.title)}" target="_blank" rel="noopener" title="${esc(t().ui.seeOnCube)}"><span class="alg" translate="no">${renderAlg(a)}</span>${icons.external}</a>`,
             )
             .join("")}</div>`
         : ""

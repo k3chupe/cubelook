@@ -6,15 +6,12 @@ export const ORIENTATION = "z2";
 
 const plain = (alg: string) => alg.replace(/[()]/g, "").replace(/\s+/g, " ").trim();
 
-const STICKERING: Record<CaseView, string> = {
-  f2l: "F2L",
-  eoll: "EOLL",
-  oll: "OLL",
-  pll: "PLL",
-};
-
-export function stickeringFor(view: CaseView): string {
-  return STICKERING[view];
+/**
+ * cubing.js masks pieces by their solved position, so with the z2 orientation (yellow on top) the
+ * F2L/OLL/PLL masks would grey out the wrong layer. Full colors are used until that is supported.
+ */
+export function stickeringFor(_view: CaseView): string {
+  return "full";
 }
 
 /** alg.cubing.net encodes spaces as "_" and primes as "-". */
@@ -34,7 +31,7 @@ export function twizzleUrl(alg: string, view: CaseView, title: string): string {
     alg: plain(alg),
     "setup-alg": ORIENTATION,
     "setup-anchor": "end",
-    stickering: STICKERING[view],
+    stickering: stickeringFor(view),
     title,
   });
   return `https://alpha.twizzle.net/edit/?${params.toString()}`;
