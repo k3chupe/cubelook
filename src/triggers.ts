@@ -85,7 +85,9 @@ export function segmentAlg(alg: string): Segment[] {
 
   const first = tokens[0];
   const last = tokens[tokens.length - 1];
-  const bracketable = first && /^[Ffxy]'?$/.test(first) && tokens.length > 2 && last === inverseOf(first);
+  const wholeIsTrigger = PATTERNS.some((p) => p.seq.length === tokens.length && p.seq.every((m, k) => tokens[k] === m));
+  const bracketable =
+    !wholeIsTrigger && first && /^[Ffxy]'?$/.test(first) && tokens.length > 3 && last === inverseOf(first);
   if (bracketable) {
     const label = /^[xy]/.test(first) ? "obrót" : `nawias ${first}`;
     segments.push({ moves: [first], kind: KIND.bracket, label });
