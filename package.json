@@ -8,9 +8,13 @@
     "build": "npm run verify && tsc && vite build",
     "preview": "vite preview",
     "data": "tsx scripts/build-data.ts",
-    "verify": "tsx scripts/build-data.ts --check"
+    "verify": "tsx scripts/build-data.ts --check",
+    "test": "vitest run tests/unit",
+    "e2e": "playwright test",
+    "a11y": "accesslint scan \"http://127.0.0.1:4317/?theme=dark&lang=pl\" && accesslint scan \"http://127.0.0.1:4317/?theme=light&lang=en\""
   },
   "devDependencies": {
+    "@accesslint/cli": "^0.13.0",
     "@fontsource/fira-code": "^5.3.0",
     "@fontsource/fira-sans": "^5.3.0",
     "@playwright/test": "^1.64.0",

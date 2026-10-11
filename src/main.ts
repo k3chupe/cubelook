@@ -158,8 +158,17 @@ function renderCase(ref: CaseRef): string {
 
 /* ---------- sections ---------- */
 
-function collapsibleHead(level: "section" | "group", id: string, collapsed: boolean, inner: string): string {
-  return `<button class="${level}-head" data-action="toggle" data-id="${id}" aria-expanded="${!collapsed}">${icons.chevron}${inner}</button>`;
+/** Heading that contains the toggle button (a button must not contain a heading). */
+function collapsibleHead(
+  level: "section" | "group",
+  id: string,
+  collapsed: boolean,
+  title: string,
+  extra = "",
+  headingId = "",
+  tag = level === "section" ? "h2" : "h3",
+): string {
+  return `<${tag} class="${level}-heading"${headingId ? ` id="${headingId}"` : ""}><button class="${level}-head" data-action="toggle" data-id="${id}" aria-expanded="${!collapsed}">${icons.chevron}<span class="head-title">${title}</span>${extra}</button></${tag}>`;
 }
 
 function renderTip(tip: TipSource): string {
@@ -167,7 +176,7 @@ function renderTip(tip: TipSource): string {
   if (!text) return "";
   return `
   <div class="tip">
-    <h5>${esc(text.title)}</h5>
+    <h4>${esc(text.title)}</h4>
     <p>${esc(text.body)}</p>
     ${
       tip.algs?.length
@@ -188,7 +197,7 @@ function renderTips(section: SectionOut): string {
   const collapsed = isCollapsed(id, section.id !== "f2l-beginner");
   return `
   <div class="group tips">
-    ${collapsibleHead("group", id, collapsed, `<h3>${esc(t().ui.tips)}</h3><span class="count">${section.tips.length}</span>`)}
+    ${collapsibleHead("group", id, collapsed, esc(t().ui.tips), `<span class="count">${section.tips.length}</span>`)}
     ${collapsed ? "" : `<div class="tips-grid">${section.tips.map(renderTip).join("")}</div>`}
   </div>`;
 }
@@ -205,8 +214,8 @@ function renderGroup(section: SectionOut, group: GroupOut): string {
       "group",
       id,
       collapsed,
-      `<h3>${esc(text?.title ?? group.id)}</h3>
-       <span class="count">${learnedCount ? `${learnedCount}/` : ""}${group.cases.length}</span>
+      esc(text?.title ?? group.id),
+      `<span class="count">${learnedCount ? `${learnedCount}/` : ""}${group.cases.length}</span>
        ${text?.description ? `<span class="group-desc">${esc(text.description)}</span>` : ""}`,
     )}
     ${collapsed ? "" : cards.trim() ? `<div class="grid">${cards}</div>` : `<p class="empty">${esc(t().ui.allLearned)}</p>`}
@@ -234,7 +243,9 @@ function renderSection(section: SectionOut): string {
       "section",
       id,
       collapsed,
-      `<h2 id="h-${section.id}">${esc(text?.title ?? section.id)}</h2><span class="count">${esc(plural(total, t().ui.cases))}</span>`,
+      esc(text?.title ?? section.id),
+      `<span class="count">${esc(plural(total, t().ui.cases))}</span>`,
+      `h-${section.id}`,
     )}
     ${basedOn(section.basedOn)}
     ${
@@ -259,7 +270,7 @@ function renderSources(): string {
       const count = algsBySource[sid] ?? 0;
       return `
       <div class="source-card src-${sid}">
-        <h4>${s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ${icons.external}</a>` : esc(s.name)}</h4>
+        <h3>${s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ${icons.external}</a>` : esc(s.name)}</h3>
         <p class="source-author">${esc(s.author)} · ${esc(plural(count, m.algCount))}</p>
         <p><b>${esc(m.sourcesUsedFor)}:</b> ${esc(content("sources", sid) ?? "")}</p>
       </div>`;
@@ -275,7 +286,7 @@ function renderSources(): string {
   ).join("");
   return `
   <section class="section sources" id="sources" aria-labelledby="h-sources">
-    ${collapsibleHead("section", id, collapsed, `<h2 id="h-sources">${esc(m.sourcesTitle)}</h2>`)}
+    ${collapsibleHead("section", id, collapsed, esc(m.sourcesTitle), "", "h-sources")}
     ${
       collapsed
         ? ""
@@ -327,7 +338,7 @@ function renderLegend(): string {
   const collapsed = isCollapsed("legend", true);
   return `
   <div class="legend">
-    ${collapsibleHead("group", "legend", collapsed, `<h3>${esc(m.ui.legend)}</h3>`)}
+    ${collapsibleHead("group", "legend", collapsed, esc(m.ui.legend), "", "", "h2")}
     ${
       collapsed
         ? ""

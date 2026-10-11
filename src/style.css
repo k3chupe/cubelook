@@ -379,6 +379,12 @@ main {
   scroll-margin-top: 150px;
 }
 
+.section-heading,
+.group-heading {
+  margin: 0;
+  font: inherit;
+}
+
 .section-head,
 .group-head {
   display: flex;
@@ -398,7 +404,7 @@ main {
   border-bottom: 3px solid var(--text);
 }
 
-.section-head h2 {
+.section-head .head-title {
   margin: 0;
   font-size: 1.9rem;
   font-weight: 700;
@@ -409,7 +415,7 @@ main {
   padding: 8px 0;
 }
 
-.group-head h3 {
+.group-head .head-title {
   margin: 0;
   font-size: 1.2rem;
   font-weight: 600;
@@ -825,7 +831,7 @@ a.src:hover {
   padding: 14px 16px;
 }
 
-.tip h5 {
+.tip h4 {
   margin: 0 0 4px;
   font-size: 1.05rem;
 }
@@ -876,12 +882,12 @@ a.src:hover {
   padding: 14px 16px;
 }
 
-.source-card h4 {
+.source-card h3 {
   margin: 0 0 2px;
   font-size: 1.05rem;
 }
 
-.source-card h4 a {
+.source-card h3 a {
   color: var(--text);
   text-decoration: none;
   display: inline-flex;
@@ -1132,7 +1138,7 @@ dialog.player::backdrop {
   .section-head {
     flex-wrap: nowrap;
   }
-  .section-head h2 {
+  .section-head .head-title {
     font-size: 1.5rem;
     min-width: 0;
   }
