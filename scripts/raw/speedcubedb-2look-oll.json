@@ -1,0 +1,112 @@
+[
+ {
+  "name": "OLL 2",
+  "sub": "Dot Case",
+  "setup": "f U R U' R' f' F U R U' R' F'",
+  "algs": [
+   "y' R U' R2 D' r U r' D R2 U R'",
+   "F R U R' U' S R U R' U' f'",
+   "F R U R' U' F' f R U R' U' f'",
+   "y r U r' U2 R U2 R' U2 r U' r'"
+  ]
+ },
+ {
+  "name": "OLL 21",
+  "sub": "OCLL",
+  "setup": "R U R' U R U' R' U R U2' R' y'",
+  "algs": [
+   "R U R' U R U' R' U R U2 R'",
+   "y R U2 R' U' R U R' U' R U' R'",
+   "y F R U R' U' R U R' U' R U R' U' F'",
+   "R' U' R U' R' U R U' R' U2 R"
+  ]
+ },
+ {
+  "name": "OLL 22",
+  "sub": "OCLL",
+  "setup": "R' U2' R2' U R2' U R2' U2' R'",
+  "algs": [
+   "R U2 R2 U' R2 U' R2 U2 R",
+   "R' U2 R2 U R2 U R2 U2 R'",
+   "f R U R' U' S' R U R' U' F'",
+   "f R U R' U' f' F R U R' U' F'"
+  ]
+ },
+ {
+  "name": "OLL 23",
+  "sub": "OCLL",
+  "setup": "R U2' R D R' U2' R D' R2'",
+  "algs": [
+   "R2 D R' U2 R D' R' U2 R'",
+   "y2 R2 D' R U2 R' D R U2 R",
+   "R U R' U R U2 R2 U' R U' R' U2 R",
+   "y R U R' U' R U' R' U2 R U' R' U2 R U R'"
+  ]
+ },
+ {
+  "name": "OLL 24",
+  "sub": "OCLL",
+  "setup": "F R' F' r U R U' r'",
+  "algs": [
+   "r U R' U' r' F R F'",
+   "y2 R' F' r U R U' r' F",
+   "y R U R D R' U' R D' R2",
+   "y' x' R U R' D R U' R' D' x"
+  ]
+ },
+ {
+  "name": "OLL 25",
+  "sub": "OCLL",
+  "setup": "R' F' r U R U' r' F y'",
+  "algs": [
+   "R U2 R D R' U2 R D' R2",
+   "y F' r U R' U' r' F R",
+   "F R' F' r U R U' r'",
+   "x R' U R D' R' U' R D x'"
+  ]
+ },
+ {
+  "name": "OLL 26",
+  "sub": "OCLL",
+  "setup": "R U R' U R U2' R' y'",
+  "algs": [
+   "y R U2 R' U' R U' R'",
+   "R' U' R U' R' U2 R",
+   "y2 L' U' L U' L' U2 L",
+   "y2 L' U R U' L U R'"
+  ]
+ },
+ {
+  "name": "OLL 27",
+  "sub": "OCLL",
+  "setup": "R U2' R' U' R U' R'",
+  "algs": [
+   "R U R' U R U2 R'",
+   "y' R' U2 R U R' U R",
+   "y L' U2 L U L' U L",
+   "y2 L U L' U L U2 L'"
+  ]
+ },
+ {
+  "name": "OLL 44",
+  "sub": "P Shapes",
+  "setup": "f U R U' R' f'",
+  "algs": [
+   "f R U R' U' f'",
+   "y2 F U R U' R' F'",
+   "y R U B U' B' R'",
+   "y' L U F U' F' L'"
+  ]
+ },
+ {
+  "name": "OLL 45",
+  "sub": "T Shapes",
+  "setup": "F U R U' R' F'",
+  "algs": [
+   "F R U R' U' F'",
+   "y R' F' U' F U R",
+   "y2 f U R U' R' f'",
+   "y2 F' L' U' L U F"
+  ]
+ }
+]

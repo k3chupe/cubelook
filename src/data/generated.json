@@ -1,0 +1,1564 @@
+[
+ {
+  "id": "f2l-beginner",
+  "title": "F2L dla początkujących – 5 przypadków",
+  "description": "Intuicyjne F2L wg ParadoxCubing: każdą parę sprowadzasz do jednego z 5 podstawowych przypadków (róg i krawędź w górnej warstwie, nie stykają się). Slot docelowy zawsze z przodu po prawej, róg nad slotem.",
+  "tips": [
+   {
+    "title": "Krok 1: róg w slocie → wyciągnij go na górę",
+    "body": "Jeśli róg siedzi na dole w slocie, ustaw go z przodu po prawej i wyciągnij.",
+    "algs": [
+     "R U R'"
+    ]
+   },
+   {
+    "title": "Krok 2: krawędź w środkowej warstwie → wyciągnij ją",
+    "body": "Ustaw slot z krawędzią z przodu po prawej i wybierz wersję, po której krawędź NIE dotyka rogu.",
+    "algs": [
+     "R U R'",
+     "R U' R'"
+    ]
+   },
+   {
+    "title": "Krok 3: róg i krawędź się stykają → trik z chowaniem",
+    "body": "Wariant 1 (róg UFR, krawędź UF): schowaj róg R', przesuń krawędź w lewo/do tyłu, wyjmij róg R. Wariant 2 (róg UFR, krawędź UR): najpierw U', potem schowaj R, przesuń krawędź, R'.",
+    "algs": [
+     "R' U R",
+     "R' U2 R",
+     "U' R U' R'",
+     "U' R U2 R'"
+    ]
+   },
+   {
+    "title": "Złota zasada chowania",
+    "body": "Slot, który podnosisz chowając róg, musi być jeszcze NIEułożony. R' podnosi slot z tyłu po prawej, R podnosi slot z przodu po prawej. Przy ostatniej parze obróć kostkę tak, żeby wolny slot był z tyłu po prawej."
+   },
+   {
+    "title": "Myśl do przodu",
+    "body": "Zrób U przed R U R', żeby róg wyszedł już oddzielony od krawędzi – pominiesz krok 3.",
+    "algs": [
+     "U R U R'"
+    ]
+   }
+  ],
+  "groups": [
+   {
+    "id": "beg-basic",
+    "title": "5 podstawowych przypadków",
+    "description": "Róg nad slotem (UFR). „Dopasowane” = górne naklejki rogu i krawędzi mają ten sam kolor.",
+    "goal": "f2l",
+    "view": "f2l",
+    "cases": [
+     {
+      "id": "beg-1a",
+      "name": "1. Dopasowane",
+      "subtitle": "biały w prawo, krawędź z tyłu",
+      "setup": "r' U' R2 U' R2 U2 r",
+      "algs": [
+       {
+        "alg": "R' U2 R U' F' U F",
+        "note": "schowaj róg R', krawędź na przód, wyjmij R, wstaw w lewo"
+       },
+       {
+        "alg": "R' U2 R y U' L' U L"
+       },
+       {
+        "alg": "r' U2 R2 U R2 U r"
+       },
+       {
+        "alg": "d R' U2 R U R' U2 R"
+       },
+       {
+        "alg": "y' U R' U2 R U2 R' U R"
+       }
+      ],
+      "sameAs": "F2L 8"
+     },
+     {
+      "id": "beg-1b",
+      "name": "1. Dopasowane",
+      "subtitle": "biały w prawo, krawędź z lewej",
+      "setup": "F' U' F U2 F' U F U'",
+      "algs": [
+       {
+        "alg": "R' U' R U' F' U F"
+       },
+       {
+        "alg": "R' U' R y U' L' U L"
+       },
+       {
+        "alg": "U' r U' R' U R U r'"
+       },
+       {
+        "alg": "d R' U' R U2 R' U R"
+       },
+       {
+        "alg": "y' U R' U' R U2 R' U R"
+       }
+      ],
+      "sameAs": "F2L 6"
+     },
+     {
+      "id": "beg-2",
+      "name": "2. Niedopasowane",
+      "subtitle": "biały w prawo, krawędź z tyłu",
+      "setup": "R U' R'",
+      "algs": [
+       {
+        "alg": "R U R'",
+        "note": "najprostszy – 3 ruchy"
+       },
+       {
+        "alg": "y' f R f'"
+       },
+       {
+        "alg": "y F U F'"
+       },
+       {
+        "alg": "y2 L U L'"
+       }
+      ],
+      "sameAs": "F2L 4"
+     },
+     {
+      "id": "beg-3a",
+      "name": "3. Biały na górze",
+      "subtitle": "krawędź z tyłu",
+      "setup": "R U R' U' R U2 R' U'",
+      "algs": [
+       {
+        "alg": "U R U2 R' U R U' R'",
+        "note": "krawędź nad jej centrum, zrób parę, wstaw"
+       },
+       {
+        "alg": "U R U2 R2 F R F'"
+       },
+       {
+        "alg": "d f R2 f' U f R' f'"
+       },
+       {
+        "alg": "R U' R' U R U' R' U R U R'"
+       }
+      ],
+      "sameAs": "F2L 19"
+     },
+     {
+      "id": "beg-3b",
+      "name": "3. Biały na górze",
+      "subtitle": "krawędź z lewej",
+      "setup": "R U R' F R' F' R2 U R' U",
+      "algs": [
+       {
+        "alg": "U' F' U2 F U' F' U F"
+       },
+       {
+        "alg": "y U' L' U2 L U' L' U L"
+       },
+       {
+        "alg": "U' R U' R2 F R F' R U' R'"
+       },
+       {
+        "alg": "y' U' R' U2 R U' R' U R"
+       }
+      ],
+      "sameAs": "F2L 20"
+     },
+     {
+      "id": "beg-3c",
+      "name": "3. Biały na górze",
+      "subtitle": "krawędź z lewej (druga strona)",
+      "setup": "R U' R' U2 R U R'",
+      "algs": [
+       {
+        "alg": "U2 R U R' U R U' R'"
+       },
+       {
+        "alg": "R U' R' U2 R U R'"
+       },
+       {
+        "alg": "R B U2 B' R'"
+       },
+       {
+        "alg": "y' f R' f' U2 f R f'"
+       }
+      ],
+      "sameAs": "F2L 21"
+     },
+     {
+      "id": "beg-3d",
+      "name": "3. Biały na górze",
+      "subtitle": "krawędź z tyłu (druga strona)",
+      "setup": "F' L' U2 L F",
+      "algs": [
+       {
+        "alg": "U2 F' U' F U' F' U F"
+       },
+       {
+        "alg": "y U2 L' U' L U' L' U L"
+       },
+       {
+        "alg": "r U' r' U2 r U r'"
+       },
+       {
+        "alg": "F' L' U2 L F"
+       },
+       {
+        "alg": "y' U2 R' U' R U' R' U R"
+       }
+      ],
+      "sameAs": "F2L 22"
+     },
+     {
+      "id": "beg-4a",
+      "name": "4. Lustrzane dopasowane",
+      "subtitle": "biały do przodu, krawędź z lewej",
+      "setup": "R U R' U2 R U2 R' U",
+      "algs": [
+       {
+        "alg": "U' R U2 R' U2 R U' R'",
+        "note": "U', schowaj R, krawędź do tyłu, R', U2, wstaw"
+       },
+       {
+        "alg": "U' R U2 R' U' R U2 R'"
+       },
+       {
+        "alg": "U' R U2 R' U R' F R F'"
+       },
+       {
+        "alg": "M' U' M U2 r U' r'"
+       }
+      ],
+      "sameAs": "F2L 7"
+     },
+     {
+      "id": "beg-4b",
+      "name": "4. Lustrzane dopasowane",
+      "subtitle": "biały do przodu, krawędź z tyłu",
+      "setup": "R U R' U2 R U' R' U",
+      "algs": [
+       {
+        "alg": "U' R U R' U2 R U' R'"
+       },
+       {
+        "alg": "F2 L' U' L U F2"
+       },
+       {
+        "alg": "U' R U R' U' R U2 R'"
+       },
+       {
+        "alg": "U' R U R' U R' F R F'"
+       }
+      ],
+      "sameAs": "F2L 5"
+     },
+     {
+      "id": "beg-5",
+      "name": "5. Lustrzane niedopasowane",
+      "subtitle": "biały do przodu, krawędź z lewej",
+      "setup": "F' U F",
+      "algs": [
+       {
+        "alg": "F' U' F",
+        "note": "lustro przypadku 2"
+       },
+       {
+        "alg": "y L' U' L"
+       },
+       {
+        "alg": "y' R' U' R"
+       },
+       {
+        "alg": "S U R U' R' S'"
+       }
+      ],
+      "sameAs": "F2L 3"
+     }
+    ]
+   },
+   {
+    "id": "beg-pairs",
+    "title": "Gotowa para – wstawianie",
+    "description": "Te ruchy kończą przypadki 1, 3 i 4.",
+    "goal": "f2l",
+    "view": "f2l",
+    "cases": [
+     {
+      "id": "beg-ins-r",
+      "name": "Para z prawej",
+      "subtitle": "wstawka prawą ręką",
+      "setup": "F R' F' R",
+      "algs": [
+       {
+        "alg": "U R U' R'"
+       },
+       {
+        "alg": "R' F R F'"
+       },
+       {
+        "alg": "y U F' L F L2 U L"
+       },
+       {
+        "alg": "y' r' U' R U M'"
+       }
+      ],
+      "sameAs": "F2L 1"
+     },
+     {
+      "id": "beg-ins-l",
+      "name": "Para z przodu",
+      "subtitle": "wstawka lewą stroną",
+      "setup": "R' F R F'",
+      "algs": [
+       {
+        "alg": "U' F' U F"
+       },
+       {
+        "alg": "y U' L' U L"
+       },
+       {
+        "alg": "F R' F' R"
+       },
+       {
+        "alg": "y' U' R' U R"
+       }
+      ],
+      "sameAs": "F2L 2"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "f2l-intermediate",
+  "title": "F2L średniozaawansowane – 41 przypadków",
+  "description": "Wszystkie przypadki F2L dla slotu przód-prawo (numeracja jak na speedcubedb.com). Po kilka algorytmów na przypadek – wersje z M/S są na końcu.",
+  "defaultCollapsed": true,
+  "tips": [
+   {
+    "title": "Ruch U zamiast obrotu kostki",
+    "body": "Zamiast y / y' ustaw parę ruchem U i wstaw ją ruchem F lub lewą stroną bez obracania – szybciej i nie gubisz elementów z oczu.",
+    "algs": [
+     "U' F' U F",
+     "y U' L' U L"
+    ]
+   },
+   {
+    "title": "Wstawki do tylnych slotów",
+    "body": "Tylne sloty możesz robić bez obrotu: tył-prawo R' … R, tył-lewo L … L'.",
+    "algs": [
+     "R' U' R",
+     "R' U R",
+     "L U L'",
+     "L U' L'"
+    ]
+   },
+   {
+    "title": "Sledgehammer jako wstawka",
+    "body": "Gdy para stoi „odwrotnie” w górze, R' F R F' (sledgehammer) wstawia ją bez ruchu U.",
+    "algs": [
+     "R' F R F'",
+     "F R' F' R"
+    ]
+   },
+   {
+    "title": "Wykorzystaj pusty slot (keyhole)",
+    "body": "Jeśli sąsiedni slot jest pusty, rozdzielaj pary przez niego, a nie przez slot docelowy. Przykład: krawędź dobrze, róg na górze – wstaw róg przez „dziurkę od klucza”.",
+    "algs": [
+     "d R' U' R d'",
+     "R U' R' d R' U' R"
+    ]
+   },
+   {
+    "title": "Najpierw szukaj par, które są już prawie gotowe",
+    "body": "Rób najpierw pary z przypadków 3-4 ruchowych, a trudne zostaw na koniec – często same się „naprawią”."
+   },
+   {
+    "title": "Lookahead",
+    "body": "Kręć wolniej i równo. Podczas wstawiania jednej pary szukaj wzrokiem rogu i krawędzi następnej."
+   }
+  ],
+  "groups": [
+   {
+    "id": "f2l-free-pairs",
+    "title": "Proste wstawki",
+    "description": "Para gotowa lub rozdzielona tylko jednym ruchem.",
+    "goal": "f2l",
+    "view": "f2l",
+    "cases": [
+     {
+      "id": "f2l-1",
+      "name": "F2L 1",
+      "setup": "F R' F' R",
+      "algs": [
+       {
+        "alg": "U R U' R'"
+       },
+       {
+        "alg": "R' F R F'"
+       },
+       {
+        "alg": "y U F' L F L2 U L"
+       },
+       {
+        "alg": "y' r' U' R U M'"
+       }
+      ]
+     },
+     {
+      "id": "f2l-2",
+      "name": "F2L 2",
+      "setup": "R' F R F'",
+      "algs": [
+       {
+        "alg": "F R' F' R"
+       },
+       {
+        "alg": "U' F' U F"
+       },
+       {
+        "alg": "y' U' R' U R"
+       },
+       {
+        "alg": "y U' L' U L"
+       }
+      ]
+     },
+     {
+      "id": "f2l-3",
+      "name": "F2L 3",
+      "setup": "F' U F",
+      "algs": [
+       {
+        "alg": "F' U' F"
+       },
+       {
+        "alg": "y' R' U' R"
+       },
+       {
+        "alg": "y L' U' L"
+       },
+       {
+        "alg": "S U R U' R' S'"
+       }
+      ]
+     },
+     {
+      "id": "f2l-4",
+      "name": "F2L 4",
+      "setup": "R U' R'",
+      "algs": [
+       {
+        "alg": "R U R'"
+       },
+       {
+        "alg": "y' f R f'"
+       },
+       {
+        "alg": "y F U F'"
+       },
+       {
+        "alg": "y2 L U L'"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "f2l-disconnected-pairs",
+    "title": "Rozłączone pary",
+    "description": "Róg i krawędź na górze, osobno.",
+    "goal": "f2l",
+    "view": "f2l",
+    "cases": [
+     {
+      "id": "f2l-5",
+      "name": "F2L 5",
+      "setup": "R U R' U2 R U' R' U",
+      "algs": [
+       {
+        "alg": "U' R U R' U2 R U' R'"
+       },
+       {
+        "alg": "F2 L' U' L U F2"
+       },
+       {
+        "alg": "U' R U R' U' R U2 R'"
+       },
+       {
+        "alg": "U' R U R' U R' F R F'"
+       }
+      ]
+     },
+     {
+      "id": "f2l-6",
+      "name": "F2L 6",
+      "setup": "F' U' F U2 F' U F U'",
+      "algs": [
+       {
+        "alg": "U' r U' R' U R U r'"
+       },
+       {
+        "alg": "d R' U' R U2 R' U R"
+       },
+       {
+        "alg": "y' U R' U' R U2 R' U R"
+       },
+       {
+        "alg": "y U L' U' L U2 L' U L"
+       }
+      ]
+     },
+     {
+      "id": "f2l-7",
+      "name": "F2L 7",
+      "setup": "R U R' U2 R U2 R' U",
+      "algs": [
+       {
+        "alg": "U' R U2 R' U' R U2 R'"
+       },
+       {
+        "alg": "U' R U2 R' U2 R U' R'"
+       },
+       {
+        "alg": "U' R U2 R' U R' F R F'"
+       },
+       {
+        "alg": "M' U' M U2 r U' r'"
+       }
+      ]
+     },
+     {
+      "id": "f2l-8",
+      "name": "F2L 8",
+      "setup": "r' U' R2 U' R2 U2 r",
+      "algs": [
+       {
+        "alg": "r' U2 R2 U R2 U r"
+       },
+       {
+        "alg": "d R' U2 R U R' U2 R"
+       },
+       {
+        "alg": "y' U R' U2 R U2 R' U R"
+       },
+       {
+        "alg": "y U L' U2 L U2 L' U L"
+       }
+      ]
+     },
+     {
+      "id": "f2l-9",
+      "name": "F2L 9",
+      "setup": "F' U F U' R U R' U",
+      "algs": [
+       {
+        "alg": "U' R U' R' U F' U' F"
+       },
+       {
+        "alg": "F R U R' U' F' R U' R'"
+       },
+       {
+        "alg": "U' R U' R' d R' U' R"
+       },
+       {
+        "alg": "d R' U' R U' R' U' R"
+       }
+      ]
+     },
+     {
+      "id": "f2l-10",
+      "name": "F2L 10",
+      "setup": "R U' R' U' R U' R' U",
+      "algs": [
+       {
+        "alg": "U' R U R' U R U R'"
+       },
+       {
+        "alg": "U2 R U' R' U' R U R'"
+       },
+       {
+        "alg": "d R' U R d' R U R'"
+       },
+       {
+        "alg": "y' U R' U R U' f R f'"
+       }
+      ]
+     },
+     {
+      "id": "f2l-19",
+      "name": "F2L 19",
+      "setup": "R U R' U' R U2 R' U'",
+      "algs": [
+       {
+        "alg": "U R U2 R' U R U' R'"
+       },
+       {
+        "alg": "U R U2 R2 F R F'"
+       },
+       {
+        "alg": "d f R2 f' U f R' f'"
+       },
+       {
+        "alg": "R U' R' U R U' R' U R U R'"
+       }
+      ]
+     },
+     {
+      "id": "f2l-20",
+      "name": "F2L 20",
+      "setup": "R U R' F R' F' R2 U R' U",
+      "algs": [
+       {
+        "alg": "U' R U' R2 F R F' R U' R'"
+       },
+       {
+        "alg": "U' F' U2 F U' F' U F"
+       },
+       {
+        "alg": "y' U' R' U2 R U' R' U R"
+       },
+       {
+        "alg": "y U' L' U2 L U' L' U L"
+       }
+      ]
+     },
+     {
+      "id": "f2l-21",
+      "name": "F2L 21",
+      "setup": "R U' R' U2 R U R'",
+      "algs": [
+       {
+        "alg": "U2 R U R' U R U' R'"
+       },
+       {
+        "alg": "R U' R' U2 R U R'"
+       },
+       {
+        "alg": "R B U2 B' R'"
+       },
+       {
+        "alg": "y' f R' f' U2 f R f'"
+       }
+      ]
+     },
+     {
+      "id": "f2l-22",
+      "name": "F2L 22",
+      "setup": "F' L' U2 L F",
+      "algs": [
+       {
+        "alg": "r U' r' U2 r U r'"
+       },
+       {
+        "alg": "F' L' U2 L F"
+       },
+       {
+        "alg": "y' U2 R' U' R U' R' U R"
+       },
+       {
+        "alg": "y U2 L' U' L U' L' U L"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "f2l-connected-pairs",
+    "title": "Połączone pary",
+    "description": "Róg i krawędź na górze, stykają się, ale źle.",
+    "goal": "f2l",
+    "view": "f2l",
+    "cases": [
+     {
+      "id": "f2l-11",
+      "name": "F2L 11",
+      "setup": "F' U F U' R U2 R' U",
+      "algs": [
+       {
+        "alg": "U' R U2 R' U F' U' F"
+       },
+       {
+        "alg": "U' R U2 R' d R' U' R"
+       },
+       {
+        "alg": "F' U L' U2 L U2 F"
+       },
+       {
+        "alg": "y' R U2 R2 U' R2 U' R'"
+       }
+      ]
+     },
+     {
+      "id": "f2l-12",
+      "name": "F2L 12",
+      "setup": "R U R' U2 R U R' U' R U R'",
+      "algs": [
+       {
+        "alg": "R U' R' U R U' R' U2 R U' R'"
+       },
+       {
+        "alg": "R' U2 R2 U R2 U R"
+       },
+       {
+        "alg": "U F' U2 F U' R U R'"
+       },
+       {
+        "alg": "U R U' R' U' R U R' U' R U R'"
+       }
+      ]
+     },
+     {
+      "id": "f2l-13",
+      "name": "F2L 13",
+      "setup": "r U2 R' U R U' R' U M",
+      "algs": [
+       {
+        "alg": "R U' R' U R' F R F' R U' R'"
+       },
+       {
+        "alg": "d R' U R U' R' U' R"
+       },
+       {
+        "alg": "y' U R' U R U' R' U' R"
+       },
+       {
+        "alg": "M' U' R U R' U2 R U' r'"
+       }
+      ]
+     },
+     {
+      "id": "f2l-14",
+      "name": "F2L 14",
+      "setup": "R U' R' U' R U R' U",
+      "algs": [
+       {
+        "alg": "U' R U' R' U R U R'"
+       },
+       {
+        "alg": "R U2 R' U2 R U R' U2 R U' R'"
+       },
+       {
+        "alg": "U' R2 D R' U R D' R2"
+       },
+       {
+        "alg": "U2 R2 U R' U R U2 R2"
+       }
+      ]
+     },
+     {
+      "id": "f2l-15",
+      "name": "F2L 15",
+      "setup": "R U R' U' R U R' U2 R U' R'",
+      "algs": [
+       {
+        "alg": "R U R' U2 R U' R' U R U' R'"
+       },
+       {
+        "alg": "R' D' R U' R' D R U R U' R'"
+       },
+       {
+        "alg": "F' U F U2 R U R'"
+       },
+       {
+        "alg": "M U r U' r' U' M'"
+       }
+      ]
+     },
+     {
+      "id": "f2l-16",
+      "name": "F2L 16",
+      "setup": "F' U F U2 R U R'",
+      "algs": [
+       {
+        "alg": "R U' R' U2 F' U' F"
+       },
+       {
+        "alg": "U F U R U' R' F' R U R'"
+       },
+       {
+        "alg": "R U' R' U2 y' R' U' R"
+       },
+       {
+        "alg": "U M' U R U' r' U' R U R'"
+       }
+      ]
+     },
+     {
+      "id": "f2l-17",
+      "name": "F2L 17",
+      "setup": "R U' R' U R U2 R'",
+      "algs": [
+       {
+        "alg": "R U2 R' U' R U R'"
+       },
+       {
+        "alg": "R U R' U' R U2 R' U2 R U R'"
+       },
+       {
+        "alg": "y2 L U2 L' U' L U L'"
+       },
+       {
+        "alg": "y L F' L' F L' U L U' L' U L"
+       }
+      ]
+     },
+     {
+      "id": "f2l-18",
+      "name": "F2L 18",
+      "setup": "R U R' U' R U R' F R' F' R",
+      "algs": [
+       {
+        "alg": "F' U2 F U F' U' F"
+       },
+       {
+        "alg": "R' F R F' R U' R' U R U' R'"
+       },
+       {
+        "alg": "y' R' U2 R U R' U' R"
+       },
+       {
+        "alg": "y L' U2 L U L' U' L"
+       }
+      ]
+     },
+     {
+      "id": "f2l-23",
+      "name": "F2L 23",
+      "setup": "R U' R' U R U' R' U2 R U' R'",
+      "algs": [
+       {
+        "alg": "U R U' R' U' R U' R' U R U' R'"
+       },
+       {
+        "alg": "R U R' U2 R U R' U' R U R'"
+       },
+       {
+        "alg": "U2 R2 U2 R' U' R U' R2"
+       },
+       {
+        "alg": "R U' R2 D' R U2 R' D R"
+       }
+      ]
+     },
+     {
+      "id": "f2l-24",
+      "name": "F2L 24",
+      "setup": "R U R' F R U R' U' F'",
+      "algs": [
+       {
+        "alg": "F U R U' R' F' R U' R'"
+       },
+       {
+        "alg": "U' R U R2 F R F' R U' R'"
+       },
+       {
+        "alg": "U F' L' U L F R U R'"
+       },
+       {
+        "alg": "y' R' U' R U2 R' U' R U R' U' R"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "f2l-corner-in-slot",
+    "title": "Róg w slocie",
+    "description": "Krawędź na górze, róg na dole w slocie.",
+    "goal": "f2l",
+    "view": "f2l",
+    "cases": [
+     {
+      "id": "f2l-25",
+      "name": "F2L 25",
+      "setup": "F' R U R' U' R' F R",
+      "algs": [
+       {
+        "alg": "U' R' F R F' R U R'"
+       },
+       {
+        "alg": "R' F' R U R U' R' F"
+       },
+       {
+        "alg": "U' F' U F U R U' R'"
+       },
+       {
+        "alg": "l' U' l U l F' l' F"
+       }
+      ]
+     },
+     {
+      "id": "f2l-26",
+      "name": "F2L 26",
+      "setup": "F' U' F U R U R' U'",
+      "algs": [
+       {
+        "alg": "U R U' R' F R' F' R"
+       },
+       {
+        "alg": "U R U' R' U' F' U F"
+       },
+       {
+        "alg": "U R U R' U' y L' U' L"
+       },
+       {
+        "alg": "R S' R' U R S R'"
+       }
+      ]
+     },
+     {
+      "id": "f2l-27",
+      "name": "F2L 27",
+      "setup": "R U R' U' R U R'",
+      "algs": [
+       {
+        "alg": "R U' R' U R U' R'"
+       },
+       {
+        "alg": "F' U' F U2 R U' R'"
+       },
+       {
+        "alg": "y' f R' f' U f R' f'"
+       },
+       {
+        "alg": "y' f R' f' r' U' R U M'"
+       }
+      ]
+     },
+     {
+      "id": "f2l-28",
+      "name": "F2L 28",
+      "setup": "R' F R F' U R U' R'",
+      "algs": [
+       {
+        "alg": "R U R' U' F R' F' R"
+       },
+       {
+        "alg": "F' U F U' F' U F"
+       },
+       {
+        "alg": "y L' U L U' L' U L"
+       },
+       {
+        "alg": "y' R' U R U' R' U R"
+       }
+      ]
+     },
+     {
+      "id": "f2l-29",
+      "name": "F2L 29",
+      "setup": "F R' F' R F R' F' R",
+      "algs": [
+       {
+        "alg": "R' F R F' U R U' R'"
+       },
+       {
+        "alg": "R' F R F' R' F R F'"
+       },
+       {
+        "alg": "y L' U' L U L' U' L"
+       },
+       {
+        "alg": "y' R' U' R U R' U' R"
+       }
+      ]
+     },
+     {
+      "id": "f2l-30",
+      "name": "F2L 30",
+      "setup": "R U' R' U R U' R'",
+      "algs": [
+       {
+        "alg": "R U R' U' R U R'"
+       },
+       {
+        "alg": "U' R U2 R' U2 R U R'"
+       },
+       {
+        "alg": "U' F R' F' R2 U R'"
+       },
+       {
+        "alg": "U2 F' U F R U R'"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "f2l-edge-in-slot",
+    "title": "Krawędź w slocie",
+    "description": "Róg na górze, krawędź w środkowej warstwie.",
+    "goal": "f2l",
+    "view": "f2l",
+    "cases": [
+     {
+      "id": "f2l-31",
+      "name": "F2L 31",
+      "setup": "R U R' F R' F' R U",
+      "algs": [
+       {
+        "alg": "U' R' F R F' R U' R'"
+       },
+       {
+        "alg": "F' U F R U2 R'"
+       },
+       {
+        "alg": "R U' R' U y' R' U R"
+       },
+       {
+        "alg": "R U' R' U y L' U L"
+       }
+      ]
+     },
+     {
+      "id": "f2l-32",
+      "name": "F2L 32",
+      "setup": "R U' R' U R U' R' U R U' R'",
+      "algs": [
+       {
+        "alg": "U R U' R' U R U' R' U R U' R'"
+       },
+       {
+        "alg": "R U R' U' R U R' U' R U R'"
+       },
+       {
+        "alg": "R2 U R2 U R2 U2 R2"
+       },
+       {
+        "alg": "U' F R' F' R U' R U R'"
+       }
+      ]
+     },
+     {
+      "id": "f2l-33",
+      "name": "F2L 33",
+      "setup": "R U R' U2 R U R' U",
+      "algs": [
+       {
+        "alg": "U' R U' R' U2 R U' R'"
+       },
+       {
+        "alg": "R U R' U' R U' R' U R U' R'"
+       },
+       {
+        "alg": "U' R U' R' U' R U2 R'"
+       },
+       {
+        "alg": "y R' D R U' R' D' R"
+       }
+      ]
+     },
+     {
+      "id": "f2l-34",
+      "name": "F2L 34",
+      "setup": "R U' R' U2 R U' R' U'",
+      "algs": [
+       {
+        "alg": "U R U R' U2 R U R'"
+       },
+       {
+        "alg": "U' R U2 R' U R U R'"
+       },
+       {
+        "alg": "U R' D' R U' R' D R"
+       },
+       {
+        "alg": "y U L' U L U2 L' U L"
+       }
+      ]
+     },
+     {
+      "id": "f2l-35",
+      "name": "F2L 35",
+      "setup": "F' U F U' R U' R' U",
+      "algs": [
+       {
+        "alg": "U' R U R' U F' U' F"
+       },
+       {
+        "alg": "U' R U R' d R' U' R"
+       },
+       {
+        "alg": "U2 R U R' F R' F' R"
+       },
+       {
+        "alg": "U' R U R' U y' R' U' R"
+       }
+      ]
+     },
+     {
+      "id": "f2l-36",
+      "name": "F2L 36",
+      "setup": "R U' R' U2 F R' F' R U2",
+      "algs": [
+       {
+        "alg": "U F' U' F U' R U R'"
+       },
+       {
+        "alg": "U2 R' F R F' U2 R U R'"
+       },
+       {
+        "alg": "R U R' U R U R' U' F' U' F"
+       },
+       {
+        "alg": "R2 u R U R' U' u' R' U R'"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "f2l-pieces-in-slot",
+    "title": "Oba elementy w slocie",
+    "description": "Róg i krawędź siedzą w slocie, ale źle.",
+    "goal": "f2l",
+    "view": "f2l",
+    "cases": [
+     {
+      "id": "f2l-37",
+      "name": "F2L 37",
+      "setup": "R U' R U2 F R2 F' U2 R2",
+      "algs": [
+       {
+        "alg": "R2 U2 F R2 F' U2 R' U R'"
+       },
+       {
+        "alg": "R' F R F' R U' R' U R U' R' U2 R U' R'"
+       },
+       {
+        "alg": "R U2 R' U R U2 R' U F' U' F"
+       },
+       {
+        "alg": "R U R' U2 R U2 R' U y' R' U' R"
+       }
+      ]
+     },
+     {
+      "id": "f2l-38",
+      "name": "F2L 38",
+      "setup": "R U' R' U R U2 R' U R U' R'",
+      "algs": [
+       {
+        "alg": "R U' R' U' R U R' U2 R U' R'"
+       },
+       {
+        "alg": "R U R' U' R U2 R' U' R U R'"
+       },
+       {
+        "alg": "R2 U2 R' U' R U' R' U2 R'"
+       },
+       {
+        "alg": "R U' R' U' R U R' U' R U2 R'"
+       }
+      ]
+     },
+     {
+      "id": "f2l-39",
+      "name": "F2L 39",
+      "setup": "R U' R' U' R U R' U2 R U' R'",
+      "algs": [
+       {
+        "alg": "R U' R' U R U2 R' U R U' R'"
+       },
+       {
+        "alg": "R U2 R U R' U R U2 R2"
+       },
+       {
+        "alg": "R U R' U2 R U' R' U R U R'"
+       },
+       {
+        "alg": "R U2 R' U R U' R' U R U R'"
+       }
+      ]
+     },
+     {
+      "id": "f2l-40",
+      "name": "F2L 40",
+      "setup": "R U R' F U R U' R' F' R U R'",
+      "algs": [
+       {
+        "alg": "r U' r' U2 r U r' R U R'"
+       },
+       {
+        "alg": "F' L' U2 L F R U R'"
+       },
+       {
+        "alg": "R U' R' F R U R' U' F' R U' R'"
+       },
+       {
+        "alg": "R U' R' U' R U' R' U y' R' U' R"
+       }
+      ]
+     },
+     {
+      "id": "f2l-41",
+      "name": "F2L 41",
+      "setup": "R F U R U' R' F' U' R'",
+      "algs": [
+       {
+        "alg": "R U' R' r U' r' U2 r U r'"
+       },
+       {
+        "alg": "R U' R' F' L' U2 L F"
+       },
+       {
+        "alg": "R U R' U' R U' R' U2 y' R' U' R"
+       },
+       {
+        "alg": "R U R' U' y M U' R' F R U M'"
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "4lll",
+  "title": "4LLL – ostatnia warstwa w 4 krokach",
+  "description": "2-look OLL + 2-look PLL. Na start ustawiłem wersje bez M/M2 (tylko R, U, F, D), wersje ze środkiem zostają jako alternatywy.",
+  "tips": [
+   {
+    "title": "Kolejność kroków",
+    "body": "1) Krzyż na górze (krawędzie) → 2) cała góra żółta (rogi) → 3) rogi na miejsca → 4) krawędzie na miejsca. Przed każdym algorytmem ustaw górę ruchem U tak jak na obrazku."
+   },
+   {
+    "title": "Kropka = linia + L",
+    "body": "Zamiast osobnego algorytmu na kropkę możesz zrobić linię, a potem L – nic nowego do nauczenia.",
+    "algs": [
+     "F R U R' U' F'",
+     "f R U R' U' f'"
+    ]
+   }
+  ],
+  "groups": [
+   {
+    "id": "eoll",
+    "title": "1. Krzyż na górze (EOLL)",
+    "goal": "eo",
+    "view": "eoll",
+    "cases": [
+     {
+      "id": "eoll-line",
+      "name": "Linia",
+      "subtitle": "linia poziomo",
+      "setup": "F U R U' R' F'",
+      "algs": [
+       {
+        "alg": "F R U R' U' F'"
+       },
+       {
+        "alg": "f U R U' R' f'"
+       }
+      ]
+     },
+     {
+      "id": "eoll-l",
+      "name": "Małe L",
+      "subtitle": "L z tyłu po lewej",
+      "setup": "f U R U' R' f'",
+      "algs": [
+       {
+        "alg": "f R U R' U' f'"
+       },
+       {
+        "alg": "(U2) F U R U' R' F'"
+       },
+       {
+        "alg": "(U2) f U R U' R' f' U F R U R' U' F'"
+       }
+      ]
+     },
+     {
+      "id": "eoll-dot",
+      "name": "Kropka",
+      "setup": "f U R U' R' f' F U R U' R' F'",
+      "algs": [
+       {
+        "alg": "F R U R' U' F' f R U R' U' f'",
+        "note": "linia + L"
+       },
+       {
+        "alg": "F R U R' U' S R U R' U' f'"
+       },
+       {
+        "alg": "R U2 R2 F R F' U2 R' F R F'"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "ocll",
+    "title": "2. Cała góra żółta (OCLL)",
+    "goal": "oll",
+    "view": "oll",
+    "cases": [
+     {
+      "id": "oll-27",
+      "name": "Sune",
+      "subtitle": "OLL 27",
+      "setup": "R U2 R' U' R U' R'",
+      "algs": [
+       {
+        "alg": "R U R' U R U2 R'"
+       },
+       {
+        "alg": "(U) L' U2 L U L' U L"
+       },
+       {
+        "alg": "y' R' U2 R U R' U R"
+       }
+      ]
+     },
+     {
+      "id": "oll-26",
+      "name": "Antysune",
+      "subtitle": "OLL 26",
+      "setup": "R U R' U R U2 R'",
+      "algs": [
+       {
+        "alg": "R U2 R' U' R U' R'",
+        "note": "ulubiona wersja z r/Cubers – prawa ręka jak Sune"
+       },
+       {
+        "alg": "(U') R' U' R U' R' U2 R"
+       },
+       {
+        "alg": "(U) L' U' L U' L' U2 L"
+       }
+      ]
+     },
+     {
+      "id": "oll-21",
+      "name": "H (dwie pary świateł)",
+      "subtitle": "OLL 21",
+      "setup": "R U R' U R U' R' U R U2 R'",
+      "algs": [
+       {
+        "alg": "R U2 R' U' R U R' U' R U' R'"
+       },
+       {
+        "alg": "(U) R U R' U R U' R' U R U2 R'"
+       },
+       {
+        "alg": "(U) R' U' R U' R' U R U' R' U2 R"
+       },
+       {
+        "alg": "F R U R' U' R U R' U' R U R' U' F'",
+        "note": "F + 3× sexy + F' – łatwy do zapamiętania"
+       }
+      ]
+     },
+     {
+      "id": "oll-22",
+      "name": "Pi (bruno)",
+      "subtitle": "OLL 22",
+      "setup": "R' U2 R2 U R2 U R2 U2 R'",
+      "algs": [
+       {
+        "alg": "R U2 R2 U' R2 U' R2 U2 R"
+       },
+       {
+        "alg": "R' U2 R2 U R2 U R2 U2 R'"
+       },
+       {
+        "alg": "f R U R' U' f' F R U R' U' F'"
+       }
+      ]
+     },
+     {
+      "id": "oll-23",
+      "name": "Światła (headlights)",
+      "subtitle": "OLL 23",
+      "setup": "R' U2 R' D' R U2 R' D R2",
+      "algs": [
+       {
+        "alg": "R2 D' R U2 R' D R U2 R"
+       },
+       {
+        "alg": "(U2) R2 D R' U2 R D' R' U2 R'"
+       },
+       {
+        "alg": "(U) R U2 R' U' R U' R' U2 R' U2 R U R' U R",
+        "note": "antysune + lewe sune – bez D"
+       }
+      ]
+     },
+     {
+      "id": "oll-24",
+      "name": "T (czołg)",
+      "subtitle": "OLL 24",
+      "setup": "F R' F' r U R U' r'",
+      "algs": [
+       {
+        "alg": "r U R' U' r' F R F'"
+       },
+       {
+        "alg": "(U) R U R D R' U' R D' R2"
+       },
+       {
+        "alg": "y2 R' F' r U R U' r' F"
+       }
+      ]
+     },
+     {
+      "id": "oll-25",
+      "name": "Muszka (bowtie)",
+      "subtitle": "OLL 25",
+      "setup": "R' F' r U R U' r' F",
+      "algs": [
+       {
+        "alg": "F' r U R' U' r' F R"
+       },
+       {
+        "alg": "(U') R' F R B' R' F' R B"
+       },
+       {
+        "alg": "(U') F R' F' r U R U' r'"
+       },
+       {
+        "alg": "(U') R U2 R D R' U2 R D' R2"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "cpll",
+    "title": "3. Rogi na miejsca (CPLL)",
+    "goal": "cp",
+    "view": "pll",
+    "cases": [
+     {
+      "id": "pll-a",
+      "name": "Światła z tyłu",
+      "subtitle": "A-perm (Aa)",
+      "setup": "x R2 D2 R U R' D2 R U' R x'",
+      "algs": [
+       {
+        "alg": "x R' U R' D2 R U' R' D2 R2 x'",
+        "note": "faworyt z r/Cubers"
+       },
+       {
+        "alg": "R' F R' B2 R F' R' B2 R2"
+       },
+       {
+        "alg": "(U') R U R' U' R' F R2 U' R' U' R U R' F'",
+        "note": "T-perm też działa (przy okazji zamienia krawędzie)"
+       },
+       {
+        "alg": "(U') R U R' F' R U R' U' R' F R2 U' R'"
+       },
+       {
+        "alg": "x' R' D R' U2 R D' R' U2 R2 x"
+       }
+      ]
+     },
+     {
+      "id": "pll-y",
+      "name": "Bez świateł",
+      "subtitle": "Y-perm (zamiana po przekątnej)",
+      "setup": "F R' F' R U R U' R' F R U' R' U R U R' F'",
+      "algs": [
+       {
+        "alg": "F R U' R' U' R U R' F' R U R' U' R' F R F'"
+       },
+       {
+        "alg": "F R' F R2 U' R' U' R U R' F' R U R' U' F'"
+       },
+       {
+        "alg": "R2 U' R2 U' R2 U F U F' R2 F U' F'"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "epll",
+    "title": "4. Krawędzie na miejsca (EPLL)",
+    "goal": "pll",
+    "view": "pll",
+    "cases": [
+     {
+      "id": "pll-ua",
+      "name": "Ua",
+      "subtitle": "3 krawędzie w prawo",
+      "setup": "R2 U R U R' U' R' U' R' U R'",
+      "algs": [
+       {
+        "alg": "R U' R U R U R U' R' U' R2"
+       },
+       {
+        "alg": "(U2) R2 U' R' U' R U R U R U' R"
+       },
+       {
+        "alg": "(U2) R U R' U R' U' R2 U' R' U R' U R"
+       },
+       {
+        "alg": "M2 U M U2 M' U M2"
+       },
+       {
+        "alg": "(U') R2 U' S' U2 S U' R2"
+       }
+      ]
+     },
+     {
+      "id": "pll-ub",
+      "name": "Ub",
+      "subtitle": "3 krawędzie w lewo",
+      "setup": "R U' R U R U R U' R' U' R2",
+      "algs": [
+       {
+        "alg": "R2 U R U R' U' R' U' R' U R'"
+       },
+       {
+        "alg": "(U2) R' U R' U' R' U' R' U R U R2"
+       },
+       {
+        "alg": "M2 U' M U2 M' U' M2"
+       }
+      ]
+     },
+     {
+      "id": "pll-h",
+      "name": "H",
+      "subtitle": "zamiana naprzeciwko ×2",
+      "setup": "R2 U2 R' U2 R2 U2 R2 U2 R' U2 R2",
+      "algs": [
+       {
+        "alg": "R2 U2 R U2 R2 U2 R2 U2 R U2 R2"
+       },
+       {
+        "alg": "M2 U M2 U2 M2 U M2"
+       },
+       {
+        "alg": "R2 S2 R2 U R2 S2 R2"
+       }
+      ]
+     },
+     {
+      "id": "pll-z",
+      "name": "Z",
+      "subtitle": "zamiana sąsiednich ×2",
+      "setup": "R U R2 U' R' U' R U R' U' R' U R' U R",
+      "algs": [
+       {
+        "alg": "R' U' R U' R U R U' R' U R U R2 U' R'"
+       },
+       {
+        "alg": "(U) R U R' U R' U' R' U R U' R' U' R2 U R"
+       },
+       {
+        "alg": "M' U M2 U M2 U M' U2 M2"
+       },
+       {
+        "alg": "(U) M2 U M2 U M' U2 M2 U2 M'"
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ }
+]

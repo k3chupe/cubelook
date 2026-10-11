@@ -1,0 +1,23 @@
+{
+  "name": "kostka-rubika",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run verify && tsc && vite build",
+    "preview": "vite preview",
+    "data": "tsx scripts/build-data.ts",
+    "verify": "tsx scripts/build-data.ts --check"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.2",
+    "vite": "^8.3.0",
+    "vite-plugin-singlefile": "^2.3.3"
+  },
+  "dependencies": {
+    "cubing": "^0.65.1"
+  }
+}
