@@ -55,6 +55,8 @@ export interface AlgOut {
   note?: string;
   source: SourceId;
   sourceUrl?: string;
+  /** SpeedCubeDB's first alg for this case; always at index 0 of `algs`. */
+  recommended?: true;
 }
 
 export interface CaseOut {

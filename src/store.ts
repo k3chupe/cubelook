@@ -3,6 +3,8 @@ const KEY = "cubelook:v1";
 export interface Settings {
   /** Per case: user's preferred order of algorithms (first = favourite). */
   order: Record<string, string[]>;
+  /** Per case: same as `order`, but used while the slice filter (hideSlice) is on. */
+  orderNoSlice: Record<string, string[]>;
   collapsed: Record<string, boolean>;
   learned: Record<string, boolean>;
   /** Per case: show all alternatives even when "only favourite" is on. */
@@ -18,6 +20,7 @@ export interface Settings {
 
 const defaults: Settings = {
   order: {},
+  orderNoSlice: {},
   collapsed: {},
   learned: {},
   expanded: {},
@@ -32,7 +35,7 @@ const defaults: Settings = {
 function load(): Settings {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) return { ...defaults, ...JSON.parse(raw) };
+    if (raw) return { ...structuredClone(defaults), ...JSON.parse(raw) }; // clone: stored settings missing a key must not share defaults' objects
   } catch {
     /* storage unavailable or corrupted – fall back to defaults */
   }
@@ -62,8 +65,8 @@ export function resetSettings() {
 }
 
 /** Returns algorithms in the user's order; new algorithms (not yet ordered) keep their default position at the end. */
-export function orderedAlgs<T extends { alg: string }>(caseId: string, algs: T[]): T[] {
-  const order = settings.order[caseId];
+export function orderedAlgs<T extends { alg: string }>(caseId: string, algs: T[], hideSlice = false): T[] {
+  const order = (hideSlice && settings.orderNoSlice[caseId]) || settings.order[caseId];
   if (!order) return algs;
   const rank = (a: T) => {
     const i = order.indexOf(a.alg);

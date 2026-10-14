@@ -62,6 +62,7 @@ export const fr: Messages = {
     tagRU: "R U seulement",
     tagSlice: "M/S",
     tagRotation: "rotation",
+    recommended: "Recommandé",
     diagramF2L: "Disposition F2L",
     diagramLL: "Disposition dernière couche",
     footerVerified: "Chaque algorithme est vérifié avec un simulateur de cube.",

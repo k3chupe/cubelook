@@ -75,3 +75,35 @@ test("hide M/S removes slice algorithms from EPLL", async ({ page }) => {
   for (const label of await ua.evaluateAll((els) => els.map((e) => e.getAttribute("aria-label") ?? "")))
     expect(label).not.toMatch(/(^|\s)M/);
 });
+
+test("recommended badge stays on the SpeedCubeDB alg when another favourite is picked", async ({ page }) => {
+  const card = page.locator("#case-beg-1a");
+  const rows = card.locator(".alg-row");
+  await expect(rows.first().locator(".tag-rec")).toHaveCount(1);
+  const recommended = await rows.first().locator(".alg").getAttribute("aria-label");
+  await card.locator('[data-action="expand"]').click();
+  await rows.nth(1).locator('[data-action="fav"]').click();
+  await expect(card.locator(".tag-rec")).toHaveCount(1);
+  await expect(rows.nth(1).locator(".tag-rec")).toHaveCount(1);
+  await expect(rows.nth(1).locator(".alg")).toHaveAttribute("aria-label", recommended!);
+});
+
+test("favourite is remembered per slice-filter context", async ({ page }) => {
+  const card = page.locator("#case-pll-ua");
+  const rows = card.locator(".alg-row");
+  await card.locator('[data-action="expand"]').click();
+  const slice = card.locator(".alg-row:has(.tag-m)").first();
+  const sliceAlg = await slice.locator(".alg").getAttribute("aria-label");
+  await slice.locator('[data-action="fav"]').click();
+  await expect(rows.first().locator(".alg")).toHaveAttribute("aria-label", sliceAlg!);
+
+  await page.locator('[data-action="hideSlice"]').click();
+  await rows.nth(1).locator('[data-action="fav"]').click();
+  const noSliceAlg = await rows.first().locator(".alg").getAttribute("aria-label");
+  expect(noSliceAlg).not.toBe(sliceAlg);
+
+  await page.locator('[data-action="hideSlice"]').click();
+  await expect(rows.first().locator(".alg")).toHaveAttribute("aria-label", sliceAlg!);
+  await page.locator('[data-action="hideSlice"]').click();
+  await expect(rows.first().locator(".alg")).toHaveAttribute("aria-label", noSliceAlg!);
+});

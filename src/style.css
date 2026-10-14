@@ -663,6 +663,11 @@ main {
   border-color: color-mix(in srgb, var(--warn) 50%, transparent);
 }
 
+.tag-rec {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
 .src {
   font-size: 0.74rem;
   padding: 0 7px;

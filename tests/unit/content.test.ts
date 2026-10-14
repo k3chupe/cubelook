@@ -54,4 +54,17 @@ describe("generated data", () => {
     const f2l = sections.find((s) => s.id === "f2l-intermediate")!;
     expect(f2l.groups.flatMap((g) => g.cases)).toHaveLength(41);
   });
+
+  it("each case has at most one recommended alg, at index 0", () => {
+    for (const c of sections.flatMap((s) => s.groups.flatMap((g) => g.cases))) {
+      const recommended = c.algs.filter((a) => a.recommended).length;
+      expect(recommended, c.id).toBeLessThanOrEqual(1);
+      if (recommended) expect(c.algs[0].recommended, c.id).toBe(true);
+    }
+  });
+
+  it("every f2l-intermediate case has a recommended alg", () => {
+    const f2l = sections.find((s) => s.id === "f2l-intermediate")!;
+    for (const c of f2l.groups.flatMap((g) => g.cases)) expect(c.algs[0]?.recommended, c.id).toBe(true);
+  });
 });

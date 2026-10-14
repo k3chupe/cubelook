@@ -62,6 +62,7 @@ export const pl: Messages = {
     tagRU: "tylko R U",
     tagSlice: "M/S",
     tagRotation: "obrót",
+    recommended: "Polecany",
     diagramF2L: "Układ F2L",
     diagramLL: "Układ ostatniej warstwy",
     footerVerified: "Każdy algorytm jest sprawdzony symulatorem kostki.",

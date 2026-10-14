@@ -83,7 +83,7 @@ function sourceChip(a: AlgOut): string {
 }
 
 function visibleAlgs(c: CaseOut): { list: AlgOut[]; hidden: number; all: AlgOut[] } {
-  let all = orderedAlgs(c.id, c.algs);
+  let all = orderedAlgs(c.id, c.algs, settings.hideSlice);
   if (settings.hideSlice) {
     const noSlice = all.filter((a) => !usesSlice(a.alg));
     if (noSlice.length) all = noSlice;
@@ -103,12 +103,13 @@ function renderAlgRow(ref: CaseRef, a: AlgOut, index: number, count: number, sho
   const fav = index === 0;
   const data = `data-case="${ref.c.id}" data-alg="${esc(a.alg)}"`;
   const note = a.note ? content("notes", a.note) : undefined;
+  const recommended = a.recommended ? `<span class="tag tag-rec">${esc(m.recommended)}</span>` : "";
   return `
   <li class="alg-row${fav ? " is-fav" : ""}">
     <div class="alg" translate="no" aria-label="${esc(a.alg)}">${renderAlg(a.alg)}</div>
     ${note ? `<div class="alg-note">${esc(note)}</div>` : ""}
     <div class="alg-actions">
-      <span class="tags">${algTags(a.alg)}${sourceChip(a)}</span>
+      <span class="tags">${recommended}${algTags(a.alg)}${sourceChip(a)}</span>
       ${iconButton("fav", fav ? m.fav : m.setFav, icons.star, `star${fav ? " on" : ""}`, `${data} aria-pressed="${fav}"`)}
       ${
         showReorder
@@ -430,13 +431,14 @@ function render() {
 function moveAlg(caseId: string, alg: string, delta: number | "top") {
   const ref = caseIndex.get(caseId);
   if (!ref) return;
-  const order = orderedAlgs(caseId, ref.c.algs).map((a) => a.alg);
+  const order = visibleAlgs(ref.c).all.map((a) => a.alg);
   const i = order.indexOf(alg);
   if (i < 0) return;
   order.splice(i, 1);
   const j = delta === "top" ? 0 : Math.max(0, Math.min(order.length, i + delta));
   order.splice(j, 0, alg);
-  update((s) => (s.order[caseId] = order));
+  const key = settings.hideSlice ? "orderNoSlice" : "order";
+  update((s) => (s[key][caseId] = order));
 }
 
 function setAll(collapsed: boolean) {

@@ -1,7 +1,7 @@
 /**
  * Builds src/data/generated.json from the hand-written sources and the scraped SpeedCubeDB data,
  * verifying every algorithm with the cube simulator and attributing each one to its source.
- * `--check` fails on any rejected hand-written alg.
+ * `--check` writes nothing; it fails on any rejected hand-written alg or if generated.json is stale.
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -45,6 +45,10 @@ const scdb: Record<"OLL" | "PLL", Map<string, Set<string>>> = { OLL: new Map(), 
 for (const r of [...readRaw("speedcubedb-oll.json"), ...readRaw("speedcubedb-2look-oll.json")])
   scdb.OLL.set(r.name, new Set([...(scdb.OLL.get(r.name) ?? []), ...r.algs.map(comparable)]));
 for (const r of readRaw("speedcubedb-pll.json")) scdb.PLL.set(r.name, new Set(r.algs.map(comparable)));
+// SpeedCubeDB's first alg per OLL/PLL case (names are unique across the files).
+const scdbFirst = new Map<string, string>();
+for (const r of [...readRaw("speedcubedb-oll.json"), ...readRaw("speedcubedb-2look-oll.json"), ...readRaw("speedcubedb-pll.json")])
+  if (!scdbFirst.has(r.name)) scdbFirst.set(r.name, r.algs[0]);
 
 // Algorithms as printed on cubingcheatsheet.com/algs3x_4lll.html and in the r/Cubers thread.
 const CHEATSHEET = new Set(
@@ -157,6 +161,13 @@ function verifyAlgs(
   return out;
 }
 
+/** Puts SpeedCubeDB's first alg at index 0; an equal alg already in the list is moved, keeping its note. */
+function recommend(algs: AlgOut[], first: AlgOut | undefined): AlgOut[] {
+  if (!first) return algs;
+  const item = algs.find((a) => a.alg === first.alg) ?? first;
+  return [{ ...item, recommended: true }, ...algs.filter((a) => a.alg !== first.alg)];
+}
+
 function buildCase(c: CaseSource, goal: Goal, sectionId: string): CaseOut {
   const first = typeof c.algs[0] === "string" ? c.algs[0] : c.algs[0].alg;
   const setup = tidy(c.setup ?? invertAlg(first));
@@ -170,7 +181,17 @@ function buildSection(s: SectionSource): SectionOut {
   return {
     ...s,
     groups: s.groups.map(
-      (g): GroupOut => ({ id: g.id, goal: g.goal, view: g.view, cases: g.cases.map((c) => buildCase(c, g.goal, s.id)) }),
+      (g): GroupOut => ({
+        id: g.id,
+        goal: g.goal,
+        view: g.view,
+        cases: g.cases.map((c) => {
+          const out = buildCase(c, g.goal, s.id);
+          const scdbAlg = c.ref && scdbFirst.get(c.ref.name);
+          const [first] = scdbAlg ? verifyAlgs(`${s.id}/${c.id}`, caseState(out.setup), g.goal, [scdbAlg], false, (a) => attribute(a, c)) : [];
+          return { ...out, algs: recommend(out.algs, first) };
+        }),
+      }),
     ),
   };
 }
@@ -182,11 +203,13 @@ function buildIntermediate(): SectionOut {
     const setup = tidy(r.setup ?? invertAlg(r.algs[0]));
     const start = caseState(setup);
     const sourceUrl = speedcubedbCaseUrl("F2L", r.name);
-    const algs = verifyAlgs(r.name, start, "f2l", r.algs, false, () => ({ source: "speedcubedb", sourceUrl }))
+    const fromScdb = () => ({ source: "speedcubedb" as const, sourceUrl });
+    const [first] = verifyAlgs(r.name, start, "f2l", r.algs.slice(0, 1), false, fromScdb);
+    const rest = verifyAlgs(r.name, start, "f2l", r.algs.slice(1), false, fromScdb)
       .map((a, i) => ({ a, i }))
       .sort((x, y) => penalty(x.a.alg) - penalty(y.a.alg) || x.i - y.i)
-      .map((x) => x.a)
-      .slice(0, 6);
+      .map((x) => x.a);
+    const algs = recommend(rest, first).slice(0, 6);
     if (!algs.length) errors.push(`${r.name}: no valid algorithms`);
     const num = r.name.replace("F2L ", "");
     groups[f2lGroupOrder.indexOf(r.sub)].cases.push({ id: `f2l-${num}`, name: `F2L ${num}`, setup, algs });
@@ -225,9 +248,13 @@ function buildBeginner(s: SectionSource): SectionOut {
         source: "speedcubedb",
         sourceUrl: scdbUrl,
       }));
+      const [scdbFirstAlg] = verifyAlgs(c.id, start, "f2l", match.algs.filter((a) => a.recommended).map((a) => stripPrefix(a.alg)), false, () => ({
+        source: "speedcubedb",
+        sourceUrl: scdbUrl,
+      }));
       const algs = [...own];
       for (const e of extra) if (!algs.some((a) => a.alg === e.alg) && algs.length < 5) algs.push(e);
-      return { id: c.id, name: c.id, setup: match.setup, algs, sameAs: match.name };
+      return { id: c.id, name: c.id, setup: match.setup, algs: recommend(algs, scdbFirstAlg), sameAs: match.name };
     });
     return { id: g.id, goal: g.goal, view: g.view, cases };
   });
@@ -240,7 +267,11 @@ const sections = [beginner, intermediate, lll];
 const all = sections.flatMap((s) => s.groups.flatMap((g) => g.cases.flatMap((c) => c.algs)));
 const bySource = all.reduce<Record<string, number>>((acc, a) => ((acc[a.source] = (acc[a.source] ?? 0) + 1), acc), {});
 
-writeFileSync(join(root, "src/data/generated.json"), JSON.stringify(sections, null, 1) + "\n");
-console.log(`Wrote ${all.length} algorithms (dropped ${dropped} non-matching alternatives).`, bySource);
+const json = JSON.stringify(sections, null, 1) + "\n";
+const outFile = join(root, "src/data/generated.json");
+const stale = check && readFileSync(outFile, "utf8") !== json;
+if (!check) writeFileSync(outFile, json);
+console.log(`${check ? "Checked" : "Wrote"} ${all.length} algorithms (dropped ${dropped} non-matching alternatives).`, bySource);
 for (const e of errors) console.error("ERROR:", e);
-if (check && errors.length) process.exit(1);
+if (stale) console.error("ERROR: src/data/generated.json is out of date; run npm run data");
+if (check && (stale || errors.length)) process.exit(1);

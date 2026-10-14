@@ -69,6 +69,7 @@ export interface Messages {
     tagRU: string;
     tagSlice: string;
     tagRotation: string;
+    recommended: string;
     diagramF2L: string;
     diagramLL: string;
     footerVerified: string;
