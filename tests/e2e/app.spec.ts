@@ -15,6 +15,25 @@ test("sections collapse and the state survives a reload", async ({ page }) => {
   await expect(page.locator('button.section-head[data-id="section:f2l-beginner"]')).toHaveAttribute("aria-expanded", "false");
 });
 
+test("+N and group toggle change only their target and keep the clicked control in place", async ({ page }) => {
+  const more = page.locator('#case-beg-1a [data-action="expand"]');
+  await more.scrollIntoViewIfNeeded();
+  const moreY = (await more.boundingBox())!.y;
+  await more.click();
+  await expect(more).toHaveAttribute("aria-expanded", "true");
+  expect(Math.abs((await more.boundingBox())!.y - moreY)).toBeLessThan(2);
+  await expect(page.locator("#case-beg-1b .alg-row")).toHaveCount(1);
+
+  const head = page.locator('button.group-head[data-id="group:beg-basic"]');
+  const sibling = page.locator('button.group-head[data-id="group:beg-pairs"]');
+  await head.scrollIntoViewIfNeeded();
+  const headY = (await head.boundingBox())!.y;
+  await head.click();
+  await expect(head).toHaveAttribute("aria-expanded", "false");
+  await expect(sibling).toHaveAttribute("aria-expanded", "true");
+  expect(Math.abs((await head.boundingBox())!.y - headY)).toBeLessThan(2);
+});
+
 test("choosing a favourite moves it to the top and persists", async ({ page }) => {
   const card = page.locator("#case-beg-1a");
   await card.locator('[data-action="expand"]').click();

@@ -368,8 +368,11 @@ function applyChrome() {
 function render() {
   applyChrome();
   const m = t();
+  // Full rebuild replaces the focused control; pin viewport to it so expand/collapse does not yank content away.
+  const active = document.activeElement as HTMLElement | null;
+  const focusedKey = active?.dataset?.focusKey;
+  const anchorTop = focusedKey != null ? active!.getBoundingClientRect().top : null;
   const scrollY = window.scrollY;
-  const focusedKey = (document.activeElement as HTMLElement | null)?.dataset?.focusKey;
   app.innerHTML = `
   <a class="skip" href="#main">${esc(m.ui.sectionsNav)}</a>
   <header class="topbar">
@@ -409,9 +412,17 @@ function render() {
     <p>${esc(m.ui.footerVerified)} ${m.meta.machineTranslated ? esc(m.ui.footerMachine) : ""}</p>
     <button class="text-btn" data-action="reset">${esc(m.ui.reset)}</button>
   </footer>`;
-  window.scrollTo(0, scrollY);
   app.querySelectorAll<HTMLElement>("[data-action]").forEach(tagFocus);
-  if (focusedKey) app.querySelector<HTMLElement>(`[data-focus-key="${CSS.escape(focusedKey)}"]`)?.focus();
+  const focused = focusedKey
+    ? app.querySelector<HTMLElement>(`[data-focus-key="${CSS.escape(focusedKey)}"]`)
+    : null;
+  if (focused && anchorTop != null) {
+    window.scrollBy(0, focused.getBoundingClientRect().top - anchorTop);
+    focused.focus({ preventScroll: true });
+  } else {
+    window.scrollTo(0, scrollY);
+    focused?.focus({ preventScroll: true });
+  }
 }
 
 /* ---------- interactions ---------- */
@@ -456,6 +467,8 @@ app.addEventListener("change", (e) => {
 app.addEventListener("click", (e) => {
   const el = (e.target as HTMLElement).closest<HTMLElement>("[data-action]");
   if (!el || el.tagName === "SELECT") return;
+  // Programmatic clicks skip focus; render pins scroll to the focused control.
+  el.focus({ preventScroll: true });
   const { action, id, case: caseId, alg, value } = el.dataset;
   switch (action) {
     case "toggle": {
