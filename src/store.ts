@@ -14,6 +14,8 @@ export interface Settings {
   hideLearned: boolean;
   compact: boolean;
   theme: "system" | "light" | "dark";
+  /** Which last-layer stages to show: 4LLL, or full OLL + PLL. F2L is always shown. */
+  path: "4lll" | "full";
   /** null = follow the browser language. */
   locale: string | null;
 }
@@ -29,6 +31,7 @@ const defaults: Settings = {
   hideLearned: false,
   compact: false,
   theme: "system",
+  path: "4lll",
   locale: null,
 };
 

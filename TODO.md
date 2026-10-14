@@ -38,8 +38,8 @@ DoD (D1): klik toggle’uje tylko cel; scroll / element pod kursorem stabilny; e
 
 Jedna strona, konfiguracja „co pokazujemy”, nie osobne buildy. UI: segmented control w headerze.
 
-- [ ] Segment **4LLL** \| **OLL + PLL** (preferencja w settings; default 4LLL)
-- [ ] Pełne OLL + PLL z raw → UI
+- [x] Segment **4LLL** \| **OLL + PLL** (preferencja w settings; default 4LLL)
+- [x] Pełne OLL + PLL z raw → UI
 - [ ] Potem: **2OLL + PLL**
 - [ ] Później / poza: **ZBLL**, inne warianty CFOP LL
 

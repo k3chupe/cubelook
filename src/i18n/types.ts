@@ -37,6 +37,9 @@ export interface Messages {
     themeSystem: string;
     themeLight: string;
     themeDark: string;
+    learningPath: string;
+    path4lll: string;
+    pathFull: string;
     sectionsNav: string;
     cases: PluralForms;
     alternatives: PluralForms;

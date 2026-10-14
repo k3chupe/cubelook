@@ -60,6 +60,21 @@ test("theme and density switches update the root element", async ({ page }) => {
   await expect(page.locator("html")).toHaveAttribute("data-density", "compact");
 });
 
+test("learning path: 4LLL by default, OLL + PLL swaps the last-layer sections and survives reload", async ({ page }) => {
+  const ll4 = page.locator('section[id="4lll"]');
+  const oll = page.locator('section[id="oll"]');
+  const pll = page.locator('section[id="pll"]');
+  await expect(ll4).toHaveCount(1);
+  await expect(oll).toHaveCount(0);
+  await page.locator('[data-action="path"][data-value="full"]').click();
+  await expect(ll4).toHaveCount(0);
+  await expect(oll).toHaveCount(1);
+  await expect(pll).toHaveCount(1);
+  await page.reload();
+  await expect(ll4).toHaveCount(0);
+  await expect(oll).toHaveCount(1);
+});
+
 test("every algorithm row has a source chip", async ({ page }) => {
   const rows = page.locator(".alg-row");
   const count = await rows.count();

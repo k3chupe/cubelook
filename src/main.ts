@@ -35,9 +35,14 @@ const caseIndex = new Map<string, CaseRef>();
 for (const section of sections)
   for (const group of section.groups) for (const c of group.cases) caseIndex.set(c.id, { section, group, c });
 
-const algsBySource = sections
-  .flatMap((s) => s.groups.flatMap((g) => g.cases.flatMap((c) => c.algs)))
-  .reduce<Record<string, number>>((acc, a) => ((acc[a.source] = (acc[a.source] ?? 0) + 1), acc), {});
+/** Learning path decides which last-layer section is shown; F2L sections are always shown. */
+const pathHidden = (id: string) => (settings.path === "4lll" ? ["oll", "pll"] : ["4lll"]).includes(id);
+const visibleSections = () => sections.filter((s) => !pathHidden(s.id));
+
+const algsBySource = () =>
+  visibleSections()
+    .flatMap((s) => s.groups.flatMap((g) => g.cases.flatMap((c) => c.algs)))
+    .reduce<Record<string, number>>((acc, a) => ((acc[a.source] = (acc[a.source] ?? 0) + 1), acc), {});
 
 const caseName = (c: CaseOut) => content("cases", c.id)?.name ?? c.name;
 const caseSubtitle = (c: CaseOut) => content("cases", c.id)?.subtitle;
@@ -268,7 +273,7 @@ function renderSources(): string {
   const sourceCards = (Object.keys(SOURCES) as SourceId[])
     .map((sid) => {
       const s = SOURCES[sid];
-      const count = algsBySource[sid] ?? 0;
+      const count = algsBySource()[sid] ?? 0;
       return `
       <div class="source-card src-${sid}">
         <h3>${s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ${icons.external}</a>` : esc(s.name)}</h3>
@@ -323,6 +328,20 @@ function renderThemeSwitch(): string {
 }
 
 type Settings = typeof settings;
+
+function renderPathSwitch(): string {
+  const m = t().ui;
+  const opts: [Settings["path"], string][] = [
+    ["4lll", m.path4lll],
+    ["full", m.pathFull],
+  ];
+  return `<div class="segmented" role="radiogroup" aria-label="${esc(m.learningPath)}">${opts
+    .map(
+      ([v, label]) =>
+        `<button role="radio" aria-checked="${settings.path === v}" data-action="path" data-value="${v}">${esc(label)}</button>`,
+    )
+    .join("")}</div>`;
+}
 
 function renderLanguagePicker(): string {
   const m = t().ui;
@@ -385,7 +404,7 @@ function render() {
       </div>
     </div>
     <nav class="jump" aria-label="${esc(m.ui.sectionsNav)}">
-      ${sections
+      ${visibleSections()
         .map((s) => `<a href="#${s.id}" data-action="jump" data-id="section:${s.id}">${esc((content("sections", s.id)?.title ?? s.id).split(" – ")[0])}</a>`)
         .join("")}
       <a href="#sources" data-action="jump" data-id="section:sources">${esc(m.ui.sourcesTitle)}</a>
@@ -396,6 +415,7 @@ function render() {
       ${toggleBtn("hideLearned", m.ui.hideLearned, settings.hideLearned, m.ui.hideLearnedHint)}
       ${toggleBtn("compact", m.ui.compact, settings.compact, m.ui.compactHint)}
       <span class="sep" aria-hidden="true"></span>
+      ${renderPathSwitch()}
       ${renderThemeSwitch()}
       ${renderLanguagePicker()}
       <span class="sep" aria-hidden="true"></span>
@@ -406,7 +426,7 @@ function render() {
   </header>
   <main id="main">
     ${renderLegend()}
-    ${sections.map(renderSection).join("")}
+    ${visibleSections().map(renderSection).join("")}
     ${renderSources()}
   </main>
   <footer>
@@ -443,7 +463,7 @@ function moveAlg(caseId: string, alg: string, delta: number | "top") {
 
 function setAll(collapsed: boolean) {
   update((s) => {
-    for (const section of sections) {
+    for (const section of visibleSections()) {
       s.collapsed[`section:${section.id}`] = collapsed;
       s.collapsed[`tips:${section.id}`] = collapsed;
       for (const g of section.groups) s.collapsed[`group:${g.id}`] = collapsed;
@@ -497,6 +517,9 @@ app.addEventListener("click", (e) => {
       break;
     case "theme":
       update((s) => (s.theme = value as Settings["theme"]));
+      break;
+    case "path":
+      update((s) => (s.path = value as Settings["path"]));
       break;
     case "collapseAll":
       setAll(true);

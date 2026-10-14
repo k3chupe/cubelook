@@ -12,6 +12,7 @@ import { SOURCES, speedcubedbCaseUrl, type SourceId } from "../src/data/sources"
 import { f2lBeginner } from "../src/data/f2l-beginner";
 import { fourLLL } from "../src/data/4lll";
 import { f2lGroupIds, f2lGroupOrder, f2lIntermediateBase } from "../src/data/f2l-intermediate";
+import { ollGroupIds, pllGroupIds } from "../src/data/oll-pll";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const check = process.argv.includes("--check");
@@ -196,25 +197,41 @@ function buildSection(s: SectionSource): SectionOut {
   };
 }
 
+/** SpeedCubeDB case → verified algs: SpeedCubeDB's first alg recommended, the rest by penalty, at most 6. */
+function scdbCase(r: Scraped, set: "F2L" | "OLL" | "PLL", goal: Goal, id: string): CaseOut {
+  const setup = tidy(r.setup ?? invertAlg(r.algs[0]));
+  const start = caseState(setup);
+  const sourceUrl = speedcubedbCaseUrl(set, r.name);
+  const fromScdb = () => ({ source: "speedcubedb" as const, sourceUrl });
+  const [first] = verifyAlgs(r.name, start, goal, r.algs.slice(0, 1), false, fromScdb);
+  const rest = verifyAlgs(r.name, start, goal, r.algs.slice(1), false, fromScdb)
+    .map((a, i) => ({ a, i }))
+    .sort((x, y) => penalty(x.a.alg) - penalty(y.a.alg) || x.i - y.i)
+    .map((x) => x.a);
+  const algs = recommend(rest, first).slice(0, 6);
+  if (!algs.length) errors.push(`${r.name}: no valid algorithms`);
+  return { id, name: r.name, setup, algs };
+}
+
 function buildIntermediate(): SectionOut {
   const raw = readRaw("speedcubedb-f2l.json");
   const groups: GroupOut[] = f2lGroupOrder.map((sub) => ({ id: f2lGroupIds[sub], goal: "f2l", view: "f2l", cases: [] }));
   for (const r of raw) {
-    const setup = tidy(r.setup ?? invertAlg(r.algs[0]));
-    const start = caseState(setup);
-    const sourceUrl = speedcubedbCaseUrl("F2L", r.name);
-    const fromScdb = () => ({ source: "speedcubedb" as const, sourceUrl });
-    const [first] = verifyAlgs(r.name, start, "f2l", r.algs.slice(0, 1), false, fromScdb);
-    const rest = verifyAlgs(r.name, start, "f2l", r.algs.slice(1), false, fromScdb)
-      .map((a, i) => ({ a, i }))
-      .sort((x, y) => penalty(x.a.alg) - penalty(y.a.alg) || x.i - y.i)
-      .map((x) => x.a);
-    const algs = recommend(rest, first).slice(0, 6);
-    if (!algs.length) errors.push(`${r.name}: no valid algorithms`);
     const num = r.name.replace("F2L ", "");
-    groups[f2lGroupOrder.indexOf(r.sub)].cases.push({ id: `f2l-${num}`, name: `F2L ${num}`, setup, algs });
+    groups[f2lGroupOrder.indexOf(r.sub)].cases.push(scdbCase(r, "F2L", "f2l", `f2l-${num}`));
   }
   return { ...f2lIntermediateBase, groups };
+}
+
+/** Full OLL / PLL: SpeedCubeDB subgroups become groups. Ids get a `full-` prefix (4LLL already uses oll-21…27, pll-ua…). */
+function buildFull(kind: "oll" | "pll", groupIds: Record<string, string>): SectionOut {
+  const subs = Object.keys(groupIds);
+  const groups: GroupOut[] = subs.map((sub) => ({ id: groupIds[sub], goal: kind, view: kind, cases: [] }));
+  for (const r of readRaw(`speedcubedb-${kind}.json`)) {
+    const id = `full-${kind}-${r.name.split(" ").pop()!.toLowerCase()}`;
+    groups[subs.indexOf(r.sub)].cases.push(scdbCase(r, kind.toUpperCase() as "OLL" | "PLL", kind, id));
+  }
+  return { id: kind, defaultCollapsed: true, basedOn: ["speedcubedb"], groups };
 }
 
 const intermediate = buildIntermediate();
@@ -263,7 +280,7 @@ function buildBeginner(s: SectionSource): SectionOut {
 
 const beginner = buildBeginner(f2lBeginner);
 
-const sections = [beginner, intermediate, lll];
+const sections = [beginner, intermediate, lll, buildFull("oll", ollGroupIds), buildFull("pll", pllGroupIds)];
 const all = sections.flatMap((s) => s.groups.flatMap((g) => g.cases.flatMap((c) => c.algs)));
 const bySource = all.reduce<Record<string, number>>((acc, a) => ((acc[a.source] = (acc[a.source] ?? 0) + 1), acc), {});
 

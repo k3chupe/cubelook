@@ -67,4 +67,18 @@ describe("generated data", () => {
     const f2l = sections.find((s) => s.id === "f2l-intermediate")!;
     for (const c of f2l.groups.flatMap((g) => g.cases)) expect(c.algs[0]?.recommended, c.id).toBe(true);
   });
+
+  it("full OLL and PLL cover all 57 and 21 cases, each with a recommended alg", () => {
+    const counts = { oll: 57, pll: 21 };
+    for (const [id, n] of Object.entries(counts)) {
+      const cases = sections.find((s) => s.id === id)!.groups.flatMap((g) => g.cases);
+      expect(cases, id).toHaveLength(n);
+      for (const c of cases) expect(c.algs[0]?.recommended, c.id).toBe(true);
+    }
+  });
+
+  it("case ids are unique across all sections", () => {
+    const ids = sections.flatMap((s) => s.groups.flatMap((g) => g.cases.map((c) => c.id)));
+    expect(new Set(ids).size).toBe(ids.length);
+  });
 });
