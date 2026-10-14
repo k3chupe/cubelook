@@ -14,7 +14,7 @@ import type { AlgOut, CaseOut, GroupOut, SectionOut, TipSource } from "./data/ty
 import { SOURCES, TOOLS, type SourceId } from "./data/sources";
 import { caseDiagram } from "./diagram";
 import { icons } from "./icons";
-import { algCubingNetUrl, twizzleUrl } from "./links";
+import { algCubingNetUrl, speedcubedbCaseLink, twizzleUrl } from "./links";
 import { onChange, orderedAlgs, resetSettings, settings, update } from "./store";
 import { segmentAlg, TRIGGER_KINDS, usesSlice, isTwoGen, isRotation, hasRotation } from "./triggers";
 import { openPlayer } from "./player";
@@ -79,6 +79,14 @@ function algTags(alg: string): string {
   return tags.join("");
 }
 
+/** Case page on SpeedCubeDB, first in the row; skipped when the source chip already links to it. */
+function scdbChip(a: AlgOut, c: CaseOut): string {
+  const url = speedcubedbCaseLink(c);
+  return url && url !== a.sourceUrl
+    ? `<a class="src src-speedcubedb scdb-link" href="${esc(url)}" target="_blank" rel="noopener" title="${esc(t().ui.openScdbHint)}">${esc(SOURCES.speedcubedb.short)}</a>`
+    : "";
+}
+
 function sourceChip(a: AlgOut): string {
   const s = SOURCES[a.source];
   const label = `${t().ui.source}: ${s.short}`;
@@ -114,7 +122,7 @@ function renderAlgRow(ref: CaseRef, a: AlgOut, index: number, count: number, sho
     <div class="alg" translate="no" aria-label="${esc(a.alg)}">${renderAlg(a.alg)}</div>
     ${note ? `<div class="alg-note">${esc(note)}</div>` : ""}
     <div class="alg-actions">
-      <span class="tags">${recommended}${algTags(a.alg)}${sourceChip(a)}</span>
+      <span class="tags">${recommended}${algTags(a.alg)}${scdbChip(a, ref.c)}${sourceChip(a)}</span>
       ${iconButton("fav", fav ? m.fav : m.setFav, icons.star, `star${fav ? " on" : ""}`, `${data} aria-pressed="${fav}"`)}
       ${
         showReorder

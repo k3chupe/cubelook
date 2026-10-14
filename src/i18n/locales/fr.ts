@@ -38,6 +38,7 @@ export const fr: Messages = {
     moveDown: "Descendre",
     playHere: "Animation ici",
     playFav: "Lire l'algorithme favori",
+    openScdbHint: "Page du cas sur SpeedCubeDB",
     openCube: "cube",
     openCubeHint: "Ouvrir sur un cube virtuel (Twizzle, depuis le début du cas)",
     openTwizzle: "alg.cubing.net",

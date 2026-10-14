@@ -1,5 +1,6 @@
 import { invertAlg } from "./cube";
-import type { CaseView } from "./data/types";
+import { speedcubedbCaseUrl } from "./data/sources";
+import type { CaseOut, CaseView } from "./data/types";
 
 /** Yellow on top, green in front (cubing.js default is white on top). */
 export const ORIENTATION = "z2";
@@ -24,6 +25,14 @@ export function algCubingNetUrl(alg: string, title: string): string {
     "https://alg.cubing.net/?" +
     `setup=${acnEncode(setup)}&alg=${acnEncode(a)}&title=${encodeURIComponent(title)}`
   );
+}
+
+/** SpeedCubeDB case page from the case name; beginner cases use the numbered F2L case they match (`sameAs`). */
+export function speedcubedbCaseLink(c: Pick<CaseOut, "name" | "sameAs">): string | undefined {
+  const name = c.sameAs ?? c.name;
+  if (!/^(F2L \d+|OLL \d+|[A-Z][a-z]?)$/.test(name)) return undefined;
+  const set = name.startsWith("F2L") ? "F2L" : name.startsWith("OLL") ? "OLL" : "PLL";
+  return speedcubedbCaseUrl(set, name);
 }
 
 export function twizzleUrl(alg: string, view: CaseView, title: string): string {

@@ -38,6 +38,7 @@ export const en: Messages = {
     moveDown: "Move down",
     playHere: "Animate here",
     playFav: "Play favorite algorithm",
+    openScdbHint: "Case page on SpeedCubeDB",
     openCube: "cube",
     openCubeHint: "Open on a virtual cube (Twizzle, starts at the case)",
     openTwizzle: "alg.cubing.net",

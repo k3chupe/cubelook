@@ -51,6 +51,7 @@ export interface Messages {
     moveDown: string;
     playHere: string;
     playFav: string;
+    openScdbHint: string;
     openCube: string;
     openCubeHint: string;
     openTwizzle: string;

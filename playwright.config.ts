@@ -14,5 +14,7 @@ export default defineConfig({
     command: "npx vite --port 4330 --strictPort",
     url: "http://127.0.0.1:4330",
     reuseExistingServer: true,
+    // separate dep cache, so e2e runs don't invalidate the dev server's
+    env: { VITE_CACHE_DIR: "node_modules/.vite-e2e" },
   },
 });

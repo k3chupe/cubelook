@@ -79,7 +79,13 @@ test("every algorithm row has a source chip", async ({ page }) => {
   const rows = page.locator(".alg-row");
   const count = await rows.count();
   expect(count).toBeGreaterThan(10);
-  await expect(page.locator(".alg-row .src")).toHaveCount(count);
+  await expect(page.locator(".alg-row .src:not(.scdb-link)")).toHaveCount(count);
+});
+
+test("first link in every algorithm row goes to SpeedCubeDB", async ({ page }) => {
+  const hrefs = await page.locator(".alg-row").evaluateAll((rows) => rows.map((r) => r.querySelector("a")?.href ?? ""));
+  expect(hrefs.length).toBeGreaterThan(10);
+  expect(hrefs.filter((h) => !h.startsWith("https://speedcubedb.com/a/3x3/"))).toEqual([]);
 });
 
 test("hide M/S removes slice algorithms from EPLL", async ({ page }) => {
@@ -121,4 +127,14 @@ test("favourite is remembered per slice-filter context", async ({ page }) => {
   await expect(rows.first().locator(".alg")).toHaveAttribute("aria-label", sliceAlg!);
   await page.locator('[data-action="hideSlice"]').click();
   await expect(rows.first().locator(".alg")).toHaveAttribute("aria-label", noSliceAlg!);
+});
+
+test("Animate here opens the 3D player without console errors", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
+  page.on("pageerror", (e) => errors.push(e.message));
+  await page.locator("#case-beg-1a .alg-row").first().locator('[data-action="play"]').click();
+  await expect(page.locator("dialog.player twisty-player")).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator("dialog.player .player-error")).toHaveCount(0);
+  expect(errors).toEqual([]);
 });
