@@ -129,6 +129,27 @@ test("favourite is remembered per slice-filter context", async ({ page }) => {
   await expect(rows.first().locator(".alg")).toHaveAttribute("aria-label", noSliceAlg!);
 });
 
+test("rotating a PLL case changes the shown alg and diagram, persists, and starring still works", async ({ page }) => {
+  const card = page.locator("#case-pll-ua");
+  const fav = card.locator(".alg-row").first().locator(".alg");
+  const alg = await fav.getAttribute("aria-label");
+  const diagram = await card.locator(".diagram").innerHTML();
+  await card.locator('[data-action="rotate"]').click();
+  await expect(fav).not.toHaveAttribute("aria-label", alg!);
+  await expect.poll(() => card.locator(".diagram").innerHTML()).not.toBe(diagram);
+  const rotated = await fav.getAttribute("aria-label");
+  await page.reload();
+  await expect(fav).toHaveAttribute("aria-label", rotated!);
+
+  await card.locator('[data-action="expand"]').click();
+  const second = card.locator(".alg-row").nth(1);
+  const secondAlg = await second.locator(".alg").getAttribute("aria-label");
+  await second.locator('[data-action="fav"]').click();
+  await expect(fav).toHaveAttribute("aria-label", secondAlg!);
+  await page.reload();
+  await expect(fav).toHaveAttribute("aria-label", secondAlg!);
+});
+
 test("Animate here opens the 3D player without console errors", async ({ page }) => {
   const errors: string[] = [];
   page.on("console", (m) => m.type() === "error" && errors.push(m.text()));

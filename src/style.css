@@ -584,6 +584,16 @@ main {
   margin: 12px 12px 0 0;
 }
 
+.case-top > .icon-btn.rotate {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  align-self: end;
+  margin: 0 12px 4px 0;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
 .case.learned {
   opacity: 0.6;
 }
@@ -1044,6 +1054,12 @@ dialog.player::backdrop {
   height: 30px;
 }
 
+[data-density="compact"] .case-top > .icon-btn.rotate {
+  margin: 0 6px 2px 0;
+  width: 30px;
+  height: 30px;
+}
+
 [data-density="compact"] .algs {
   padding: 4px 12px 10px;
   gap: 8px;
@@ -1115,6 +1131,15 @@ dialog.player::backdrop {
     width: 40px;
     height: 40px;
     margin: 2px 2px 0 0;
+  }
+  [data-density="compact"] .case-top > .icon-btn.rotate {
+    width: 40px;
+    height: 40px;
+    margin: 0 2px 2px 0;
+  }
+  /* room for the learn and rotate buttons stacked beside a small diagram */
+  [data-density="compact"] .case {
+    grid-template-rows: minmax(86px, auto) auto auto;
   }
 }
 
@@ -1256,6 +1281,7 @@ dialog.player::backdrop {
   .legend,
   footer .text-btn,
   .icon-btn.learn,
+  .icon-btn.rotate,
   .skip {
     display: none !important;
   }

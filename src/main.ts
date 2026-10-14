@@ -12,6 +12,7 @@ import "./style.css";
 import data from "./data/generated.json";
 import type { AlgOut, CaseOut, GroupOut, SectionOut, TipSource } from "./data/types";
 import { SOURCES, TOOLS, type SourceId } from "./data/sources";
+import { withPreAuf } from "./cube";
 import { caseDiagram } from "./diagram";
 import { icons } from "./icons";
 import { algCubingNetUrl, speedcubedbCaseLink, twizzleUrl } from "./links";
@@ -70,6 +71,9 @@ function renderAlg(alg: string): string {
     .join("");
 }
 
+/** Stored algs stay as-is (favourites, order); the rotated view only changes what is shown and played. */
+const shownAlg = (caseId: string, alg: string) => withPreAuf(alg, settings.auf[caseId] ?? 0);
+
 function algTags(alg: string): string {
   const m = t().ui;
   const tags: string[] = [];
@@ -115,14 +119,15 @@ function renderAlgRow(ref: CaseRef, a: AlgOut, index: number, count: number, sho
   const title = caseTitle(ref.c);
   const fav = index === 0;
   const data = `data-case="${ref.c.id}" data-alg="${esc(a.alg)}"`;
+  const alg = shownAlg(ref.c.id, a.alg);
   const note = a.note ? content("notes", a.note) : undefined;
   const recommended = a.recommended ? `<span class="tag tag-rec">${esc(m.recommended)}</span>` : "";
   return `
   <li class="alg-row${fav ? " is-fav" : ""}">
-    <div class="alg" translate="no" aria-label="${esc(a.alg)}">${renderAlg(a.alg)}</div>
+    <div class="alg" translate="no" aria-label="${esc(alg)}">${renderAlg(alg)}</div>
     ${note ? `<div class="alg-note">${esc(note)}</div>` : ""}
     <div class="alg-actions">
-      <span class="tags">${recommended}${algTags(a.alg)}${scdbChip(a, ref.c)}${sourceChip(a)}</span>
+      <span class="tags">${recommended}${algTags(alg)}${scdbChip(a, ref.c)}${sourceChip(a)}</span>
       ${iconButton("fav", fav ? m.fav : m.setFav, icons.star, `star${fav ? " on" : ""}`, `${data} aria-pressed="${fav}"`)}
       ${
         showReorder
@@ -131,8 +136,8 @@ function renderAlgRow(ref: CaseRef, a: AlgOut, index: number, count: number, sho
           : ""
       }
       ${iconButton("play", m.playHere, icons.play, "play", data)}
-      <a class="link-btn" href="${twizzleUrl(a.alg, ref.group.view, title)}" target="_blank" rel="noopener" title="${esc(m.openCubeHint)}">${esc(m.openCube)} ${icons.external}</a>
-      <a class="link-btn alt" href="${algCubingNetUrl(a.alg, title)}" target="_blank" rel="noopener">${esc(m.openTwizzle)}</a>
+      <a class="link-btn" href="${twizzleUrl(alg, ref.group.view, title)}" target="_blank" rel="noopener" title="${esc(m.openCubeHint)}">${esc(m.openCube)} ${icons.external}</a>
+      <a class="link-btn alt" href="${algCubingNetUrl(alg, title)}" target="_blank" rel="noopener">${esc(m.openTwizzle)}</a>
     </div>
   </li>`;
 }
@@ -150,7 +155,7 @@ function renderCase(ref: CaseRef): string {
   <article class="case${learned ? " learned" : ""}" id="case-${c.id}">
     <div class="case-top">
       <button class="diagram-btn" data-action="play" data-case="${c.id}" data-alg="${esc(all[0].alg)}" title="${esc(m.playFav)}" aria-label="${esc(`${m.playFav}: ${caseTitle(c)}`)}">
-        ${caseDiagram(c.setup, ref.group.view, diagramLabel)}
+        ${caseDiagram(c.setup, ref.group.view, diagramLabel, settings.auf[c.id])}
       </button>
       <div class="case-meta">
         <h4>${esc(caseName(c))}</h4>
@@ -158,6 +163,7 @@ function renderCase(ref: CaseRef): string {
         ${c.sameAs ? `<span class="badge" title="${esc(m.sameAsHint)}" translate="no">= ${esc(c.sameAs)}</span>` : ""}
       </div>
       ${iconButton("learn", learned ? m.learned : m.markLearned, icons.check, `learn${learned ? " on" : ""}`, `data-case="${c.id}" aria-pressed="${learned}"`)}
+      ${ref.group.view === "f2l" ? "" : iconButton("rotate", m.rotateCase, '<span aria-hidden="true">⟳</span>', "rotate", `data-case="${c.id}"`)}
     </div>
     <ol class="algs">${list.map((a, i) => renderAlgRow(ref, a, i, list.length, expanded && list.length > 1)).join("")}</ol>
     ${
@@ -558,9 +564,17 @@ app.addEventListener("click", (e) => {
       break;
     case "play": {
       const ref = caseIndex.get(caseId!);
-      if (ref) openPlayer({ alg: alg!, view: ref.group.view, title: caseTitle(ref.c), algHtml: renderAlg(alg!) });
+      const shown = shownAlg(caseId!, alg!);
+      if (ref) openPlayer({ alg: shown, view: ref.group.view, title: caseTitle(ref.c), algHtml: renderAlg(shown) });
       break;
     }
+    case "rotate":
+      update((s) => {
+        const k = ((s.auf[caseId!] ?? 0) + 1) % 4;
+        if (k) s.auf[caseId!] = k as 1 | 2 | 3;
+        else delete s.auf[caseId!];
+      });
+      break;
   }
 });
 

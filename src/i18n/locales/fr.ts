@@ -43,6 +43,7 @@ export const fr: Messages = {
     openCubeHint: "Ouvrir sur un cube virtuel (Twizzle, depuis le début du cas)",
     openTwizzle: "alg.cubing.net",
     markLearned: "Marquer comme maîtrisé",
+    rotateCase: "Tourner la vue (U)",
     learned: "Maîtrisé",
     tips: "Astuces",
     legend: "Légende des couleurs et mode d'emploi",

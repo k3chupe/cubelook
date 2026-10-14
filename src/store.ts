@@ -9,6 +9,8 @@ export interface Settings {
   learned: Record<string, boolean>;
   /** Per case: show all alternatives even when "only favourite" is on. */
   expanded: Record<string, boolean>;
+  /** Per last-layer case: pre-AUF the case is viewed after (index into AUFS: 1 = U, 2 = U2, 3 = U'); absent = 0. */
+  auf: Record<string, 1 | 2 | 3>;
   onlyFav: boolean;
   hideSlice: boolean;
   hideLearned: boolean;
@@ -26,6 +28,7 @@ const defaults: Settings = {
   collapsed: {},
   learned: {},
   expanded: {},
+  auf: {},
   onlyFav: true,
   hideSlice: false,
   hideLearned: false,

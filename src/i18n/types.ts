@@ -56,6 +56,7 @@ export interface Messages {
     openCubeHint: string;
     openTwizzle: string;
     markLearned: string;
+    rotateCase: string;
     learned: string;
     tips: string;
     legend: string;

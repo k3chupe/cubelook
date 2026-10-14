@@ -43,6 +43,7 @@ export const en: Messages = {
     openCubeHint: "Open on a virtual cube (Twizzle, starts at the case)",
     openTwizzle: "alg.cubing.net",
     markLearned: "Mark as learned",
+    rotateCase: "Rotate view (U)",
     learned: "Learned",
     tips: "Tips and tricks",
     legend: "Color legend and how to use",

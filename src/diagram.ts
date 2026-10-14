@@ -1,4 +1,4 @@
-import { caseState, stickerMap, stickerAt, type Face, type Sticker, type Vec } from "./cube";
+import { AUFS, caseState, stickerMap, stickerAt, type Face, type Sticker, type Vec } from "./cube";
 import type { CaseView } from "./data/types";
 
 /** Sticker colors are CSS custom properties defined per theme. */
@@ -22,8 +22,8 @@ function llColor(s: Sticker, view: CaseView, onTop: boolean): string {
   return onTop ? GRAY : "none";
 }
 
-function lastLayerSvg(setup: string, view: CaseView, label: string): string {
-  const map = stickerMap(caseState(setup));
+function lastLayerSvg(setup: string, view: CaseView, label: string, auf: number): string {
+  const map = stickerMap(caseState(`${setup} ${AUFS[auf]}`));
   const cell = 20;
   const gap = 2;
   const strip = 7;
@@ -58,7 +58,7 @@ function lastLayerSvg(setup: string, view: CaseView, label: string): string {
       off + (p[0] + 1) * (cell + gap) + cell / 2,
       off + (p[2] + 1) * (cell + gap) + cell / 2,
     ];
-    parts.push(...pllArrows(map, center));
+    parts.push(...pllArrows(map, center, auf));
   }
   return `<svg viewBox="0 0 ${size} ${size}" class="diagram" role="img" aria-label="${label}">${ARROW_DEFS}${parts.join("")}</svg>`;
 }
@@ -68,7 +68,7 @@ const ARROW_DEFS =
   '<path d="M0 0L10 5L0 10z" fill="var(--arrow)" stroke="var(--arrow-outline)" stroke-width="1.6" stroke-linejoin="round" paint-order="stroke"/></marker></defs>';
 
 /** Arrows from each top-layer piece to the place it has to go (double-headed for swaps). */
-function pllArrows(map: Map<string, Sticker>, center: (p: Vec) => [number, number]): string[] {
+function pllArrows(map: Map<string, Sticker>, center: (p: Vec) => [number, number], auf: number): string[] {
   const key = (p: Vec) => p.join(",");
   const turnU = ([x, y, z]: Vec, k: number): Vec => {
     for (let i = 0; i < k; i++) [x, z] = [-z, x];
@@ -78,14 +78,15 @@ function pllArrows(map: Map<string, Sticker>, center: (p: Vec) => [number, numbe
   for (const x of [-1, 0, 1])
     for (const z of [-1, 0, 1]) if (x !== 0 || z !== 0) pieces.push(stickerAt(map, [x, 1, z], [0, 1, 0]));
   // The algorithm may finish with an AUF; show the permutation relative to the AUF that moves the fewest pieces.
+  // Ties are broken starting from the view's own pre-AUF so a rotated view shows the same arrows, rotated.
   let best = new Map<string, Vec>();
-  for (let k = 0; k < 4; k++) {
+  for (let i = 0; i < 4; i++) {
     const target = new Map<string, Vec>();
     for (const s of pieces) {
-      const dest = turnU(s.home, k);
+      const dest = turnU(s.home, (i + auf) % 4);
       if (key(dest) !== key(s.pos)) target.set(key(s.pos), dest);
     }
-    if (k === 0 || target.size < best.size) best = target;
+    if (i === 0 || target.size < best.size) best = target;
   }
   const target = best;
   const out: string[] = [];
@@ -180,11 +181,12 @@ function f2lSvg(setup: string, label: string): string {
 
 const cache = new Map<string, string>();
 
-export function caseDiagram(setup: string, view: CaseView, label: string): string {
-  const k = `${view}|${setup}|${label}`;
+/** `auf` (index into AUFS) shows a last-layer case as seen after that pre-AUF. */
+export function caseDiagram(setup: string, view: CaseView, label: string, auf = 0): string {
+  const k = `${view}|${setup}|${label}|${auf}`;
   let svg = cache.get(k);
   if (!svg) {
-    svg = view === "f2l" ? f2lSvg(setup, label) : lastLayerSvg(setup, view, label);
+    svg = view === "f2l" ? f2lSvg(setup, label) : lastLayerSvg(setup, view, label, auf);
     cache.set(k, svg);
   }
   return svg;

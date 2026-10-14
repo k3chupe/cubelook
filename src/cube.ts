@@ -205,7 +205,17 @@ export function isOLLSolved(cube: Cube): boolean {
   return c.every((s) => (s.pos[1] === 1 && s.normal[1] !== 1 ? true : stickerSolved(s)));
 }
 
-const AUFS = ["", "U", "U2", "U'"];
+export const AUFS = ["", "U", "U2", "U'"];
+
+/** `alg` for the case seen after pre-AUF number `k` (AUFS[k]): U^-k merged into a leading `(U)` / `U`. */
+export function withPreAuf(alg: string, k: number): string {
+  if (!k) return alg;
+  const lead = /^\((U['’2]?)\)\s*|^(U['’2]?)(?:\s+|$)/.exec(alg);
+  const amount = lead ? parseAlg(lead[1] ?? lead[2])[0].amount : 0;
+  const auf = formatMove({ face: "U", amount: (amount + 4 - k) % 4 });
+  const rest = alg.slice(lead?.[0].length ?? 0);
+  return auf ? `(${auf}) ${rest}` : rest;
+}
 
 function solvedAfterAuf(cube: Cube, test: (c: Cube) => boolean): boolean {
   const c = normalizeOrientation(cube);
