@@ -110,12 +110,16 @@ function algTags(alg: string): string {
   return tags.join("");
 }
 
-/** Case page on SpeedCubeDB, first in the row; skipped when the source chip already links to it. */
-function scdbChip(a: AlgOut, c: CaseOut): string {
-  const url = speedcubedbCaseLink(c);
-  return url && url !== a.sourceUrl
-    ? `<a class="src src-speedcubedb scdb-link" href="${esc(url)}" target="_blank" rel="noopener" title="${esc(t().ui.openScdbHint)}">${esc(SOURCES.speedcubedb.short)}</a>`
-    : "";
+/** Icon link with a speech-bubble tip (CSS `data-tip`, shown on hover/focus); the accessible name is the same text. */
+function quickLink(href: string, tip: string, icon: string, cls: string): string {
+  return `<a class="quick-link ${cls}" href="${esc(href)}" target="_blank" rel="noopener" data-tip="${esc(tip)}" aria-label="${esc(tip)}">${icon}</a>`;
+}
+
+/** Case page on SpeedCubeDB and the alg on a virtual cube (Twizzle), at the right edge of a row. */
+function quickLinks(ref: CaseRef, alg: string): string {
+  const scdb = speedcubedbCaseLink(ref.c);
+  const cube = twizzleUrl(alg, ref.group.view, caseTitle(ref.c));
+  return `<span class="quick-links">${scdb ? quickLink(scdb, SOURCES.speedcubedb.short, icons.db, "scdb-link") : ""}${quickLink(cube, t().ui.openCubeHint, icons.twizzle, "cube-link")}</span>`;
 }
 
 function sourceChip(a: AlgOut): string {
@@ -149,21 +153,19 @@ function renderAlgRow(ref: CaseRef, a: AlgOut, index: number, count: number, sho
   const alg = shownAlg(ref.c.id, a.alg);
   const note = a.note ? content("notes", a.note) : undefined;
   const recommended = a.recommended ? `<span class="tag tag-rec">${esc(m.recommended)}</span>` : "";
-  // compact collapsed: only the case page and the cube link, beside the alg
-  if (quick) {
-    const scdb = speedcubedbCaseLink(ref.c);
+  // compact collapsed: only the alg and its two icon links
+  if (quick)
     return `
   <li class="alg-row is-fav quick">
-    <div class="alg-quick">${scdb ? `<a class="src src-speedcubedb scdb-link" href="${esc(scdb)}" target="_blank" rel="noopener" title="${esc(m.openScdbHint)}">${esc(SOURCES.speedcubedb.short)}</a>` : ""}<a class="link-btn" href="${twizzleUrl(alg, ref.group.view, title)}" target="_blank" rel="noopener" title="${esc(m.openCubeHint)}">${esc(m.openCube)}</a></div>
     <div class="alg" translate="no" aria-label="${esc(alg)}">${renderAlg(alg)}</div>
+    ${quickLinks(ref, alg)}
   </li>`;
-  }
   return `
   <li class="alg-row${fav ? " is-fav" : ""}">
     <div class="alg" translate="no" aria-label="${esc(alg)}">${renderAlg(alg)}</div>
     ${note ? `<div class="alg-note">${esc(note)}</div>` : ""}
     <div class="alg-actions">
-      <span class="tags">${recommended}${algTags(alg)}${scdbChip(a, ref.c)}${sourceChip(a)}</span>
+      <span class="tags">${recommended}${algTags(alg)}${sourceChip(a)}</span>
       ${iconButton("fav", fav ? m.fav : m.setFav, icons.star, `star${fav ? " on" : ""}`, `${data} aria-pressed="${fav}"`)}
       ${
         showReorder
@@ -172,8 +174,8 @@ function renderAlgRow(ref: CaseRef, a: AlgOut, index: number, count: number, sho
           : ""
       }
       ${iconButton("play", m.playHere, icons.play, "play", data)}
-      <a class="link-btn" href="${twizzleUrl(alg, ref.group.view, title)}" target="_blank" rel="noopener" title="${esc(m.openCubeHint)}">${esc(m.openCube)} ${icons.external}</a>
       <a class="link-btn alt" href="${algCubingNetUrl(alg, title)}" target="_blank" rel="noopener">${esc(m.openTwizzle)}</a>
+      ${quickLinks(ref, alg)}
     </div>
   </li>`;
 }
@@ -478,7 +480,9 @@ function renderLegend(): string {
               const tr = m.triggers[k.legendKey];
               return `<span class="seg" style="--c:${k.color}"><span class="seg-label">${esc(tr.label.replace("{move}", "F"))}</span><span class="seg-moves">${esc(tr.description)}</span></span>`;
             }).join("")}</div>
-            <ul class="howto">${m.ui.howto.map((h) => `<li>${esc(h)}</li>`).join("")}</ul>
+            <ul class="howto">${m.ui.howto.map((h) => `<li>${esc(h)}</li>`).join("")}<li>${esc(m.ui.iconsHowto)
+              .replace("{db}", `<span class="key-icon">${icons.db}</span>`)
+              .replace("{cube}", `<span class="key-icon">${icons.twizzle}</span>`)}</li></ul>
           </div>`
     }
   </div>`;
@@ -502,7 +506,9 @@ function render() {
   // Full rebuild replaces the focused control; pin viewport to it so expand/collapse does not yank content away.
   const active = dialogCase ? null : (document.activeElement as HTMLElement | null);
   const focusedKey = active?.dataset?.focusKey;
-  const anchorTop = focusedKey != null ? active!.getBoundingClientRect().top : null;
+  // "+N alternatives" grows the card below its top: keep the card in place, not the button that moves to the end of the list
+  const card = active?.dataset.action === "expand" ? active.closest<HTMLElement>("article.case") : null;
+  const anchorTop = (card ?? (focusedKey != null ? active : null))?.getBoundingClientRect().top ?? null;
   const scrollY = window.scrollY;
   app.innerHTML = `
   <a class="skip" href="#main">${esc(m.ui.sectionsNav)}</a>
@@ -549,13 +555,10 @@ function render() {
   const focused = focusedKey
     ? app.querySelector<HTMLElement>(`[data-focus-key="${CSS.escape(focusedKey)}"]`)
     : null;
-  if (focused && anchorTop != null) {
-    window.scrollBy(0, focused.getBoundingClientRect().top - anchorTop);
-    focused.focus({ preventScroll: true });
-  } else {
-    window.scrollTo(0, scrollY);
-    focused?.focus({ preventScroll: true });
-  }
+  const anchored = card ? document.getElementById(card.id) : focused;
+  if (anchored && anchorTop != null) window.scrollBy(0, anchored.getBoundingClientRect().top - anchorTop);
+  else window.scrollTo(0, scrollY);
+  focused?.focus({ preventScroll: true });
   renderCaseDialog();
 }
 

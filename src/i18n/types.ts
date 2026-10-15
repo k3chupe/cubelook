@@ -58,8 +58,6 @@ export interface Messages {
     moveDown: string;
     playHere: string;
     playFav: string;
-    openScdbHint: string;
-    openCube: string;
     openCubeHint: string;
     openTwizzle: string;
     markLearned: string;
@@ -68,6 +66,7 @@ export interface Messages {
     tips: string;
     legend: string;
     howto: string[];
+    iconsHowto: string;
     allLearned: string;
     reset: string;
     resetConfirm: string;

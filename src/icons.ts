@@ -13,4 +13,10 @@ export const icons = {
   printer: svg('<path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>'),
   fold: svg('<path d="m7 20 5-5 5 5"/><path d="m7 4 5 5 5-5"/>'),
   unfold: svg('<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>'),
+  db: svg('<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/>'),
+  twizzle: svg(
+    [3, 9.5, 16]
+      .flatMap((y) => [3, 9.5, 16].map((x) => `<rect x="${x}" y="${y}" width="5" height="5" rx="1" fill="currentColor" stroke="none"/>`))
+      .join(""),
+  ),
 };

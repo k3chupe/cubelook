@@ -15,15 +15,29 @@ test("sections collapse and the state survives a reload", async ({ page }) => {
   await expect(page.locator('button.section-head[data-id="section:f2l-beginner"]')).toHaveAttribute("aria-expanded", "false");
 });
 
-test("+N and group toggle change only their target and keep the clicked control in place", async ({ page }) => {
-  const more = page.locator('#case-beg-1a [data-action="expand"]');
+test("+N and group toggle change only their target and keep their anchor in place", async ({ page }) => {
+  const card = page.locator("#case-beg-1a");
+  const more = card.locator('[data-action="expand"]');
   await more.scrollIntoViewIfNeeded();
-  const moreY = (await more.boundingBox())!.y;
+  const cardY = (await card.boundingBox())!.y;
+  const favY = (await card.locator(".alg-row").first().boundingBox())!.y;
   await more.click();
   await expect(more).toHaveAttribute("aria-expanded", "true");
-  expect(Math.abs((await more.boundingBox())!.y - moreY)).toBeLessThan(2);
+  // the card stays put and the alternatives appear below the favourite, not at the end of the page
+  expect(Math.abs((await card.boundingBox())!.y - cardY)).toBeLessThan(2);
+  expect(Math.abs((await card.locator(".alg-row").first().boundingBox())!.y - favY)).toBeLessThan(2);
+  const alt = card.locator(".alg-row").nth(1);
+  await expect(alt).toBeVisible();
+  expect((await alt.boundingBox())!.y).toBeGreaterThan(favY);
+  await more.scrollIntoViewIfNeeded();
+  const expandedY = (await card.boundingBox())!.y;
+  await more.click();
+  await expect(more).toHaveAttribute("aria-expanded", "false");
+  expect(Math.abs((await card.boundingBox())!.y - expandedY)).toBeLessThan(2);
   await expect(page.locator("#case-beg-1b .alg-row")).toHaveCount(1);
+});
 
+test("group toggle changes only its target and keeps the header in place", async ({ page }) => {
   const head = page.locator('button.group-head[data-id="group:beg-basic"]');
   const sibling = page.locator('button.group-head[data-id="group:beg-pairs"]');
   await head.scrollIntoViewIfNeeded();
@@ -82,9 +96,11 @@ test("every algorithm row has a source chip", async ({ page }) => {
   await expect(page.locator(".alg-row .src:not(.scdb-link)")).toHaveCount(count);
 });
 
-test("first link in every algorithm row goes to SpeedCubeDB", async ({ page }) => {
-  const hrefs = await page.locator(".alg-row").evaluateAll((rows) => rows.map((r) => r.querySelector("a")?.href ?? ""));
-  expect(hrefs.length).toBeGreaterThan(10);
+test("every algorithm row has a SpeedCubeDB icon link to its case", async ({ page }) => {
+  const rows = await page.locator(".alg-row").count();
+  expect(rows).toBeGreaterThan(10);
+  const hrefs = await page.locator(".alg-row .scdb-link").evaluateAll((links) => links.map((a) => (a as HTMLAnchorElement).href));
+  expect(hrefs).toHaveLength(rows);
   expect(hrefs.filter((h) => !h.startsWith("https://speedcubedb.com/a/3x3/"))).toEqual([]);
 });
 
@@ -268,7 +284,7 @@ test("compact: collapsed rows show only the case and cube links, hover changes n
   await card.scrollIntoViewIfNeeded();
   const row = card.locator(".alg-row");
   await expect(row).toHaveCount(1);
-  const links = row.locator(".alg-quick > a");
+  const links = row.locator(".quick-links > a");
   await expect(links).toHaveCount(2);
   await expect(links.first()).toHaveClass(/scdb-link/);
   await expect(row.locator('[data-action="fav"]')).toHaveCount(0);
@@ -276,11 +292,10 @@ test("compact: collapsed rows show only the case and cube links, hover changes n
   const snapshot = async () => ({
     card: (await card.boundingBox())!,
     alg: (await row.locator(".alg").boundingBox())!,
-    scdb: (await links.nth(0).boundingBox())!,
-    cube: (await links.nth(1).boundingBox())!,
+    links: (await row.locator(".quick-links").boundingBox())!,
   });
   const before = await snapshot();
-  expect(before.cube.height).toBeLessThanOrEqual(before.alg.height);
+  expect(before.links.height).toBeLessThanOrEqual(before.alg.height);
   await page.mouse.move(before.alg.x + before.alg.width / 2, before.alg.y + before.alg.height / 2);
   const hovered = await snapshot();
   for (const k of Object.keys(before) as (keyof typeof before)[]) {
@@ -289,14 +304,62 @@ test("compact: collapsed rows show only the case and cube links, hover changes n
   }
 
   const more = card.locator('[data-action="expand"]');
-  const moreY = (await more.boundingBox())!.y;
+  const cardY = (await card.boundingBox())!.y;
   await more.click();
   await expect(more).toHaveAttribute("aria-expanded", "true");
-  expect(Math.abs((await more.boundingBox())!.y - moreY)).toBeLessThan(2);
+  expect(Math.abs((await card.boundingBox())!.y - cardY)).toBeLessThan(2);
   const second = card.locator(".alg-row").nth(1);
   const star = second.locator('[data-action="fav"]');
   await expect(star).toBeVisible();
   const secondAlg = await second.locator(".alg").getAttribute("aria-label");
   await star.click();
   await expect(card.locator(".alg-row").first().locator(".alg")).toHaveAttribute("aria-label", secondAlg!);
+});
+
+test("icon links are named, show a speech bubble on hover, and hovering changes no box", async ({ page }) => {
+  const card = page.locator("#case-beg-1a");
+  await card.scrollIntoViewIfNeeded();
+  const row = card.locator(".alg-row").first();
+  const scdb = row.locator("a.scdb-link");
+  const cube = row.locator("a.cube-link");
+  await expect(scdb).toHaveAccessibleName("SpeedCubeDB");
+  await expect(cube).toHaveAccessibleName(/Twizzle/);
+  for (const link of [scdb, cube]) {
+    const b = (await link.boundingBox())!;
+    expect(b.width).toBeGreaterThanOrEqual(24);
+    expect(b.height).toBeGreaterThanOrEqual(24);
+  }
+
+  const snapshot = async () => ({ row: (await row.boundingBox())!, card: (await card.boundingBox())! });
+  const before = await snapshot();
+  await cube.hover();
+  await expect.poll(() => cube.evaluate((a) => getComputedStyle(a, "::after").opacity)).toBe("1");
+  expect(await cube.evaluate((a) => getComputedStyle(a, "::after").content)).toContain("Twizzle");
+  const hovered = await snapshot();
+  for (const k of ["row", "card"] as const) {
+    expect(Math.abs(before[k].y - hovered[k].y), k).toBeLessThan(1);
+    expect(Math.abs(before[k].height - hovered[k].height), k).toBeLessThan(1);
+    expect(Math.abs(before[k].width - hovered[k].width), k).toBeLessThan(1);
+  }
+});
+
+test("header controls wrap at 360px: nothing is clipped and the page does not scroll sideways", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.reload();
+  const r = await page.evaluate(() => {
+    const W = document.documentElement.clientWidth;
+    const outside = [
+      ...document.querySelectorAll<HTMLElement>(
+        ".topbar .controls button, .topbar .controls select, .topbar .controls label, .topbar .controls .segmented, .topbar .jump a",
+      ),
+    ]
+      .filter((el) => {
+        const b = el.getBoundingClientRect();
+        return b.left < -1 || b.right > W + 1;
+      })
+      .map((el) => el.textContent?.trim());
+    return { scroll: document.documentElement.scrollWidth, width: W, outside };
+  });
+  expect(r.scroll).toBeLessThanOrEqual(r.width);
+  expect(r.outside).toEqual([]);
 });

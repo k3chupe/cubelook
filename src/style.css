@@ -722,8 +722,84 @@ a.src:hover {
   margin-left: 4px;
 }
 
-.alg-actions .link-btn:first-of-type {
+/* icon links (SpeedCubeDB, Twizzle): 16px icon, 24px hit area via padding inside a negative margin, so no layout change */
+.quick-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
   margin-left: auto;
+}
+
+.quick-link {
+  position: relative;
+  box-sizing: content-box;
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  padding: 4px;
+  margin: -4px;
+  border-radius: 6px;
+  color: var(--accent-2);
+}
+
+.quick-link:hover,
+.quick-link:focus-visible {
+  z-index: 2;
+}
+
+.quick-link .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* speech bubble above the icon: absolutely positioned, so it never changes any size */
+.quick-link::after,
+.quick-link::before {
+  position: absolute;
+  bottom: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s;
+}
+
+.quick-link::after {
+  content: attr(data-tip);
+  right: 0;
+  bottom: calc(100% + 6px);
+  padding: 4px 9px;
+  border-radius: 10px;
+  background: var(--text);
+  color: var(--bg);
+  font: 600 0.78rem/1.2 var(--font-ui);
+  white-space: nowrap;
+}
+
+.quick-link::before {
+  content: "";
+  right: 6px;
+  border: 6px solid transparent;
+  border-bottom: 0;
+  border-top-color: var(--text);
+}
+
+.quick-link:hover::after,
+.quick-link:hover::before,
+.quick-link:focus-visible::after,
+.quick-link:focus-visible::before {
+  opacity: 1;
+}
+
+.key-icon {
+  display: inline-flex;
+  vertical-align: -4px;
+  color: var(--accent-2);
+}
+
+.key-icon .icon {
+  width: 16px;
+  height: 16px;
 }
 
 .link-btn:hover {
@@ -1203,7 +1279,7 @@ dialog.case-dialog .dialog-close {
   display: none;
 }
 
-/* collapsed compact row: the case page and cube links beside the alg, no taller than its line */
+/* collapsed compact row: the alg, with its icon links at the right beside the last line */
 [data-density="compact"] .alg-row.quick {
   flex-direction: row;
   align-items: flex-start;
@@ -1215,25 +1291,8 @@ dialog.case-dialog .dialog-close {
   min-width: 0;
 }
 
-[data-density="compact"] .alg-quick {
-  display: flex;
-  flex: none;
-  gap: 4px;
-}
-
-[data-density="compact"] .alg-quick > * {
-  position: relative;
-  min-height: 0;
-  padding: 2px 6px;
-  font-size: 0.7rem;
-  line-height: 1.2;
-}
-
-/* invisible enlargement so the small links are easy to tap; no layout effect */
-[data-density="compact"] .alg-quick > *::after {
-  content: "";
-  position: absolute;
-  inset: -8px -3px;
+[data-density="compact"] .alg-row.quick .quick-links {
+  align-self: flex-end;
 }
 
 [data-density="compact"] .more {
@@ -1296,8 +1355,7 @@ dialog.case-dialog .dialog-close {
   }
   .jump {
     flex-basis: 100%;
-    overflow-x: auto;
-    scrollbar-width: none;
+    flex-wrap: wrap;
   }
   .jump a {
     min-height: 44px;
@@ -1305,9 +1363,12 @@ dialog.case-dialog .dialog-close {
     align-items: center;
   }
   .controls {
-    overflow-x: auto;
-    scrollbar-width: thin;
+    flex-wrap: wrap;
     padding-bottom: 12px;
+  }
+  .controls .segmented {
+    flex-wrap: wrap;
+    max-width: 100%;
   }
   .section-head {
     flex-wrap: nowrap;
