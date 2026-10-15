@@ -186,6 +186,17 @@ test("rotating a PLL case changes the shown alg and diagram, persists, and starr
   await expect(fav).toHaveAttribute("aria-label", secondAlg!);
 });
 
+test("default view prints the recommended alg without its leading rotation; rotating adds one", async ({ page }) => {
+  // OLL 23's recommended alg starts with (U2): that turn is in the diagram, not in the text
+  const card = page.locator("#case-oll-23");
+  const fav = card.locator(".alg-row").first().locator(".alg");
+  await expect(fav).not.toHaveAttribute("aria-label", /^(y|\()/);
+  const diagram = await card.locator(".diagram").innerHTML();
+  await card.locator('[data-action="rotate"]').click();
+  await expect(fav).toHaveAttribute("aria-label", /^\(U'\) /);
+  await expect.poll(() => card.locator(".diagram").innerHTML()).not.toBe(diagram);
+});
+
 test("Animate here opens the 3D player without console errors", async ({ page }) => {
   const errors: string[] = [];
   page.on("console", (m) => m.type() === "error" && errors.push(m.text()));

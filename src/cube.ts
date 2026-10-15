@@ -209,21 +209,28 @@ export const AUFS = ["", "U", "U2", "U'"];
 
 const LEAD_BLOCK = /^\((\s*[Uy]['’2]?(?:\s+[Uy]['’2]?)*\s*)\)\s*|^([Uy]['’2]?)(?:\s+|$)/;
 
-/**
- * Last-layer `alg` for the case seen after pre-AUF number `k` (AUFS[k]). The leading AUFs / y rotations and U^-k
- * become one net turn (for the last layer y only adds a cube rotation and a final AUF compared to U):
- * dropped when it cancels, else shown as y if the block had a y, otherwise as `(U)`.
- */
-export function withPreAuf(alg: string, k: number): string {
+/** Net leading U/y turn of `alg` (its leading blocks summed), whether a y was among them, and the alg without them. */
+export function leadTurn(alg: string): { amount: number; hasY: boolean; rest: string } {
   let rest = alg;
-  let amount = 4 - k;
+  let amount = 0;
   let hasY = false;
   for (let m; (m = LEAD_BLOCK.exec(rest)); rest = rest.slice(m[0].length)) {
     const block = m[1] ?? m[2];
     amount += parseAlg(block).reduce((n, mv) => n + mv.amount, 0);
     hasY ||= block.includes("y");
   }
-  const turn = formatMove({ face: hasY ? "y" : "U", amount: amount % 4 });
+  return { amount, hasY, rest };
+}
+
+/**
+ * Last-layer `alg` for the case seen after pre-AUF number `k` (AUFS[k]), where `base` is the leading turn of the
+ * case's recommended alg (the diagram is drawn at base + k). The alg's own leading AUFs / y rotations and the
+ * difference become one net turn (for the last layer y only adds a cube rotation and a final AUF compared to U):
+ * dropped when it cancels, else shown as y if the block had a y, otherwise as `(U)`.
+ */
+export function withPreAuf(alg: string, k: number, base = 0): string {
+  const { amount, hasY, rest } = leadTurn(alg);
+  const turn = formatMove({ face: hasY ? "y" : "U", amount: (((amount - base - k) % 4) + 4) % 4 });
   if (!turn) return rest;
   return hasY ? `${turn} ${rest}` : `(${turn}) ${rest}`;
 }

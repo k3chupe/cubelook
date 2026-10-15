@@ -12,7 +12,7 @@ import "./style.css";
 import data from "./data/generated.json";
 import type { AlgOut, CaseOut, GroupOut, SectionOut, TipSource } from "./data/types";
 import { SOURCES, TOOLS, type SourceId } from "./data/sources";
-import { withPreAuf } from "./cube";
+import { leadTurn, withPreAuf } from "./cube";
 import { caseDiagram } from "./diagram";
 import { icons } from "./icons";
 import { algCubingNetUrl, speedcubedbCaseLink, twizzleUrl } from "./links";
@@ -97,9 +97,12 @@ function renderAlg(alg: string): string {
     .join("");
 }
 
+/** Leading turn of the case's recommended alg: the default view is drawn at it, so that alg prints with no prefix. */
+const anchorOf = (c: CaseOut) => leadTurn(c.algs[0].alg).amount;
+
 /** Stored algs stay as-is (favourites, order); the rotated view only changes what is shown and played. Last layer only. */
-const shownAlg = (caseId: string, alg: string) =>
-  caseIndex.get(caseId)?.group.view === "f2l" ? alg : withPreAuf(alg, settings.auf[caseId] ?? 0);
+const shownAlg = (caseId: string, alg: string, anchor: number) =>
+  caseIndex.get(caseId)?.group.view === "f2l" ? alg : withPreAuf(alg, settings.auf[caseId] ?? 0, anchor);
 
 function algTags(alg: string): string {
   const m = t().ui;
@@ -170,7 +173,7 @@ function renderAlgRow(ref: CaseRef, a: AlgOut, index: number, count: number, sho
   const title = caseTitle(ref.c);
   const fav = index === 0;
   const data = `data-case="${ref.c.id}" data-alg="${esc(a.alg)}" data-auf="${aufId}"`;
-  const alg = shownAlg(aufId, a.alg);
+  const alg = shownAlg(aufId, a.alg, anchorOf(ref.c));
   const note = a.note ? content("notes", a.note) : undefined;
   const recommended = a.recommended ? `<span class="tag tag-rec">${esc(m.recommended)}</span>` : "";
   // compact collapsed: only the alg and its two icon links
@@ -218,13 +221,13 @@ function renderSubcases(ref: CaseRef): string {
     settings.learned,
     settings.sort,
   ).map(({ id, p, r }) => {
-    const alg = shownAlg(id, visibleAlgs(r.c)[0].alg);
+    const alg = shownAlg(id, visibleAlgs(r.c)[0].alg, anchorOf(r.c));
     const learned = !!settings.learned[id];
     const label = `${m.diagramLL}: ${caseTitle(r.c)}`;
     return `
     <li class="sub${id === chosen ? " pinned" : ""}${learned ? " learned" : ""}">
       <button class="sub-item" data-action="subcase" data-case="${id}">
-        <span class="sub-diagram">${caseDiagram(r.c.setup, r.group.view, label, settings.auf[id])}</span>
+        <span class="sub-diagram">${caseDiagram(r.c.setup, r.group.view, label, (anchorOf(r.c) + (settings.auf[id] ?? 0)) % 4)}</span>
         <span class="sub-body"><span class="sub-name">${esc(caseName(r.c))} <span class="sub-share">${esc(percent(total ? p / total : 0))}</span></span><span class="alg" translate="no" aria-label="${esc(alg)}">${renderAlg(alg)}</span></span>
       </button>
       <span class="sub-actions">
@@ -235,7 +238,7 @@ function renderSubcases(ref: CaseRef): string {
   });
   if (!c.defaultSubcase) {
     // no subcase matches the 4LLL algs: they get their own entry, pinned while no subcase is chosen
-    const alg = shownAlg(c.id, visibleAlgs(c)[0].alg);
+    const alg = shownAlg(c.id, visibleAlgs(c)[0].alg, anchorOf(c));
     items.splice(chosen ? 1 : 0, 0, `
     <li class="sub${chosen ? "" : " pinned"}">
       <span class="sub-item"><span class="sub-body"><span class="sub-name">${esc(m.lllAlg)}</span><span class="alg" translate="no" aria-label="${esc(alg)}">${renderAlg(alg)}</span></span></span>
@@ -268,7 +271,7 @@ function renderCase(ref: CaseRef, idPrefix = "case-", hideLearned = settings.hid
   <article class="case${learned ? " learned" : ""}" id="${idPrefix}${c.id}">
     <div class="case-top">
       <button class="diagram-btn" data-action="play" data-case="${src.c.id}" data-alg="${esc(all[0].alg)}" data-auf="${c.id}" title="${esc(m.playFav)}" aria-label="${esc(`${m.playFav}: ${caseTitle(c)}`)}">
-        ${caseDiagram(src.c.setup, ref.group.view, diagramLabel, settings.auf[c.id], cornersOnly(ref))}
+        ${caseDiagram(src.c.setup, ref.group.view, diagramLabel, (anchorOf(src.c) + (settings.auf[c.id] ?? 0)) % 4, cornersOnly(ref))}
       </button>
       <div class="case-meta">
         <h4>${esc(caseName(c))}</h4>
@@ -779,8 +782,9 @@ function onClick(e: MouseEvent) {
       break;
     case "play": {
       const ref = caseIndex.get(caseId!);
-      const shown = shownAlg(el.dataset.auf ?? caseId!, alg!);
-      if (ref) openPlayer({ alg: shown, view: ref.group.view, title: caseTitle(ref.c), algHtml: renderAlg(shown) });
+      if (!ref) break;
+      const shown = shownAlg(el.dataset.auf ?? caseId!, alg!, anchorOf(ref.c));
+      openPlayer({ alg: shown, view: ref.group.view, title: caseTitle(ref.c), algHtml: renderAlg(shown) });
       break;
     }
     case "rotate":

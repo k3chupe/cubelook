@@ -15,6 +15,7 @@ Backlog (2026-10-14). Decyzje z grillu — poniżej; MVP → dalej na dole.
 | Algi | **Recommended** = pierwszy ze SCDB (badge); pierwszy visit → to też **Favorite**; potem ★ = user (F1) |
 | Filtry | `hideSlice` zostaje, default off; **one-handed** osobna przełączka (nie tożsame z M/S) — później |
 | Preferencje | Filtry nie resetują Favorite / `order`; stan w localStorage |
+| Algi LL | Wiodący `y`/`U` wchodzi do **diagramu**, nie do tekstu alga; kotwica rotacji = pierwszy alg case'a (Recommended); przycisk „Obróć widok” dalej dodaje `U`/`y` do tekstu |
 
 ## 1. UX — zwijanie / rozwijanie ← **teraz**
 
@@ -24,6 +25,7 @@ DoD (D1): klik toggle’uje tylko cel; scroll / element pod kursorem stabilny; e
 - [x] Zachować pozycję scrolla / elementu pod kursorem przy toggle
 - [x] Sprawdzić interakcję z „Tylko ulubiony” + „+N alternatyw” (skoki layoutu)
 - [x] Diagramy LL jak na kostce: OCLL pełny widok (krzyż + rogi) + pełny pierścień boczny; EOLL tylko góra (kropka/linia/L); CPLL bez zmian; kontrast szarości
+- [x] Algi LL bez wiodącego `y`/`(U)` w widoku bazowym: rotacja w diagramie (kotwica = Recommended); „Obróć widok” dalej dodaje `U`/`y`
 
 ## 2. Dane algorytmów (P2)
 
