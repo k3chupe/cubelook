@@ -383,6 +383,16 @@ test("choosing E for no headlights pins it, shows its alg with a label, and surv
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("cubelook:v1")!).chosen)).toEqual({});
 });
 
+test("no-headlights header names the concept only; the alg label follows the chosen subcase", async ({ page }) => {
+  const card = await openFullCases(page, "pll-y");
+  await expect(card.locator(".alg-from")).toHaveText("alg: Y");
+  await card.locator(".panel .more").click();
+  await card.locator('.sub:has(.sub-item[data-case="full-pll-v"]) [data-action="pick"]').click();
+  await expect(card.locator(".alg-from")).toHaveText("alg: V");
+  await expect(card.locator(".case-meta .sub")).toHaveText("zamiana rogów po przekątnej");
+  await expect(card.locator(".case-top")).not.toContainText("Y-perm");
+});
+
 test("the full case dialog keeps a learned case visible with Hide learned on", async ({ page }) => {
   await page.locator('[data-action="hideLearned"]').click();
   const card = await openFullCases(page, "pll-y");
