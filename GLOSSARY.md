@@ -26,6 +26,10 @@ _Avoid_: Category (overloaded), folder
 One recognizable cube situation the solver must recognize and solve (e.g. F2L 8, Ua).
 _Avoid_: Position (ambiguous), pattern (unless EO/OLL diagram sense)
 
+**Case diagram** (diagram):
+The small drawing of a case: the last layer seen from the top, as on a real cube — oriented (yellow) stickers yellow, the rest gray, with a full ring of side stickers around the top face so the case is recognized by its side pattern (e.g. Headlights). Two exceptions: EOLL diagrams show only the top face (a dot, line or L shape), and CPLL diagrams show only the corners plus the swap arrows.
+_Avoid_: Icon, picture
+
 **Algorithm** (alg):
 A move sequence offered as a solution for a case.
 _Avoid_: Solution (unless contrasting with setup), formula

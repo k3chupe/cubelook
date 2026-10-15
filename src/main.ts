@@ -146,8 +146,8 @@ function algSource(ref: CaseRef): CaseRef {
   return (id !== ref.c.defaultSubcase && id && caseIndex.get(id)) || ref;
 }
 
-/** 4LLL OCLL/CPLL diagrams show only corners; EOLL's own view already shows only edges. */
-const cornersOnly = (ref: CaseRef) => ref.section.id === "4lll" && (ref.group.goal === "oll" || ref.group.goal === "cp");
+/** 4LLL CPLL diagrams show only corners; EOLL's own view already shows only edges. */
+const cornersOnly = (ref: CaseRef) => ref.section.id === "4lll" && ref.group.goal === "cp";
 
 /** At most `max` items, the rest behind a "+N" toggle. */
 function capped(list: (html: string) => string, items: string[], id: string, max = 3): string {

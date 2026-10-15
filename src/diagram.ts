@@ -17,10 +17,11 @@ function llColor(s: Sticker, view: CaseView, onTop: boolean, cornersOnly: boolea
   const isEdge = Math.abs(s.pos[0]) + Math.abs(s.pos[2]) === 1;
   if (cornersOnly && isEdge) return GRAY;
   if (view === "pll") return FACE_COLORS[s.color];
+  if (view === "eoll" && !onTop) return "none";
   const isCenter = s.pos[0] === 0 && s.pos[2] === 0;
   if (view === "eoll" && !isEdge && !isCenter) return GRAY;
   if (s.color === "U") return FACE_COLORS.U;
-  return onTop ? GRAY : "none";
+  return GRAY;
 }
 
 function lastLayerSvg(setup: string, view: CaseView, label: string, auf: number, cornersOnly: boolean): string {
@@ -184,7 +185,7 @@ const cache = new Map<string, string>();
 
 /**
  * `auf` (index into AUFS) shows a last-layer case as seen after that pre-AUF.
- * `cornersOnly` greys out edges and their arrows (4LLL OCLL/CPLL: only the step's pieces, so it fits any subcase alg).
+ * `cornersOnly` greys out edges and their arrows (4LLL CPLL: only the step's pieces, so it fits any subcase alg).
  */
 export function caseDiagram(setup: string, view: CaseView, label: string, auf = 0, cornersOnly = false): string {
   const k = `${view}|${setup}|${label}|${auf}|${cornersOnly}`;

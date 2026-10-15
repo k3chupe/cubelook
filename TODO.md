@@ -23,6 +23,7 @@ DoD (D1): klik toggle’uje tylko cel; scroll / element pod kursorem stabilny; e
 - [x] Naprawić expand/collapse: klik nie powinien rozwijać „wszystkiego naraz” ani przesuwać treści spod kursora
 - [x] Zachować pozycję scrolla / elementu pod kursorem przy toggle
 - [x] Sprawdzić interakcję z „Tylko ulubiony” + „+N alternatyw” (skoki layoutu)
+- [x] Diagramy LL jak na kostce: OCLL pełny widok (krzyż + rogi) + pełny pierścień boczny; EOLL tylko góra (kropka/linia/L); CPLL bez zmian; kontrast szarości
 
 ## 2. Dane algorytmów (P2)
 

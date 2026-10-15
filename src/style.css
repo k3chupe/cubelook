@@ -33,7 +33,7 @@
   --st-b: #3b82f6;
   --st-r: #f97316;
   --st-l: #ef4444;
-  --st-gray: #4a4d55;
+  --st-gray: #6b6f78;
   --st-stroke: #0b0c0e;
   --diagram-bg: #141518;
   --arrow: #c2185b;
@@ -74,7 +74,7 @@
   --st-b: #2563eb;
   --st-r: #ea580c;
   --st-l: #dc2626;
-  --st-gray: #a7abb3;
+  --st-gray: #8a8f98;
   --st-stroke: #1d1f24;
   --diagram-bg: #eceef1;
   --arrow: #c2185b;
@@ -1494,7 +1494,7 @@ dialog.case-dialog .dialog-close {
   --st-b: #2563eb;
   --st-r: #ea580c;
   --st-l: #dc2626;
-  --st-gray: #a7abb3;
+  --st-gray: #8a8f98;
   --st-stroke: #1d1f24;
   --diagram-bg: #eceef1;
   --arrow: #c2185b;

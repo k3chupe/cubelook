@@ -48,6 +48,25 @@ test("group toggle changes only its target and keeps the header in place", async
   expect(Math.abs((await head.boundingBox())!.y - headY)).toBeLessThan(2);
 });
 
+/** Fills of a card's main diagram: the 9 top-face tiles first (row by row), then the side strips. */
+const diagramFills = (page: import("@playwright/test").Page, id: string) =>
+  page.locator(`#case-${id} .diagram-btn rect`).evaluateAll((rs) => rs.map((r) => r.getAttribute("fill")));
+
+test("OLL 23 diagram shows the full top face: 7 yellow tiles", async ({ page }) => {
+  const fills = await diagramFills(page, "oll-23");
+  expect(fills.slice(0, 9).filter((f) => f === "var(--st-u)")).toHaveLength(7);
+});
+
+test("OCLL diagram shows all 12 side strips, gray ones included", async ({ page }) => {
+  const fills = await diagramFills(page, "oll-23");
+  expect(fills).toHaveLength(9 + 12);
+  expect(fills.slice(9)).toContain("var(--st-gray)");
+});
+
+test("EOLL diagram has no side strips", async ({ page }) => {
+  expect(await diagramFills(page, "eoll-dot")).toHaveLength(9);
+});
+
 test("choosing a favourite moves it to the top and persists", async ({ page }) => {
   const card = page.locator("#case-beg-1a");
   await card.locator('[data-action="expand"]').click();
