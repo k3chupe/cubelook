@@ -482,7 +482,13 @@ function linkLll(s: SectionOut): SectionOut {
           const hits = cls === null ? [] : (FULL_BY_STAGE[stage] ?? []).filter((f) => CLASS[stage](stateOf(f)) === cls);
           if (!hits.length || ((stage === "ocll" || stage === "ep") && hits.length !== 1))
             errors.push(`${c.id}: ${hits.length} full cases in its ${stage} class`);
-          if (stage === "eo" || stage === "cp") return { ...c, subcases: hits.map((f) => f.id) };
+          if (stage === "eo" || stage === "cp") {
+            // GLOSSARY "Chosen subcase": the full case the 4LLL recommended alg already solves completely
+            const rec = stripPrefix((c.algs.find((a) => a.recommended) ?? c.algs[0]).alg);
+            const goal = stage === "eo" ? "oll" : "pll";
+            const def = hits.find((f) => findPrefix(caseState(f.setup), rec, goal) !== null);
+            return { ...c, subcases: hits.map((f) => f.id), ...(def ? { defaultSubcase: def.id } : {}) };
+          }
           return { ...c, sameAs: c.sameAs ?? hits[0]?.name };
         }),
       };

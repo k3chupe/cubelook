@@ -1721,7 +1721,8 @@
        "full-oll-52",
        "full-oll-55",
        "full-oll-56"
-      ]
+      ],
+      "defaultSubcase": "full-oll-45"
      },
      {
       "id": "eoll-l",
@@ -1776,7 +1777,8 @@
        "full-oll-50",
        "full-oll-53",
        "full-oll-54"
-      ]
+      ],
+      "defaultSubcase": "full-oll-44"
      },
      {
       "id": "eoll-dot",
@@ -1819,7 +1821,8 @@
        "full-oll-18",
        "full-oll-19",
        "full-oll-20"
-      ]
+      ],
+      "defaultSubcase": "full-oll-2"
      }
     ]
    },
@@ -2100,7 +2103,8 @@
        "full-pll-ra",
        "full-pll-rb",
        "full-pll-t"
-      ]
+      ],
+      "defaultSubcase": "full-pll-aa"
      },
      {
       "id": "pll-y",
@@ -2134,7 +2138,8 @@
        "full-pll-nb",
        "full-pll-v",
        "full-pll-y"
-      ]
+      ],
+      "defaultSubcase": "full-pll-y"
      }
     ]
    },

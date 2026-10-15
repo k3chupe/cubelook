@@ -674,7 +674,7 @@ main {
 }
 
 .tag-rec {
-  color: var(--accent);
+  color: var(--accent-ink);
   border-color: color-mix(in srgb, var(--accent) 50%, transparent);
 }
 
@@ -826,45 +826,76 @@ a.src:hover {
   border-color: var(--muted);
 }
 
-/* ---------- 4LLL: full cases a last-layer case turns into ---------- */
-.subcases {
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.more .chevron {
+  width: 16px;
+  height: 16px;
+}
+
+/* ---------- More panel: alternatives or (4LLL) the full cases the case turns into ---------- */
+.panel {
   grid-column: 1 / -1;
   grid-row: 4;
+  min-width: 0;
   padding: 0 16px 14px;
 }
 
-.subcases-head {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 36px;
-  padding: 0 4px;
-  background: none;
-  border: none;
-  color: var(--muted);
-  font: inherit;
-  font-size: 0.88rem;
-  font-weight: 600;
-  cursor: pointer;
+.panel-tabs {
+  margin-bottom: 10px;
 }
 
-.subcases-head:hover {
-  color: var(--text);
+.panel .algs {
+  padding: 0;
 }
 
 .sub-list {
   list-style: none;
-  margin: 8px 0 0;
+  margin: 0;
   padding: 0;
   display: grid;
   gap: 8px;
 }
 
+.sub {
+  display: flex;
+  gap: 4px;
+  min-width: 0;
+}
+
+.sub.pinned .sub-item {
+  border-color: var(--accent);
+}
+
+.sub.learned .sub-item {
+  opacity: 0.6;
+}
+
+.sub-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.icon-btn.pin.on {
+  color: var(--accent-ink);
+}
+
+.icon-btn.pin.on svg {
+  fill: var(--accent-ink);
+}
+
 .sub-item {
   display: flex;
+  flex: 1;
+  min-width: 0;
   align-items: center;
   gap: 12px;
-  width: 100%;
   padding: 8px 12px 8px 8px;
   background: var(--panel-2);
   border: 1.5px solid var(--line);
@@ -906,13 +937,13 @@ a.src:hover {
 }
 
 .sub-share {
-  flex: none;
   font-family: var(--font-mono);
   font-size: 0.85rem;
+  font-weight: 400;
   color: var(--accent-2);
 }
 
-.subcases .more {
+.panel .more {
   margin: 8px 0 0;
 }
 
@@ -961,6 +992,11 @@ a.src:hover {
   border-bottom-color: transparent;
   color: var(--text);
   padding: 1px 3px;
+  white-space: normal; /* a long plain run must wrap, not overflow narrow cards */
+}
+
+.seg.plain {
+  min-width: 0;
 }
 
 .mv.rot {
@@ -997,6 +1033,20 @@ a.src:hover {
 
 .howto b {
   color: var(--text);
+}
+
+.icon-legend {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.icon-legend .key-icon {
+  min-width: 34px;
 }
 
 /* ---------- tips ---------- */
@@ -1297,6 +1347,14 @@ dialog.case-dialog .dialog-close {
 
 [data-density="compact"] .more {
   margin: 0 12px 10px;
+}
+
+[data-density="compact"] .panel {
+  padding: 0 12px 10px;
+}
+
+[data-density="compact"] .panel .more {
+  margin: 6px 0 0;
 }
 
 @media (hover: none) {

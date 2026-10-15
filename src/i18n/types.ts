@@ -47,10 +47,14 @@ export interface Messages {
     probability: string;
     sectionsNav: string;
     cases: PluralForms;
-    alternatives: PluralForms;
-    chooseFav: string;
-    showOnlyFav: string;
-    subcasesTitle: PluralForms;
+    more: string;
+    less: string;
+    algsCount: PluralForms;
+    tabAlts: string;
+    tabFull: string;
+    pickSubcase: string;
+    lllAlg: string;
+    algFrom: string;
     subcasesMore: PluralForms;
     fav: string;
     setFav: string;
@@ -66,7 +70,8 @@ export interface Messages {
     tips: string;
     legend: string;
     howto: string[];
-    iconsHowto: string;
+    /** One line per icon in the legend; the icon is drawn before the text. */
+    iconLegend: Record<"star" | "updown" | "play" | "rotate" | "learned" | "db" | "cube" | "more" | "pin", string>;
     allLearned: string;
     reset: string;
     resetConfirm: string;

@@ -50,9 +50,23 @@ _Avoid_: Frequency (could mean how often the user practises), popularity (that i
 One step of the last layer that has its own set of cases: in 4LLL the four groups (EOLL, OCLL, CPLL, EPLL); full OLL and full PLL are one stage each. Stages keep their solving order; sorting never reorders them.
 _Avoid_: Step (used for F2L tips), phase
 
+**Full case**:
+One of the 57 OLL or 21 PLL cases.
+_Avoid_: Real case, advanced case
+
+**4LLL case**:
+A broader case recognised by its concept only (e.g. "no headlights" = diagonal corner swap). Several full cases fall under it.
+_Avoid_: Simplified case, beginner case
+
 **Subcase**:
-A full OLL or PLL case that falls under a broader 4LLL case (e.g. the eight dot OLLs are subcases of the EOLL dot). A subcase's share is its probability within that 4LLL case.
+A full case that falls under a 4LLL case (e.g. Y, E, Na, Nb and V are subcases of "no headlights"). A subcase's share is its probability within that 4LLL case.
 _Avoid_: Related case, alternative (that is an algorithm, not a case)
+
+**Chosen subcase**:
+The subcase whose algorithms the user solves a 4LLL case with (any subcase's algorithm solves the step; the next step fixes the rest). Defaults to the subcase the 4LLL algorithm already is (e.g. Y for "no headlights"); the user can switch it (e.g. to E).
+_Avoid_: Main case, default case
+
+**Learned** applies separately to a 4LLL case (the concept) and to each full case.
 
 **Learned**:
 A case the user marked as already known.

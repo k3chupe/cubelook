@@ -69,6 +69,8 @@ export interface CaseOut {
   sameAs?: string;
   /** 4LLL EOLL and CPLL cases only: ids of the full OLL/PLL cases under this case, in full-section order. */
   subcases?: string[];
+  /** Subcase whose stage the case's recommended alg fully solves (GLOSSARY "Chosen subcase" default); absent if none. */
+  defaultSubcase?: string;
   /** Last-layer cases only: chance this case comes up at its stage on a random solve, given the stage is not skipped; the cases of one stage sum to 1. Reduced fraction. */
   prob?: [number, number];
 }

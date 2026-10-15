@@ -11,6 +11,10 @@ export interface Settings {
   expanded: Record<string, boolean>;
   /** Per last-layer case: pre-AUF the case is viewed after (index into AUFS: 1 = U, 2 = U2, 3 = U'); absent = 0. */
   auf: Record<string, 1 | 2 | 3>;
+  /** Per 4LLL case: the chosen subcase (full case id) whose algs the card shows; absent = the default subcase. */
+  chosen: Record<string, string>;
+  /** Per case: the open panel shows the full cases list instead of the alternatives. */
+  panelFull: Record<string, boolean>;
   onlyFav: boolean;
   hideSlice: boolean;
   hideLearned: boolean;
@@ -31,6 +35,8 @@ const defaults: Settings = {
   learned: {},
   expanded: {},
   auf: {},
+  chosen: {},
+  panelFull: {},
   onlyFav: true,
   hideSlice: false,
   hideLearned: false,
@@ -82,4 +88,16 @@ export function orderedAlgs<T extends { alg: string }>(caseId: string, algs: T[]
     return i === -1 ? order.length + algs.indexOf(a) : i;
   };
   return [...algs].sort((a, b) => rank(a) - rank(b));
+}
+
+/** Full cases list of a 4LLL case (given in data order): `pinned` first, then not learned, then learned; each part by `sort` on `p`. */
+export function orderSubcases<T extends { id: string; p: number }>(
+  items: T[],
+  pinned: string | undefined,
+  learned: Record<string, boolean>,
+  sort: Settings["sort"],
+): T[] {
+  const dir = sort === "freqDesc" ? -1 : sort === "freqAsc" ? 1 : 0;
+  const rank = (x: T) => (x.id === pinned ? 0 : learned[x.id] ? 2 : 1);
+  return [...items].sort((a, b) => rank(a) - rank(b) || (a.p - b.p) * dir);
 }

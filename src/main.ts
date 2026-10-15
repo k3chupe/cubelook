@@ -16,7 +16,7 @@ import { withPreAuf } from "./cube";
 import { caseDiagram } from "./diagram";
 import { icons } from "./icons";
 import { algCubingNetUrl, speedcubedbCaseLink, twizzleUrl } from "./links";
-import { onChange, orderedAlgs, resetSettings, settings, update } from "./store";
+import { onChange, orderedAlgs, orderSubcases, resetSettings, settings, update } from "./store";
 import { segmentAlg, TRIGGER_KINDS, usesSlice, isTwoGen, isRotation, hasRotation } from "./triggers";
 import { openPlayer } from "./player";
 import { content, detectLocale, isLocale, LOCALES, locale, plural, setLocale, t, type Locale } from "./i18n";
@@ -130,27 +130,47 @@ function sourceChip(a: AlgOut): string {
     : `<span class="src src-${s.id}" title="${esc(label)}">${esc(s.short)}</span>`;
 }
 
-function visibleAlgs(c: CaseOut): { list: AlgOut[]; hidden: number; all: AlgOut[] } {
-  let all = orderedAlgs(c.id, c.algs, settings.hideSlice);
-  if (settings.hideSlice) {
-    const noSlice = all.filter((a) => !usesSlice(a.alg));
-    if (noSlice.length) all = noSlice;
-  }
-  const showAll = !settings.onlyFav || settings.expanded[c.id];
-  const list = showAll ? all : all.slice(0, 1);
-  return { list, hidden: all.length - list.length, all };
+/** The case's algs in the user's order, favourite first, after the slice filter. */
+function visibleAlgs(c: CaseOut): AlgOut[] {
+  const all = orderedAlgs(c.id, c.algs, settings.hideSlice);
+  const noSlice = settings.hideSlice ? all.filter((a) => !usesSlice(a.alg)) : [];
+  return noSlice.length ? noSlice : all;
+}
+
+/** GLOSSARY "Chosen subcase" of a 4LLL case with subcases; undefined = none (the card's own 4LLL algs). */
+const chosenOf = (c: CaseOut): string | undefined => settings.chosen[c.id] ?? c.defaultSubcase;
+
+/** Whose algs a card shows: a chosen subcase other than the default (the 4LLL algs already solve the default). */
+function algSource(ref: CaseRef): CaseRef {
+  const id = chosenOf(ref.c);
+  return (id !== ref.c.defaultSubcase && id && caseIndex.get(id)) || ref;
+}
+
+/** 4LLL OCLL/CPLL diagrams show only corners; EOLL's own view already shows only edges. */
+const cornersOnly = (ref: CaseRef) => ref.section.id === "4lll" && (ref.group.goal === "oll" || ref.group.goal === "cp");
+
+/** At most `max` items, the rest behind a "+N" toggle. */
+function capped(list: (html: string) => string, items: string[], id: string, max = 3): string {
+  const open = !isCollapsed(id, true);
+  const rest = items.length - max;
+  return `${list((open ? items : items.slice(0, max)).join(""))}${
+    rest > 0 && !open
+      ? `<button class="more" data-action="toggle" data-id="${id}" aria-expanded="false">${esc(plural(rest, t().ui.subcasesMore))}</button>`
+      : ""
+  }`;
 }
 
 function iconButton(action: string, label: string, icon: string, extra = "", attrs = ""): string {
   return `<button class="icon-btn ${extra}" data-action="${action}" aria-label="${esc(label)}" title="${esc(label)}" ${attrs}>${icon}</button>`;
 }
 
-function renderAlgRow(ref: CaseRef, a: AlgOut, index: number, count: number, showReorder: boolean, quick: boolean): string {
+/** `aufId`: the card whose rotation the alg is shown in (a 4LLL card showing its chosen subcase's algs). */
+function renderAlgRow(ref: CaseRef, a: AlgOut, index: number, count: number, showReorder: boolean, quick: boolean, aufId = ref.c.id): string {
   const m = t().ui;
   const title = caseTitle(ref.c);
   const fav = index === 0;
-  const data = `data-case="${ref.c.id}" data-alg="${esc(a.alg)}"`;
-  const alg = shownAlg(ref.c.id, a.alg);
+  const data = `data-case="${ref.c.id}" data-alg="${esc(a.alg)}" data-auf="${aufId}"`;
+  const alg = shownAlg(aufId, a.alg);
   const note = a.note ? content("notes", a.note) : undefined;
   const recommended = a.recommended ? `<span class="tag tag-rec">${esc(m.recommended)}</span>` : "";
   // compact collapsed: only the alg and its two icon links
@@ -180,83 +200,109 @@ function renderAlgRow(ref: CaseRef, a: AlgOut, index: number, count: number, sho
   </li>`;
 }
 
-/** Full cases a last-layer case turns into (4LLL EOLL/CPLL), ordered like `settings.sort`, each shown with only its favourite. */
-function renderSubcases(c: CaseOut): string {
-  const ids = (c as CaseOut & { subcases?: string[] }).subcases ?? [];
-  if (!ids.length) return "";
+/**
+ * Full cases of a 4LLL case (subcases are in full-section order): the chosen one pinned on top, then by learned and
+ * `settings.sort`. Each item opens its full case and has its own "use this" and learned toggles.
+ */
+function renderSubcases(ref: CaseRef): string {
+  const { c } = ref;
   const m = t().ui;
-  const dataOrder = [...caseIndex.keys()];
-  const refs = ids
-    .map((id) => caseIndex.get(id))
-    .filter((r): r is CaseRef => !!r)
-    .sort((a, b) => dataOrder.indexOf(a.c.id) - dataOrder.indexOf(b.c.id));
-  if (settings.sort !== "groups")
-    refs.sort((a, b) => (probOf(a.c) - probOf(b.c)) * (settings.sort === "freqDesc" ? -1 : 1));
+  const chosen = chosenOf(c);
+  const refs = (c.subcases ?? []).map((id) => caseIndex.get(id)).filter((r): r is CaseRef => !!r);
   const total = refs.reduce((n, r) => n + probOf(r.c), 0);
-  const items = refs.map((r) => ({ r, share: total ? probOf(r.c) / total : 0 }));
-  const open = !isCollapsed(`subcases:${c.id}`, true);
-  const more = items.length - 3;
-  const shown = open && !isCollapsed(`subcases-more:${c.id}`, true) ? items : items.slice(0, 3);
-  return `
-  <div class="subcases">
-    <button class="subcases-head" data-action="toggle" data-id="subcases:${c.id}" aria-expanded="${open}">${icons.chevron}<span class="head-title">${esc(plural(refs.length, m.subcasesTitle))}</span></button>
-    ${
-      open
-        ? `<ul class="sub-list">${shown
-            .map(({ r, share }) => {
-              const fav = visibleAlgs(r.c).all[0];
-              const alg = shownAlg(r.c.id, fav.alg);
-              const label = `${r.group.view === "f2l" ? m.diagramF2L : m.diagramLL}: ${caseTitle(r.c)}`;
-              return `
-          <li><button class="sub-item" data-action="subcase" data-id="${c.id}" data-case="${r.c.id}">
-            <span class="sub-diagram">${caseDiagram(r.c.setup, r.group.view, label, settings.auf[r.c.id])}</span>
-            <span class="sub-body"><span class="sub-name">${esc(caseName(r.c))}</span><span class="alg" translate="no" aria-label="${esc(alg)}">${renderAlg(alg)}</span></span>
-            <span class="sub-share">${esc(percent(share))}</span>
-          </button></li>`;
-            })
-            .join("")}</ul>${
-          shown.length < items.length
-            ? `<button class="more" data-action="toggle" data-id="subcases-more:${c.id}" aria-expanded="false">${esc(plural(more, m.subcasesMore))}</button>`
-            : ""
-        }`
-        : ""
-    }
-  </div>`;
+  const pickBtn = (caseId: string, on: boolean) =>
+    iconButton("pick", m.pickSubcase, icons.pin, `pin${on ? " on" : ""}`, `data-id="${c.id}" data-case="${caseId}" aria-pressed="${on}"`);
+  const items = orderSubcases(
+    refs.map((r) => ({ id: r.c.id, p: probOf(r.c), r })),
+    chosen,
+    settings.learned,
+    settings.sort,
+  ).map(({ id, p, r }) => {
+    const alg = shownAlg(id, visibleAlgs(r.c)[0].alg);
+    const learned = !!settings.learned[id];
+    const label = `${m.diagramLL}: ${caseTitle(r.c)}`;
+    return `
+    <li class="sub${id === chosen ? " pinned" : ""}${learned ? " learned" : ""}">
+      <button class="sub-item" data-action="subcase" data-case="${id}">
+        <span class="sub-diagram">${caseDiagram(r.c.setup, r.group.view, label, settings.auf[id])}</span>
+        <span class="sub-body"><span class="sub-name">${esc(caseName(r.c))} <span class="sub-share">${esc(percent(total ? p / total : 0))}</span></span><span class="alg" translate="no" aria-label="${esc(alg)}">${renderAlg(alg)}</span></span>
+      </button>
+      <span class="sub-actions">
+        ${pickBtn(id, id === chosen)}
+        ${iconButton("learn", learned ? m.learned : m.markLearned, icons.check, `learn${learned ? " on" : ""}`, `data-case="${id}" aria-pressed="${learned}"`)}
+      </span>
+    </li>`;
+  });
+  if (!c.defaultSubcase) {
+    // no subcase matches the 4LLL algs: they get their own entry, pinned while no subcase is chosen
+    const alg = shownAlg(c.id, visibleAlgs(c)[0].alg);
+    items.splice(chosen ? 1 : 0, 0, `
+    <li class="sub${chosen ? "" : " pinned"}">
+      <span class="sub-item"><span class="sub-body"><span class="sub-name">${esc(m.lllAlg)}</span><span class="alg" translate="no" aria-label="${esc(alg)}">${renderAlg(alg)}</span></span></span>
+      <span class="sub-actions">${pickBtn("", !chosen)}</span>
+    </li>`);
+  }
+  return capped((html) => `<ul class="sub-list">${html}</ul>`, items, `subcases-more:${c.id}`);
 }
 
-function renderCase(ref: CaseRef, idPrefix = "case-"): string {
+/** `hideLearned` is off in the full case dialog: a case opened there stays visible. */
+function renderCase(ref: CaseRef, idPrefix = "case-", hideLearned = settings.hideLearned): string {
   const m = t().ui;
   const { c } = ref;
   const learned = !!settings.learned[c.id];
-  if (learned && settings.hideLearned) return "";
-  const { list, hidden, all } = visibleAlgs(c);
-  const expanded = !settings.onlyFav || !!settings.expanded[c.id];
+  if (learned && hideLearned) return "";
+  const src = algSource(ref);
+  const all = visibleAlgs(src.c);
+  const subCount = c.subcases?.length ?? 0;
+  const alts = all.length - 1;
+  const open = !settings.onlyFav || !!settings.expanded[c.id];
+  const fullTab = subCount > 0 && (!alts || !!settings.panelFull[c.id]);
+  const chosen = chosenOf(c);
+  const panelId = `panel-${idPrefix}${c.id}`;
   const sub = caseSubtitle(c);
   const diagramLabel = `${ref.group.view === "f2l" ? m.diagramF2L : m.diagramLL}: ${caseTitle(c)}`;
+  const tab = (full: boolean, label: string) =>
+    `<button role="radio" aria-checked="${fullTab === full}" data-action="tab" data-case="${c.id}" data-value="${full ? "full" : "alts"}">${esc(label)}</button>`;
+  const moreLabel = [m.more, alts > 0 && plural(alts, m.algsCount), subCount > 0 && plural(subCount, m.cases)].filter(Boolean).join(" · ");
   return `
   <article class="case${learned ? " learned" : ""}" id="${idPrefix}${c.id}">
     <div class="case-top">
-      <button class="diagram-btn" data-action="play" data-case="${c.id}" data-alg="${esc(all[0].alg)}" title="${esc(m.playFav)}" aria-label="${esc(`${m.playFav}: ${caseTitle(c)}`)}">
-        ${caseDiagram(c.setup, ref.group.view, diagramLabel, settings.auf[c.id])}
+      <button class="diagram-btn" data-action="play" data-case="${src.c.id}" data-alg="${esc(all[0].alg)}" data-auf="${c.id}" title="${esc(m.playFav)}" aria-label="${esc(`${m.playFav}: ${caseTitle(c)}`)}">
+        ${caseDiagram(src.c.setup, ref.group.view, diagramLabel, settings.auf[c.id], cornersOnly(ref))}
       </button>
       <div class="case-meta">
         <h4>${esc(caseName(c))}</h4>
         ${sub ? `<p class="sub">${esc(sub)}</p>` : ""}
         ${c.sameAs ? `<span class="badge" title="${esc(m.sameAsHint)}" translate="no">= ${esc(c.sameAs)}</span>` : ""}
         ${probBadge(c)}
+        ${chosen && caseIndex.has(chosen) ? `<span class="badge alg-from" translate="no">${esc(m.algFrom.replace("{name}", caseName(caseIndex.get(chosen)!.c)))}</span>` : ""}
       </div>
       ${iconButton("learn", learned ? m.learned : m.markLearned, icons.check, `learn${learned ? " on" : ""}`, `data-case="${c.id}" aria-pressed="${learned}"`)}
       ${ref.group.view === "f2l" ? "" : iconButton("rotate", m.rotateCase, '<span aria-hidden="true">⟳</span>', "rotate", `data-case="${c.id}"`)}
     </div>
-    <ol class="algs">${list.map((a, i) => renderAlgRow(ref, a, i, list.length, expanded && list.length > 1, settings.compact && !expanded)).join("")}</ol>
+    <ol class="algs">${renderAlgRow(src, all[0], 0, all.length, open && alts > 0, settings.compact && !open, c.id)}</ol>
     ${
-      settings.onlyFav && all.length > 1
-        ? `<button class="more" data-action="expand" data-case="${c.id}" aria-expanded="${expanded}">${
-            expanded ? esc(m.showOnlyFav) : `${esc(plural(hidden, m.alternatives))} – ${esc(m.chooseFav)}`
-          }</button>`
+      settings.onlyFav && (alts > 0 || subCount > 0)
+        ? `<button class="more" data-action="expand" data-case="${c.id}" aria-expanded="${open}" aria-controls="${panelId}">${icons.chevron}${esc(open ? m.less : moreLabel)}</button>`
         : ""
     }
-    ${renderSubcases(c)}
+    ${
+      open && (alts > 0 || subCount > 0)
+        ? `<div class="panel" id="${panelId}">
+            ${alts > 0 && subCount > 0 ? `<div class="segmented panel-tabs" role="radiogroup" aria-label="${esc(`${m.tabAlts} / ${m.tabFull}`)}">${tab(false, m.tabAlts)}${tab(true, m.tabFull)}</div>` : ""}
+            ${
+              fullTab
+                ? renderSubcases(ref)
+                : capped(
+                    (html) => `<ol class="algs alts">${html}</ol>`,
+                    all.slice(1).map((a, i) => renderAlgRow(src, a, i + 1, all.length, true, false, c.id)),
+                    `algs-more:${c.id}`,
+                    2, // the favourite above is the list's first item
+                  )
+            }
+          </div>`
+        : ""
+    }
   </article>`;
 }
 
@@ -480,9 +526,22 @@ function renderLegend(): string {
               const tr = m.triggers[k.legendKey];
               return `<span class="seg" style="--c:${k.color}"><span class="seg-label">${esc(tr.label.replace("{move}", "F"))}</span><span class="seg-moves">${esc(tr.description)}</span></span>`;
             }).join("")}</div>
-            <ul class="howto">${m.ui.howto.map((h) => `<li>${esc(h)}</li>`).join("")}<li>${esc(m.ui.iconsHowto)
-              .replace("{db}", `<span class="key-icon">${icons.db}</span>`)
-              .replace("{cube}", `<span class="key-icon">${icons.twizzle}</span>`)}</li></ul>
+            <ul class="howto">${m.ui.howto.map((h) => `<li>${esc(h)}</li>`).join("")}</ul>
+            <ul class="icon-legend">${(
+              [
+                ["star", icons.star],
+                ["updown", icons.up + icons.down],
+                ["play", icons.play],
+                ["rotate", '<span aria-hidden="true">⟳</span>'],
+                ["learned", icons.check],
+                ["db", icons.db],
+                ["cube", icons.twizzle],
+                ["more", icons.chevron],
+                ["pin", icons.pin],
+              ] as const
+            )
+              .map(([k, icon]) => `<li><span class="key-icon">${icon}</span> ${esc(m.ui.iconLegend[k])}</li>`)
+              .join("")}</ul>
           </div>`
     }
   </div>`;
@@ -506,8 +565,9 @@ function render() {
   // Full rebuild replaces the focused control; pin viewport to it so expand/collapse does not yank content away.
   const active = dialogCase ? null : (document.activeElement as HTMLElement | null);
   const focusedKey = active?.dataset?.focusKey;
-  // "+N alternatives" grows the card below its top: keep the card in place, not the button that moves to the end of the list
-  const card = active?.dataset.action === "expand" ? active.closest<HTMLElement>("article.case") : null;
+  // More, its tabs, "+N" and picking a subcase change the card below its top: keep the card in place, not the control
+  const cardAction = ["expand", "tab", "toggle", "pick"].includes(active?.dataset.action ?? "");
+  const card = cardAction ? active!.closest<HTMLElement>("article.case") : null;
   const anchorTop = (card ?? (focusedKey != null ? active : null))?.getBoundingClientRect().top ?? null;
   const scrollY = window.scrollY;
   app.innerHTML = `
@@ -566,7 +626,6 @@ function render() {
 
 const caseDialog = document.createElement("dialog");
 caseDialog.className = "case-dialog";
-document.body.appendChild(caseDialog);
 let dialogCase: string | null = null;
 
 /** Same card as in its full section; re-rendered with the app so favourite changes show in both places. */
@@ -579,7 +638,7 @@ function renderCaseDialog() {
   caseDialog.setAttribute("aria-label", caseTitle(ref.c));
   caseDialog.innerHTML = `
     <button class="icon-btn dialog-close" data-close aria-label="${esc(t().ui.close)}" title="${esc(t().ui.close)}">${icons.close}</button>
-    ${renderCase(ref, "dialog-case-")}`;
+    ${renderCase(ref, "dialog-case-", false)}`;
   caseDialog.querySelectorAll<HTMLElement>("[data-action]").forEach(tagFocus);
   if (focusKey)
     caseDialog.querySelector<HTMLElement>(`[data-focus-key="${CSS.escape(focusKey)}"]`)?.focus({ preventScroll: true });
@@ -587,6 +646,7 @@ function renderCaseDialog() {
 
 function openCaseDialog(caseId: string) {
   dialogCase = caseId;
+  if (!caseDialog.isConnected) document.body.appendChild(caseDialog); // attached on first use: an empty unnamed dialog fails a11y checks
   renderCaseDialog();
   caseDialog.showModal();
 }
@@ -601,7 +661,7 @@ caseDialog.addEventListener("close", () => {
 function moveAlg(caseId: string, alg: string, delta: number | "top") {
   const ref = caseIndex.get(caseId);
   if (!ref) return;
-  const order = visibleAlgs(ref.c).all.map((a) => a.alg);
+  const order = visibleAlgs(ref.c).map((a) => a.alg);
   const i = order.indexOf(alg);
   if (i < 0) return;
   order.splice(i, 1);
@@ -698,15 +758,29 @@ function onClick(e: MouseEvent) {
     case "expand":
       update((s) => (s.expanded[caseId!] = !s.expanded[caseId!]));
       break;
+    case "tab":
+      update((s) => {
+        if (value === "full") s.panelFull[caseId!] = true;
+        else delete s.panelFull[caseId!];
+      });
+      break;
     case "subcase":
       openCaseDialog(caseId!);
+      break;
+    case "pick":
+      // id = 4LLL case, case = full case ("" = its own 4LLL algs); the default is stored as no choice
+      update((s) => {
+        if (caseId && caseId !== caseIndex.get(id!)?.c.defaultSubcase) s.chosen[id!] = caseId;
+        else delete s.chosen[id!];
+        delete s.panelFull[id!];
+      });
       break;
     case "learn":
       update((s) => (s.learned[caseId!] = !s.learned[caseId!]));
       break;
     case "play": {
       const ref = caseIndex.get(caseId!);
-      const shown = shownAlg(caseId!, alg!);
+      const shown = shownAlg(el.dataset.auf ?? caseId!, alg!);
       if (ref) openPlayer({ alg: shown, view: ref.group.view, title: caseTitle(ref.c), algHtml: renderAlg(shown) });
       break;
     }

@@ -129,6 +129,7 @@ test("favourite is remembered per slice-filter context", async ({ page }) => {
   const card = page.locator("#case-pll-ua");
   const rows = card.locator(".alg-row");
   await card.locator('[data-action="expand"]').click();
+  await card.locator(".panel .more").click();
   const slice = card.locator(".alg-row:has(.tag-m)").first();
   const sliceAlg = await slice.locator(".alg").getAttribute("aria-label");
   await slice.locator('[data-action="fav"]').click();
@@ -231,19 +232,22 @@ test("Most common keeps the 4LLL stage order", async ({ page }) => {
   expect(await stages()).toEqual(scdb);
 });
 
-test("EOLL dot strip: three full cases with one alg each, +N shows the rest, an item opens the full case, Esc closes", async ({ page }) => {
-  const section = page.locator('button.section-head[data-id="section:4lll"]');
-  if ((await section.getAttribute("aria-expanded")) === "false") await section.click();
-  const card = page.locator("#case-eoll-dot");
-  const head = card.locator(".subcases-head");
-  await expect(head).toHaveAttribute("aria-expanded", "false");
-  await head.click();
+/** Opens a 4LLL card's More panel on the Full cases tab. */
+async function openFullCases(page: import("@playwright/test").Page, id: string) {
+  const card = page.locator(`#case-${id}`);
+  await card.locator('[data-action="expand"]').click();
+  await card.locator('[data-action="tab"][data-value="full"]').click();
+  return card;
+}
+
+test("EOLL dot full cases: three with one alg each, +N shows the rest, an item opens the full case, Esc closes", async ({ page }) => {
+  const card = await openFullCases(page, "eoll-dot");
   const items = card.locator(".sub-item");
   await expect(items).toHaveCount(3);
   const algsPerItem = () => items.evaluateAll((els) => els.map((e) => e.querySelectorAll(".alg").length));
   expect(await algsPerItem()).toEqual([1, 1, 1]);
 
-  const more = card.locator(".subcases .more");
+  const more = card.locator(".panel .more");
   const rest = parseInt((await more.textContent())!.slice(1), 10);
   expect(rest).toBeGreaterThan(0);
   await more.click();
@@ -260,22 +264,150 @@ test("EOLL dot strip: three full cases with one alg each, +N shows the rest, an 
   await expect(dialog).toBeHidden();
 });
 
-test("EOLL dot strip follows the sort setting", async ({ page }) => {
-  const section = page.locator('button.section-head[data-id="section:4lll"]');
-  if ((await section.getAttribute("aria-expanded")) === "false") await section.click();
-  const card = page.locator("#case-eoll-dot");
-  await card.locator(".subcases-head").click();
-  await card.locator(".subcases .more").click();
-  const ids = () => card.locator(".sub-item").evaluateAll((els) => els.map((e) => (e as HTMLElement).dataset.case!));
+test("EOLL dot full cases follow the sort setting below the pinned chosen subcase", async ({ page }) => {
+  const card = await openFullCases(page, "eoll-dot");
+  await card.locator(".panel .more").click();
+  const items = card.locator(".sub-item");
+  const ids = () => items.evaluateAll((els) => els.map((e) => (e as HTMLElement).dataset.case!));
   const desc = await ids();
   expect(desc.length).toBeGreaterThan(3);
+  await expect(card.locator(".sub.pinned .sub-item")).toHaveAttribute("data-case", "full-oll-2");
+  expect(desc[0]).toBe("full-oll-2");
 
   await page.locator('[data-action="sort"][data-value="freqAsc"]').click();
-  await expect(card.locator(".sub-item").first()).toHaveAttribute("data-case", desc.at(-1)!);
+  await expect(items.first()).toHaveAttribute("data-case", "full-oll-2");
+  await expect(items.nth(1)).toHaveAttribute("data-case", desc.at(-1)!);
   expect(new Set(await ids())).toEqual(new Set(desc));
 
   await page.locator('[data-action="sort"][data-value="groups"]').click();
-  await expect(card.locator(".sub-item").first()).toHaveAttribute("data-case", "full-oll-1");
+  await expect(items.nth(1)).toHaveAttribute("data-case", "full-oll-1");
+
+  // a learned full case drops to the end; the 4LLL card itself stays unlearned
+  await card.locator('.sub:has([data-case="full-oll-1"]) [data-action="learn"]').click();
+  await expect(items.last()).toHaveAttribute("data-case", "full-oll-1");
+  await expect(card.locator('.case-top [data-action="learn"]')).toHaveAttribute("aria-pressed", "false");
+});
+
+test("one More button per card with counts in every locale; tabs switch between the two lists", async ({ page }) => {
+  const perCard = await page.locator("article.case").evaluateAll((cards) =>
+    cards.map((c) => c.querySelectorAll('[data-action="expand"]').length),
+  );
+  expect(perCard.length).toBeGreaterThan(10);
+  expect(perCard.filter((n) => n > 1)).toEqual([]);
+  const more = page.locator('#case-pll-y [data-action="expand"]');
+  await expect(more).toHaveText("Więcej · 2 algi · 5 przypadków");
+  await expect(page.locator('#case-pll-ua [data-action="expand"]')).toHaveText("Więcej · 5 algów");
+  await page.locator('select[data-action="locale"]').selectOption("en");
+  await expect(more).toHaveText("More · 2 algs · 5 cases");
+  await page.locator('select[data-action="locale"]').selectOption("fr");
+  await expect(more).toHaveText("Plus · 2 algos · 5 cas");
+
+  const card = page.locator("#case-pll-y");
+  await more.click();
+  const alts = card.locator('[data-action="tab"][data-value="alts"]');
+  const full = card.locator('[data-action="tab"][data-value="full"]');
+  await expect(alts).toHaveAttribute("aria-checked", "true");
+  await expect(card.locator(".panel .alg-row")).toHaveCount(2);
+  await expect(card.locator(".sub-item")).toHaveCount(0);
+  await full.click();
+  await expect(full).toHaveAttribute("aria-checked", "true");
+  await expect(card.locator(".panel .alg-row")).toHaveCount(0);
+  await expect(card.locator(".sub-item")).toHaveCount(3);
+  await expect(card.locator(".panel .more")).toHaveText("+2 de plus");
+  // several cards may be open at once
+  await page.locator('#case-pll-a [data-action="expand"]').click();
+  await expect(card.locator(".sub-item")).toHaveCount(3);
+});
+
+test("alternatives show the favourite and two more, +N shows the rest", async ({ page }) => {
+  const card = page.locator("#case-pll-ua");
+  await card.locator('[data-action="expand"]').click();
+  await expect(card.locator(".alg-row")).toHaveCount(3);
+  const plus = card.locator(".panel .more");
+  await expect(plus).toHaveText("+3 więcej");
+  await plus.click();
+  await expect(card.locator(".alg-row")).toHaveCount(6);
+});
+
+for (const width of [1280, 360])
+  test(`open panels stay inside their card at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    for (const id of ["eoll-line", "eoll-l", "eoll-dot", "pll-a", "pll-y"]) {
+      const card = await openFullCases(page, id);
+      await card.locator(".panel .more").click();
+    }
+    await page.locator('#case-pll-ua [data-action="expand"]').click();
+    await page.locator("#case-pll-ua .panel .more").click();
+    const outside = await page.locator("article.case").evaluateAll((cards) =>
+      cards.flatMap((card) => {
+        const r = card.getBoundingClientRect();
+        return [...card.querySelectorAll("*")]
+          .filter((e) => {
+            const b = e.getBoundingClientRect();
+            return b.width > 0 && (b.left < r.left - 1 || b.right > r.right + 1 || b.bottom > r.bottom + 1);
+          })
+          .map((e) => `${card.id} ${e.tagName} ${e.getAttribute("class")}`);
+      }),
+    );
+    expect(outside).toEqual([]);
+  });
+
+test("choosing E for no headlights pins it, shows its alg with a label, and survives reload", async ({ page }) => {
+  const card = await openFullCases(page, "pll-y");
+  await expect(card.locator(".sub.pinned .sub-item")).toHaveAttribute("data-case", "full-pll-y");
+  await expect(card.locator(".alg-from")).toHaveText("alg: Y");
+  await card.locator(".panel .more").click();
+  const e = card.locator('.sub:has(.sub-item[data-case="full-pll-e"])');
+  const eAlg = await e.locator(".alg").getAttribute("aria-label");
+  const cardY = (await card.boundingBox())!.y;
+  await e.locator('[data-action="pick"]').click();
+  expect(Math.abs((await card.boundingBox())!.y - cardY)).toBeLessThan(2);
+
+  const check = async () => {
+    await expect(card.locator('[data-action="tab"][data-value="alts"]')).toHaveAttribute("aria-checked", "true");
+    await expect(card.locator(".alg-row").first().locator(".alg")).toHaveAttribute("aria-label", eAlg!);
+    await expect(card.locator(".alg-from")).toHaveText("alg: E");
+    await card.locator('[data-action="tab"][data-value="full"]').click();
+    await expect(card.locator(".sub-item").first()).toHaveAttribute("data-case", "full-pll-e");
+    await expect(card.locator('.sub.pinned [data-action="pick"]')).toHaveAttribute("aria-pressed", "true");
+    await expect(card.locator('.sub.pinned [data-action="pick"]')).toHaveAccessibleName("Układaj ten krok tym przypadkiem");
+  };
+  await check();
+  await card.locator('[data-action="tab"][data-value="alts"]').click();
+  await page.reload();
+  await check();
+
+  // picking the default again restores the 4LLL algs
+  await card.locator('.sub:has(.sub-item[data-case="full-pll-y"]) [data-action="pick"]').click();
+  await expect(card.locator(".alg-from")).toHaveText("alg: Y");
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("cubelook:v1")!).chosen)).toEqual({});
+});
+
+test("the full case dialog keeps a learned case visible with Hide learned on", async ({ page }) => {
+  await page.locator('[data-action="hideLearned"]').click();
+  const card = await openFullCases(page, "pll-y");
+  await card.locator(".sub-item").first().click();
+  const dialog = page.locator("dialog.case-dialog");
+  const learn = dialog.locator('.case-top [data-action="learn"]');
+  await learn.click();
+  await expect(learn).toHaveAttribute("aria-pressed", "true");
+  await expect(dialog.locator("article.case")).toHaveCount(1);
+  await learn.click();
+  await expect(learn).toHaveAttribute("aria-pressed", "false");
+  await page.keyboard.press("Escape");
+  // the 4LLL card is not hidden by a learned full case
+  await expect(card).toBeVisible();
+});
+
+test("More and its tabs keep the card top in place", async ({ page }) => {
+  const card = page.locator("#case-pll-y");
+  const y = async () => (await card.boundingBox())!.y;
+  for (const sel of ['[data-action="expand"]', '[data-action="tab"][data-value="full"]', ".panel .more", '[data-action="tab"][data-value="alts"]', '[data-action="expand"]']) {
+    await card.locator(sel).scrollIntoViewIfNeeded();
+    const before = await y();
+    await card.locator(sel).click();
+    expect(Math.abs((await y()) - before), sel).toBeLessThan(2);
+  }
 });
 
 test("compact: collapsed rows show only the case and cube links, hover changes nothing, +N shows the full details", async ({ page }) => {
