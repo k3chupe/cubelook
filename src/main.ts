@@ -168,14 +168,20 @@ function renderAlgRow(ref: CaseRef, a: AlgOut, index: number, count: number, sho
   </li>`;
 }
 
-/** Full cases a last-layer case turns into (4LLL EOLL/CPLL), most likely first, each shown with only its favourite. */
+/** Full cases a last-layer case turns into (4LLL EOLL/CPLL), ordered like `settings.sort`, each shown with only its favourite. */
 function renderSubcases(c: CaseOut): string {
   const ids = (c as CaseOut & { subcases?: string[] }).subcases ?? [];
   if (!ids.length) return "";
   const m = t().ui;
-  const refs = ids.map((id) => caseIndex.get(id)).filter((r): r is CaseRef => !!r);
+  const dataOrder = [...caseIndex.keys()];
+  const refs = ids
+    .map((id) => caseIndex.get(id))
+    .filter((r): r is CaseRef => !!r)
+    .sort((a, b) => dataOrder.indexOf(a.c.id) - dataOrder.indexOf(b.c.id));
+  if (settings.sort !== "groups")
+    refs.sort((a, b) => (probOf(a.c) - probOf(b.c)) * (settings.sort === "freqDesc" ? -1 : 1));
   const total = refs.reduce((n, r) => n + probOf(r.c), 0);
-  const items = refs.map((r) => ({ r, share: total ? probOf(r.c) / total : 0 })).sort((a, b) => b.share - a.share);
+  const items = refs.map((r) => ({ r, share: total ? probOf(r.c) / total : 0 }));
   const open = !isCollapsed(`subcases:${c.id}`, true);
   const more = items.length - 3;
   const shown = open && !isCollapsed(`subcases-more:${c.id}`, true) ? items : items.slice(0, 3);

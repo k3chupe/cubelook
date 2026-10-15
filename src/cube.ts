@@ -207,14 +207,20 @@ export function isOLLSolved(cube: Cube): boolean {
 
 export const AUFS = ["", "U", "U2", "U'"];
 
-/** `alg` for the case seen after pre-AUF number `k` (AUFS[k]): U^-k merged into a leading `(U)` / `U`. */
+/**
+ * `alg` for the case seen after pre-AUF number `k` (AUFS[k]): U^-k merged into a leading `(U)` / `U`,
+ * else into a leading y (for the last layer y^-k only adds a cube rotation and a final AUF), else prefixed.
+ */
 export function withPreAuf(alg: string, k: number): string {
   if (!k) return alg;
-  const lead = /^\((U['’2]?)\)\s*|^(U['’2]?)(?:\s+|$)/.exec(alg);
+  const u = /^\((U['’2]?)\)\s*|^(U['’2]?)(?:\s+|$)/.exec(alg);
+  const y = u ? null : /^(y['’2]?)(?:\s+|$)/.exec(alg);
+  const lead = u ?? y;
   const amount = lead ? parseAlg(lead[1] ?? lead[2])[0].amount : 0;
-  const auf = formatMove({ face: "U", amount: (amount + 4 - k) % 4 });
+  const turn = formatMove({ face: y ? "y" : "U", amount: (amount + 4 - k) % 4 });
   const rest = alg.slice(lead?.[0].length ?? 0);
-  return auf ? `(${auf}) ${rest}` : rest;
+  if (!turn) return rest;
+  return y ? `${turn} ${rest}` : `(${turn}) ${rest}`;
 }
 
 function solvedAfterAuf(cube: Cube, test: (c: Cube) => boolean): boolean {

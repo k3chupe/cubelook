@@ -27,7 +27,15 @@ describe("rotated last-layer view (pre-AUF)", () => {
     expect(withPreAuf(withU.alg, 2)).toBe(`(U') ${withU.alg.slice(4)}`);
     expect(withPreAuf("U R U R'", 1)).toBe("R U R'");
     expect(withPreAuf("U2 R U R'", 1)).toBe("(U) R U R'");
-    expect(withPreAuf("y R U R'", 3)).toBe("(U) y R U R'");
     expect(withPreAuf("(U R U' R')", 1)).toBe("(U') (U R U' R')");
+  });
+
+  it("merges the view into a leading y instead of prefixing U", () => {
+    const ua = groups.flatMap((g) => g.cases).find((c) => c.id === "full-pll-ua")!;
+    const y2 = ua.algs.find((a) => a.alg.startsWith("y2 "))!.alg;
+    expect(withPreAuf(y2, 2)).toBe(y2.slice(3));
+    expect(withPreAuf("y R U R'", 3)).toBe("y2 R U R'");
+    expect(withPreAuf("y' R U R'", 1)).toBe("y2 R U R'");
+    expect(withPreAuf("(U2) y2 M2", 2)).toBe("y2 M2");
   });
 });

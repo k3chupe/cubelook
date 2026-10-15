@@ -243,3 +243,21 @@ test("EOLL dot strip: three full cases with one alg each, +N shows the rest, an 
   await page.keyboard.press("Escape");
   await expect(dialog).toBeHidden();
 });
+
+test("EOLL dot strip follows the sort setting", async ({ page }) => {
+  const section = page.locator('button.section-head[data-id="section:4lll"]');
+  if ((await section.getAttribute("aria-expanded")) === "false") await section.click();
+  const card = page.locator("#case-eoll-dot");
+  await card.locator(".subcases-head").click();
+  await card.locator(".subcases .more").click();
+  const ids = () => card.locator(".sub-item").evaluateAll((els) => els.map((e) => (e as HTMLElement).dataset.case!));
+  const desc = await ids();
+  expect(desc.length).toBeGreaterThan(3);
+
+  await page.locator('[data-action="sort"][data-value="freqAsc"]').click();
+  await expect(card.locator(".sub-item").first()).toHaveAttribute("data-case", desc.at(-1)!);
+  expect(new Set(await ids())).toEqual(new Set(desc));
+
+  await page.locator('[data-action="sort"][data-value="groups"]').click();
+  await expect(card.locator(".sub-item").first()).toHaveAttribute("data-case", "full-oll-1");
+});
