@@ -89,6 +89,8 @@ Jedna strona, konfiguracja „co pokazujemy”, nie osobne buildy. UI: segmented
 - [ ] Podobne, inverse, alg ×2 = inny case
 - [ ] Powiązania w UI
 - [ ] Opcjonalnie: uczenie parami
+- [ ] „Obróć widok” sprzęga alg przez y^k (przeliterowanie) zamiast dodawać `U`/`y` → „case tyłem” bez nowych danych; ulubiony zostaje jeden per case
+- [ ] Graf relacji mirror / inverse / conjugate generowany przy buildzie (zalążki: notatki `mirror-*`) → sugestie ulubionego po rotacji („lubisz X → z tej strony pewnie jego analog”)
 
 ## Proponowana kolejność
 
