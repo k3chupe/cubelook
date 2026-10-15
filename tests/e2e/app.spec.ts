@@ -262,22 +262,41 @@ test("EOLL dot strip follows the sort setting", async ({ page }) => {
   await expect(card.locator(".sub-item").first()).toHaveAttribute("data-case", "full-oll-1");
 });
 
-test("compact: hovering an alg row reveals its buttons without moving them or changing the card height", async ({ page }) => {
+test("compact: collapsed rows show only the case and cube links, hover changes nothing, +N shows the full details", async ({ page }) => {
   await page.locator('[data-action="compact"]').click();
   const card = page.locator("#case-beg-1a");
   await card.scrollIntoViewIfNeeded();
-  const row = card.locator(".alg-row").first();
-  const play = row.locator('[data-action="play"]');
-  const height = async () => (await card.boundingBox())!.height;
-  const h0 = await height();
-  const alg = (await row.locator(".alg").boundingBox())!;
-  await page.mouse.move(alg.x + alg.width / 2, alg.y + alg.height / 2);
-  await expect(play).toBeVisible();
-  expect(Math.abs((await height()) - h0)).toBeLessThan(1);
-  const before = (await play.boundingBox())!;
-  await page.mouse.move(before.x + before.width / 2, before.y + before.height / 2);
-  const after = (await play.boundingBox())!;
-  expect(Math.abs(after.x - before.x)).toBeLessThan(1);
-  expect(Math.abs(after.y - before.y)).toBeLessThan(1);
-  expect(Math.abs((await height()) - h0)).toBeLessThan(1);
+  const row = card.locator(".alg-row");
+  await expect(row).toHaveCount(1);
+  const links = row.locator(".alg-quick > a");
+  await expect(links).toHaveCount(2);
+  await expect(links.first()).toHaveClass(/scdb-link/);
+  await expect(row.locator('[data-action="fav"]')).toHaveCount(0);
+
+  const snapshot = async () => ({
+    card: (await card.boundingBox())!,
+    alg: (await row.locator(".alg").boundingBox())!,
+    scdb: (await links.nth(0).boundingBox())!,
+    cube: (await links.nth(1).boundingBox())!,
+  });
+  const before = await snapshot();
+  expect(before.cube.height).toBeLessThanOrEqual(before.alg.height);
+  await page.mouse.move(before.alg.x + before.alg.width / 2, before.alg.y + before.alg.height / 2);
+  const hovered = await snapshot();
+  for (const k of Object.keys(before) as (keyof typeof before)[]) {
+    expect(Math.abs(before[k].y - hovered[k].y), k).toBeLessThan(1);
+    expect(Math.abs(before[k].height - hovered[k].height), k).toBeLessThan(1);
+  }
+
+  const more = card.locator('[data-action="expand"]');
+  const moreY = (await more.boundingBox())!.y;
+  await more.click();
+  await expect(more).toHaveAttribute("aria-expanded", "true");
+  expect(Math.abs((await more.boundingBox())!.y - moreY)).toBeLessThan(2);
+  const second = card.locator(".alg-row").nth(1);
+  const star = second.locator('[data-action="fav"]');
+  await expect(star).toBeVisible();
+  const secondAlg = await second.locator(".alg").getAttribute("aria-label");
+  await star.click();
+  await expect(card.locator(".alg-row").first().locator(".alg")).toHaveAttribute("aria-label", secondAlg!);
 });

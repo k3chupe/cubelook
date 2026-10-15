@@ -15,7 +15,7 @@ export const fr: Messages = {
     hideLearned: "Masquer maîtrisés",
     hideLearnedHint: "Masquer les cas marqués ✓",
     compact: "Compact",
-    compactHint: "Cartes plus petites : actions au survol ou au toucher, sans notes",
+    compactHint: "Cartes plus petites : cliquez « +N alternatives » pour le favori et les détails, sans notes",
     collapseAll: "Tout replier",
     expandAll: "Tout déplier",
     print: "Imprimer / enregistrer en PDF",

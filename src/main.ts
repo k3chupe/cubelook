@@ -141,7 +141,7 @@ function iconButton(action: string, label: string, icon: string, extra = "", att
   return `<button class="icon-btn ${extra}" data-action="${action}" aria-label="${esc(label)}" title="${esc(label)}" ${attrs}>${icon}</button>`;
 }
 
-function renderAlgRow(ref: CaseRef, a: AlgOut, index: number, count: number, showReorder: boolean): string {
+function renderAlgRow(ref: CaseRef, a: AlgOut, index: number, count: number, showReorder: boolean, quick: boolean): string {
   const m = t().ui;
   const title = caseTitle(ref.c);
   const fav = index === 0;
@@ -149,6 +149,15 @@ function renderAlgRow(ref: CaseRef, a: AlgOut, index: number, count: number, sho
   const alg = shownAlg(ref.c.id, a.alg);
   const note = a.note ? content("notes", a.note) : undefined;
   const recommended = a.recommended ? `<span class="tag tag-rec">${esc(m.recommended)}</span>` : "";
+  // compact collapsed: only the case page and the cube link, beside the alg
+  if (quick) {
+    const scdb = speedcubedbCaseLink(ref.c);
+    return `
+  <li class="alg-row is-fav quick">
+    <div class="alg-quick">${scdb ? `<a class="src src-speedcubedb scdb-link" href="${esc(scdb)}" target="_blank" rel="noopener" title="${esc(m.openScdbHint)}">${esc(SOURCES.speedcubedb.short)}</a>` : ""}<a class="link-btn" href="${twizzleUrl(alg, ref.group.view, title)}" target="_blank" rel="noopener" title="${esc(m.openCubeHint)}">${esc(m.openCube)}</a></div>
+    <div class="alg" translate="no" aria-label="${esc(alg)}">${renderAlg(alg)}</div>
+  </li>`;
+  }
   return `
   <li class="alg-row${fav ? " is-fav" : ""}">
     <div class="alg" translate="no" aria-label="${esc(alg)}">${renderAlg(alg)}</div>
@@ -237,7 +246,7 @@ function renderCase(ref: CaseRef, idPrefix = "case-"): string {
       ${iconButton("learn", learned ? m.learned : m.markLearned, icons.check, `learn${learned ? " on" : ""}`, `data-case="${c.id}" aria-pressed="${learned}"`)}
       ${ref.group.view === "f2l" ? "" : iconButton("rotate", m.rotateCase, '<span aria-hidden="true">⟳</span>', "rotate", `data-case="${c.id}"`)}
     </div>
-    <ol class="algs">${list.map((a, i) => renderAlgRow(ref, a, i, list.length, expanded && list.length > 1)).join("")}</ol>
+    <ol class="algs">${list.map((a, i) => renderAlgRow(ref, a, i, list.length, expanded && list.length > 1, settings.compact && !expanded)).join("")}</ol>
     ${
       settings.onlyFav && all.length > 1
         ? `<button class="more" data-action="expand" data-case="${c.id}" aria-expanded="${expanded}">${

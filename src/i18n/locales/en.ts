@@ -15,7 +15,7 @@ export const en: Messages = {
     hideLearned: "Hide learned",
     hideLearnedHint: "Hide cases marked ✓",
     compact: "Compact",
-    compactHint: "Smaller cards: actions on hover or tap, no notes",
+    compactHint: "Smaller cards: tap “+N alternatives” for the favorite and details, no notes",
     collapseAll: "Collapse all",
     expandAll: "Expand all",
     print: "Print / save as PDF",

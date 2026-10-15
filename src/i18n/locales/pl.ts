@@ -15,7 +15,7 @@ export const pl: Messages = {
     hideLearned: "Ukryj opanowane",
     hideLearnedHint: "Ukryj przypadki oznaczone ✓",
     compact: "Kompaktowy",
-    compactHint: "Mniejsze karty: akcje po najechaniu lub dotknięciu, bez notatek",
+    compactHint: "Mniejsze karty: kliknij „+N alternatyw”, by wybrać ulubiony i zobaczyć szczegóły, bez notatek",
     collapseAll: "Zwiń wszystko",
     expandAll: "Rozwiń wszystko",
     print: "Drukuj / zapisz jako PDF",
