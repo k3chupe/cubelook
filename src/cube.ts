@@ -207,20 +207,25 @@ export function isOLLSolved(cube: Cube): boolean {
 
 export const AUFS = ["", "U", "U2", "U'"];
 
+const LEAD_BLOCK = /^\((\s*[Uy]['’2]?(?:\s+[Uy]['’2]?)*\s*)\)\s*|^([Uy]['’2]?)(?:\s+|$)/;
+
 /**
- * `alg` for the case seen after pre-AUF number `k` (AUFS[k]): U^-k merged into a leading `(U)` / `U`,
- * else into a leading y (for the last layer y^-k only adds a cube rotation and a final AUF), else prefixed.
+ * Last-layer `alg` for the case seen after pre-AUF number `k` (AUFS[k]). The leading AUFs / y rotations and U^-k
+ * become one net turn (for the last layer y only adds a cube rotation and a final AUF compared to U):
+ * dropped when it cancels, else shown as y if the block had a y, otherwise as `(U)`.
  */
 export function withPreAuf(alg: string, k: number): string {
-  if (!k) return alg;
-  const u = /^\((U['’2]?)\)\s*|^(U['’2]?)(?:\s+|$)/.exec(alg);
-  const y = u ? null : /^(y['’2]?)(?:\s+|$)/.exec(alg);
-  const lead = u ?? y;
-  const amount = lead ? parseAlg(lead[1] ?? lead[2])[0].amount : 0;
-  const turn = formatMove({ face: y ? "y" : "U", amount: (amount + 4 - k) % 4 });
-  const rest = alg.slice(lead?.[0].length ?? 0);
+  let rest = alg;
+  let amount = 4 - k;
+  let hasY = false;
+  for (let m; (m = LEAD_BLOCK.exec(rest)); rest = rest.slice(m[0].length)) {
+    const block = m[1] ?? m[2];
+    amount += parseAlg(block).reduce((n, mv) => n + mv.amount, 0);
+    hasY ||= block.includes("y");
+  }
+  const turn = formatMove({ face: hasY ? "y" : "U", amount: amount % 4 });
   if (!turn) return rest;
-  return y ? `${turn} ${rest}` : `(${turn}) ${rest}`;
+  return hasY ? `${turn} ${rest}` : `(${turn}) ${rest}`;
 }
 
 function solvedAfterAuf(cube: Cube, test: (c: Cube) => boolean): boolean {

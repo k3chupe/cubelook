@@ -38,4 +38,14 @@ describe("rotated last-layer view (pre-AUF)", () => {
     expect(withPreAuf("y' R U R'", 1)).toBe("y2 R U R'");
     expect(withPreAuf("(U2) y2 M2", 2)).toBe("y2 M2");
   });
+
+  it("combines a leading block of AUFs and y rotations into one net turn, also in view 0", () => {
+    const ua = groups.flatMap((g) => g.cases).find((c) => c.id === "pll-ua")!;
+    const block = ua.algs.find((a) => a.alg.startsWith("(U2) y2 "))!.alg;
+    expect(withPreAuf(block, 0)).toBe(block.slice("(U2) y2 ".length));
+    expect(withPreAuf("U y R U R'", 0)).toBe("y2 R U R'");
+    expect(withPreAuf("y (U) R U R'", 1)).toBe("y R U R'");
+    expect(withPreAuf("(U) R U R'", 0)).toBe("(U) R U R'");
+    expect(withPreAuf("R U R'", 0)).toBe("R U R'");
+  });
 });

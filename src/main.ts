@@ -97,8 +97,9 @@ function renderAlg(alg: string): string {
     .join("");
 }
 
-/** Stored algs stay as-is (favourites, order); the rotated view only changes what is shown and played. */
-const shownAlg = (caseId: string, alg: string) => withPreAuf(alg, settings.auf[caseId] ?? 0);
+/** Stored algs stay as-is (favourites, order); the rotated view only changes what is shown and played. Last layer only. */
+const shownAlg = (caseId: string, alg: string) =>
+  caseIndex.get(caseId)?.group.view === "f2l" ? alg : withPreAuf(alg, settings.auf[caseId] ?? 0);
 
 function algTags(alg: string): string {
   const m = t().ui;
