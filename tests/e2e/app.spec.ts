@@ -261,3 +261,23 @@ test("EOLL dot strip follows the sort setting", async ({ page }) => {
   await page.locator('[data-action="sort"][data-value="groups"]').click();
   await expect(card.locator(".sub-item").first()).toHaveAttribute("data-case", "full-oll-1");
 });
+
+test("compact: hovering an alg row reveals its buttons without moving them or changing the card height", async ({ page }) => {
+  await page.locator('[data-action="compact"]').click();
+  const card = page.locator("#case-beg-1a");
+  await card.scrollIntoViewIfNeeded();
+  const row = card.locator(".alg-row").first();
+  const play = row.locator('[data-action="play"]');
+  const height = async () => (await card.boundingBox())!.height;
+  const h0 = await height();
+  const alg = (await row.locator(".alg").boundingBox())!;
+  await page.mouse.move(alg.x + alg.width / 2, alg.y + alg.height / 2);
+  await expect(play).toBeVisible();
+  expect(Math.abs((await height()) - h0)).toBeLessThan(1);
+  const before = (await play.boundingBox())!;
+  await page.mouse.move(before.x + before.width / 2, before.y + before.height / 2);
+  const after = (await play.boundingBox())!;
+  expect(Math.abs(after.x - before.x)).toBeLessThan(1);
+  expect(Math.abs(after.y - before.y)).toBeLessThan(1);
+  expect(Math.abs((await height()) - h0)).toBeLessThan(1);
+});

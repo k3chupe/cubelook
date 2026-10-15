@@ -1207,9 +1207,31 @@ dialog.case-dialog .dialog-close {
   display: none;
 }
 
-[data-density="compact"] .case:hover .alg-actions,
-[data-density="compact"] .case:focus-within .alg-actions {
-  display: flex;
+/* the reveal floats over the list: showing it must not change the card's height */
+@media (hover: hover) {
+  [data-density="compact"] .case {
+    overflow: visible;
+  }
+  [data-density="compact"] .diagram-btn {
+    border-radius: calc(var(--radius) - 1.5px) 0 14px 0;
+  }
+  [data-density="compact"] .alg-row {
+    position: relative;
+  }
+  [data-density="compact"] .alg-row:hover .alg-actions,
+  [data-density="compact"] .case:focus-within .alg-actions {
+    display: flex;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    padding: 8px 12px;
+    background: var(--panel);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
 }
 
 [data-density="compact"] .more {
