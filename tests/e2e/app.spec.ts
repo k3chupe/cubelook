@@ -410,6 +410,40 @@ test("More and its tabs keep the card top in place", async ({ page }) => {
   }
 });
 
+for (const density of ["normal", "compact"] as const)
+  for (const action of ["fav", "down"] as const)
+    test(`${action} on an alternative keeps the card top and page scroll (${density})`, async ({ page }) => {
+      if (density === "compact") await page.locator('[data-action="compact"]').click();
+      const card = page.locator("#case-beg-1a");
+      await card.locator('[data-action="expand"]').click();
+      await card.evaluate((el) => el.scrollIntoView({ block: "center" }));
+      const row = card.locator(".alg-row").nth(1);
+      const button = row.locator(`[data-action="${action}"]`);
+      await button.scrollIntoViewIfNeeded();
+      const alg = await row.locator(".alg").getAttribute("aria-label");
+      const before = { y: await page.evaluate(() => window.scrollY), top: (await card.boundingBox())!.y };
+      expect(before.y).toBeGreaterThan(0);
+      await button.click();
+      await expect(card.locator(".alg-row").nth(action === "fav" ? 0 : 2).locator(".alg")).toHaveAttribute("aria-label", alg!);
+      expect(Math.abs((await page.evaluate(() => window.scrollY)) - before.y)).toBeLessThan(1);
+      expect(Math.abs((await card.boundingBox())!.y - before.top)).toBeLessThan(1);
+    });
+
+test("favourite inside the full case dialog does not scroll the page", async ({ page }) => {
+  const card = await openFullCases(page, "pll-y");
+  await card.evaluate((el) => el.scrollIntoView({ block: "center" }));
+  await card.locator(".sub-item").first().click();
+  const dialog = page.locator("dialog.case-dialog");
+  await dialog.locator('[data-action="expand"]').click();
+  const row = dialog.locator(".alg-row").nth(1);
+  const alg = await row.locator(".alg").getAttribute("aria-label");
+  await row.locator('[data-action="fav"]').scrollIntoViewIfNeeded();
+  const before = await page.evaluate(() => window.scrollY);
+  await row.locator('[data-action="fav"]').click();
+  await expect(dialog.locator(".alg-row").first().locator(".alg")).toHaveAttribute("aria-label", alg!);
+  expect(Math.abs((await page.evaluate(() => window.scrollY)) - before)).toBeLessThan(1);
+});
+
 test("compact: collapsed rows show only the case and cube links, hover changes nothing, +N shows the full details", async ({ page }) => {
   await page.locator('[data-action="compact"]').click();
   const card = page.locator("#case-beg-1a");

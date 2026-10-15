@@ -565,9 +565,8 @@ function render() {
   // Full rebuild replaces the focused control; pin viewport to it so expand/collapse does not yank content away.
   const active = dialogCase ? null : (document.activeElement as HTMLElement | null);
   const focusedKey = active?.dataset?.focusKey;
-  // More, its tabs, "+N" and picking a subcase change the card below its top: keep the card in place, not the control
-  const cardAction = ["expand", "tab", "toggle", "pick"].includes(active?.dataset.action ?? "");
-  const card = cardAction ? active!.closest<HTMLElement>("article.case") : null;
+  // Any action in a card re-orders its rows (and moves the clicked control with its row): keep the card top in place
+  const card = active?.closest<HTMLElement>("article.case") ?? null;
   const anchorTop = (card ?? (focusedKey != null ? active : null))?.getBoundingClientRect().top ?? null;
   const scrollY = window.scrollY;
   app.innerHTML = `
