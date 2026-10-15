@@ -82,3 +82,44 @@ describe("generated data", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 });
+
+describe("last-layer subcases", () => {
+  const groupCases = (sectionId: string, groupId: string) =>
+    sections.find((s) => s.id === sectionId)!.groups.find((g) => g.id === groupId)!.cases;
+  /** Ids of the full-section cases outside one group (e.g. OCLL inside full OLL). */
+  const fullIdsOutside = (sectionId: string, groupId: string) =>
+    sections
+      .find((s) => s.id === sectionId)!
+      .groups.filter((g) => g.id !== groupId)
+      .flatMap((g) => g.cases.map((c) => c.id))
+      .sort();
+  const allIds = new Set(sections.flatMap((s) => s.groups.flatMap((g) => g.cases.map((c) => c.id))));
+
+  it("EOLL subcases partition the 50 full OLLs outside OCLL", () => {
+    const sub = groupCases("4lll", "eoll").flatMap((c) => c.subcases ?? []);
+    expect(sub).toHaveLength(50);
+    expect(sub.sort()).toEqual(fullIdsOutside("oll", "full-oll-ocll"));
+  });
+
+  it("CPLL subcases partition the 17 full PLLs outside EPLL", () => {
+    const sub = groupCases("4lll", "cpll").flatMap((c) => c.subcases ?? []);
+    expect(sub).toHaveLength(17);
+    expect(sub.sort()).toEqual(fullIdsOutside("pll", "full-pll-epll"));
+  });
+
+  it("every subcase id is an existing full OLL/PLL case", () => {
+    for (const c of [...groupCases("4lll", "eoll"), ...groupCases("4lll", "cpll")])
+      for (const id of c.subcases ?? []) {
+        expect(id, c.id).toMatch(/^full-(oll|pll)-/);
+        expect(allIds.has(id), id).toBe(true);
+      }
+  });
+
+  it("OCLL and EPLL cases name their full OLL/PLL case in sameAs", () => {
+    const fullNames = new Set(
+      sections.filter((s) => s.id === "oll" || s.id === "pll").flatMap((s) => s.groups.flatMap((g) => g.cases.map((c) => c.name))),
+    );
+    for (const c of [...groupCases("4lll", "ocll"), ...groupCases("4lll", "epll")])
+      expect(fullNames.has(c.sameAs!), c.id).toBe(true);
+  });
+});

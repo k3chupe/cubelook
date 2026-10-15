@@ -750,6 +750,96 @@ a.src:hover {
   border-color: var(--muted);
 }
 
+/* ---------- 4LLL: full cases a last-layer case turns into ---------- */
+.subcases {
+  grid-column: 1 / -1;
+  grid-row: 4;
+  padding: 0 16px 14px;
+}
+
+.subcases-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 4px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.subcases-head:hover {
+  color: var(--text);
+}
+
+.sub-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.sub-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 12px 8px 8px;
+  background: var(--panel-2);
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sub-item:hover {
+  border-color: var(--muted);
+}
+
+.sub-diagram {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  padding: 4px;
+  border-radius: 8px;
+  background: var(--diagram-bg);
+}
+
+.sub-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.sub-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.sub-body .alg {
+  font-size: 1.05rem;
+}
+
+.sub-share {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--accent-2);
+}
+
+.subcases .more {
+  margin: 8px 0 0;
+}
+
 /* ---------- algorithm triggers ---------- */
 .alg {
   display: flex;
@@ -1017,6 +1107,27 @@ dialog.player::backdrop {
   display: flex;
   justify-content: center;
   gap: 8px;
+}
+
+/* ---------- full case dialog ---------- */
+dialog.case-dialog {
+  border: none;
+  padding: 0;
+  background: transparent;
+  color: var(--text);
+  max-width: min(680px, 96vw);
+  max-height: 92vh;
+  width: 100%;
+  overflow: auto;
+}
+
+dialog.case-dialog::backdrop {
+  background: rgba(4, 10, 11, 0.78);
+}
+
+dialog.case-dialog .dialog-close {
+  display: flex;
+  margin: 0 0 8px auto;
 }
 
 /* ---------- compact density ---------- */

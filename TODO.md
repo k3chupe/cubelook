@@ -78,7 +78,8 @@ Jedna strona, konfiguracja „co pokazujemy”, nie osobne buildy. UI: segmented
 
 - [x] Przy każdym case LL: **% szans** w etapie (bez F2L)
 - [x] Sort rosnąco / malejąco; domyślnie najczęstsze pierwsze (grupy zostają)
-- [ ] „Kolejny krok” pod EOLL / CPLL: pełne case’y z jednym algiem (Q6–Q8 do potwierdzenia)
+- [x] „Kolejny krok” pod EOLL / CPLL: pełne case’y (subcases) z jednym algiem, klik → okienko z pełnym case’em
+- [x] Sortowanie nie przestawia etapów / grup; % w obrębie etapu bez skipa
 
 ## 10. Grupowanie powiązanych algów / case’ów
 

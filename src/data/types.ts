@@ -65,9 +65,11 @@ export interface CaseOut {
   name: string;
   setup: string;
   algs: AlgOut[];
-  /** Numbered F2L case that is the same position. */
+  /** Same position in another section: the numbered F2L case (beginner), or the full OLL/PLL case (4LLL OCLL/EPLL). */
   sameAs?: string;
-  /** Last-layer cases only: chance this case comes up at its stage on a random solve, as a reduced fraction. */
+  /** 4LLL EOLL and CPLL cases only: ids of the full OLL/PLL cases under this case, in full-section order. */
+  subcases?: string[];
+  /** Last-layer cases only: chance this case comes up at its stage on a random solve, given the stage is not skipped; the cases of one stage sum to 1. Reduced fraction. */
   prob?: [number, number];
 }
 

@@ -29,14 +29,14 @@ const casesOf = (sectionId: string, groupId?: string): CaseOut[] =>
     .flatMap((s) => s.groups.filter((g) => !groupId || g.id === groupId).flatMap((g) => g.cases));
 const byId = (id: string): CaseOut => sections.flatMap((s) => s.groups.flatMap((g) => g.cases)).find((c) => c.id === id)!;
 
-/** Sum of the case probabilities per stage; the remainder is the skip (already solved). */
+/** Probabilities of the cases of one stage: they add up to 1, the skip is not counted. */
 const stages: [string, CaseOut[], Frac][] = [
-  ["full OLL", casesOf("oll"), [215n, 216n]],
-  ["full PLL", casesOf("pll"), [71n, 72n]],
-  ["4LLL EOLL", casesOf("4lll", "eoll"), [7n, 8n]],
-  ["4LLL OCLL", casesOf("4lll", "ocll"), [26n, 27n]],
-  ["4LLL CPLL", casesOf("4lll", "cpll"), [5n, 6n]],
-  ["4LLL EPLL", casesOf("4lll", "epll"), [11n, 12n]],
+  ["full OLL", casesOf("oll"), [1n, 1n]],
+  ["full PLL", casesOf("pll"), [1n, 1n]],
+  ["4LLL EOLL", casesOf("4lll", "eoll"), [1n, 1n]],
+  ["4LLL OCLL", casesOf("4lll", "ocll"), [1n, 1n]],
+  ["4LLL CPLL", casesOf("4lll", "cpll"), [1n, 1n]],
+  ["4LLL EPLL", casesOf("4lll", "epll"), [1n, 1n]],
 ];
 
 describe("case probability", () => {
@@ -48,7 +48,7 @@ describe("case probability", () => {
       }
   });
 
-  it.each(stages)("%s: case probabilities sum to the expected fraction", (_, cs, expected) => {
+  it.each(stages)("%s: case probabilities sum to exactly 1", (_, cs, expected) => {
     expect(sum(cs.map(frac))).toEqual(expected);
   });
 
@@ -57,12 +57,22 @@ describe("case probability", () => {
   });
 
   it.each([
-    ["full-oll-20", [1n, 216n]], // OLL 20
-    ["full-oll-21", [1n, 108n]], // OLL 21 (H)
-    ["full-oll-57", [1n, 108n]], // OLL 57
-    ["full-pll-ua", [1n, 18n]], // PLL Ua
-    ["full-pll-h", [1n, 72n]], // PLL H
-    ["full-pll-e", [1n, 36n]], // PLL E
+    ["full-oll-20", [1n, 215n]], // OLL 20
+    ["full-oll-21", [2n, 215n]], // OLL 21 (H)
+    ["full-oll-57", [2n, 215n]], // OLL 57
+    ["full-pll-ua", [4n, 71n]], // PLL Ua
+    ["full-pll-h", [1n, 71n]], // PLL H
+    ["full-pll-e", [2n, 71n]], // PLL E
+    ["eoll-dot", [1n, 7n]],
+    ["eoll-line", [2n, 7n]], // OLL 45
+    ["eoll-l", [4n, 7n]], // OLL 44
+    ["oll-21", [1n, 13n]], // OCLL H
+    ["oll-27", [2n, 13n]], // OCLL
+    ["pll-a", [4n, 5n]], // CPLL Aa
+    ["pll-y", [1n, 5n]], // CPLL Y
+    ["pll-ua", [4n, 11n]], // EPLL Ua
+    ["pll-h", [1n, 11n]], // EPLL H
+    ["pll-z", [2n, 11n]], // EPLL Z
   ])("%s has its known probability", (id, expected) => {
     expect(frac(byId(id))).toEqual(expected);
   });

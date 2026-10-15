@@ -160,17 +160,17 @@ test("Animate here opens the 3D player without console errors", async ({ page })
   expect(errors).toEqual([]);
 });
 
-test("PLL is ordered most common first by default, SCDB groups restore the original order, choice persists", async ({ page }) => {
+test("PLL cases are most common first inside each group, SCDB groups restore the original order, choice persists", async ({ page }) => {
   const sortRadio = (v: string) => page.locator(`[data-action="sort"][data-value="${v}"]`);
-  /** Per group in display order: the cases with their probability. */
+  /** Per group in display order: the cases with their probability (in %). */
   const pllGroups = () =>
     page.locator('section[id="pll"] .group').evaluateAll((groups) =>
       groups
         .map((g) =>
-          [...g.querySelectorAll(".case")].map((c) => {
-            const [n, d] = c.querySelector(".badge.prob")!.textContent!.match(/(\d+)\/(\d+)/)!.slice(1).map(Number);
-            return { id: c.id, p: n / d };
-          }),
+          [...g.querySelectorAll(".case")].map((c) => ({
+            id: c.id,
+            p: parseFloat(c.querySelector(".badge.prob")!.textContent!.replace(",", ".")),
+          })),
         )
         .filter((cases) => cases.length),
     );
@@ -182,13 +182,15 @@ test("PLL is ordered most common first by default, SCDB groups restore the origi
   await expect(page.locator('section[id="pll"] .badge.prob').first()).toContainText("%");
 
   const desc = await pllGroups();
-  expect(isDesc(desc.map((g) => g.reduce((n, c) => n + c.p, 0)))).toBe(true);
   for (const g of desc) expect(isDesc(g.map((c) => c.p))).toBe(true);
   const sortedIds = desc.flat().map((c) => c.id);
 
   await sortRadio("groups").click();
   await expect(sortRadio("groups")).toHaveAttribute("aria-checked", "true");
-  const scdbIds = (await pllGroups()).flat().map((c) => c.id);
+  const scdb = await pllGroups();
+  // sorting moves cases inside a group, never the groups themselves
+  expect(scdb.map((g) => g.map((c) => c.id).sort())).toEqual(desc.map((g) => g.map((c) => c.id).sort()));
+  const scdbIds = scdb.flat().map((c) => c.id);
   expect(scdbIds).not.toEqual(sortedIds);
 
   await page.reload();
@@ -197,4 +199,47 @@ test("PLL is ordered most common first by default, SCDB groups restore the origi
 
   await sortRadio("freqDesc").click();
   expect((await pllGroups()).flat().map((c) => c.id)).toEqual(sortedIds);
+});
+
+test("Most common keeps the 4LLL stage order", async ({ page }) => {
+  const head = page.locator('button.section-head[data-id="section:4lll"]');
+  if ((await head.getAttribute("aria-expanded")) === "false") await head.click();
+  const sortRadio = (v: string) => page.locator(`[data-action="sort"][data-value="${v}"]`);
+  const stages = () => page.locator('section[id="4lll"] .group:not(.tips) h3.group-heading .head-title').allTextContents();
+
+  await sortRadio("groups").click();
+  const scdb = await stages();
+  expect(scdb).toHaveLength(4);
+  await sortRadio("freqDesc").click();
+  await expect(sortRadio("freqDesc")).toHaveAttribute("aria-checked", "true");
+  expect(await stages()).toEqual(scdb);
+});
+
+test("EOLL dot strip: three full cases with one alg each, +N shows the rest, an item opens the full case, Esc closes", async ({ page }) => {
+  const section = page.locator('button.section-head[data-id="section:4lll"]');
+  if ((await section.getAttribute("aria-expanded")) === "false") await section.click();
+  const card = page.locator("#case-eoll-dot");
+  const head = card.locator(".subcases-head");
+  await expect(head).toHaveAttribute("aria-expanded", "false");
+  await head.click();
+  const items = card.locator(".sub-item");
+  await expect(items).toHaveCount(3);
+  const algsPerItem = () => items.evaluateAll((els) => els.map((e) => e.querySelectorAll(".alg").length));
+  expect(await algsPerItem()).toEqual([1, 1, 1]);
+
+  const more = card.locator(".subcases .more");
+  const rest = parseInt((await more.textContent())!.slice(1), 10);
+  expect(rest).toBeGreaterThan(0);
+  await more.click();
+  await expect(items).toHaveCount(3 + rest);
+  expect(await algsPerItem()).toEqual(Array(3 + rest).fill(1));
+
+  await items.first().click();
+  const dialog = page.locator("dialog.case-dialog");
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator("article.case .diagram")).toHaveCount(1);
+  await expect(dialog.locator(".alg-row").first()).toBeVisible();
+  await expect(page.locator('section[id="4lll"]')).toHaveCount(1);
+  await page.keyboard.press("Escape");
+  await expect(dialog).toBeHidden();
 });

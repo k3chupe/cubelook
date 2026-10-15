@@ -43,8 +43,16 @@ How likely a case is to come up at its stage on a random solve, shown as a fract
 _Avoid_: Frequency (only for the sort order), chance of skip (not shown)
 
 **Probability**:
-The chance that a case comes up at its stage of the solve, on a random cube (e.g. OLL 45 is 1/54). Shown for last-layer cases only.
+The chance that a case comes up at its stage of the solve, given that the stage is not already solved (a skip doesn't count): the cases of one stage add up to 100%. Shown for last-layer cases only, as a percentage.
 _Avoid_: Frequency (could mean how often the user practises), popularity (that is about algorithms, not cases)
+
+**Stage**:
+One step of the last layer that has its own set of cases: in 4LLL the four groups (EOLL, OCLL, CPLL, EPLL); full OLL and full PLL are one stage each. Stages keep their solving order; sorting never reorders them.
+_Avoid_: Step (used for F2L tips), phase
+
+**Subcase**:
+A full OLL or PLL case that falls under a broader 4LLL case (e.g. the eight dot OLLs are subcases of the EOLL dot). A subcase's share is its probability within that 4LLL case.
+_Avoid_: Related case, alternative (that is an algorithm, not a case)
 
 **Learned**:
 A case the user marked as already known.

@@ -44,16 +44,13 @@ const probOf = (c: CaseOut) => {
   return p ? Math.round((p[0] / p[1]) * 1e9) : 0;
 };
 
-/** Display-only copies: data and stored user order are never changed. Stable sort keeps F2L as is. */
+/** Display-only copies: data and stored user order are never changed. Stable sort keeps F2L as is. Groups keep their stage order. */
 function sortedSections(list: SectionOut[]): SectionOut[] {
   if (settings.sort === "groups") return list;
   const dir = settings.sort === "freqDesc" ? -1 : 1;
-  const groupSum = (g: GroupOut) => g.cases.reduce((n, c) => n + probOf(c), 0);
   return list.map((s) => ({
     ...s,
-    groups: s.groups
-      .map((g) => ({ ...g, cases: [...g.cases].sort((a, b) => (probOf(a) - probOf(b)) * dir) }))
-      .sort((a, b) => (groupSum(a) - groupSum(b)) * dir),
+    groups: s.groups.map((g) => ({ ...g, cases: [...g.cases].sort((a, b) => (probOf(a) - probOf(b)) * dir) })),
   }));
 }
 
@@ -68,11 +65,13 @@ const caseName = (c: CaseOut) => content("cases", c.id)?.name ?? c.name;
 const caseSubtitle = (c: CaseOut) => content("cases", c.id)?.subtitle;
 const caseTitle = (c: CaseOut) => [caseName(c), caseSubtitle(c)].filter(Boolean).join(" – ");
 
+const percent = (x: number) =>
+  new Intl.NumberFormat(locale(), { style: "percent", minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(x);
+
 function probBadge(c: CaseOut): string {
   const p = c.prob;
   if (!p) return "";
-  const pct = new Intl.NumberFormat(locale(), { style: "percent", minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(p[0] / p[1]);
-  const text = `${p[0]}/${p[1]} · ${pct}`;
+  const text = percent(p[0] / p[1]);
   return `<span class="badge prob" role="img" aria-label="${esc(`${t().ui.probability}: ${text}`)}" translate="no">${esc(text)}</span>`;
 }
 
@@ -169,7 +168,45 @@ function renderAlgRow(ref: CaseRef, a: AlgOut, index: number, count: number, sho
   </li>`;
 }
 
-function renderCase(ref: CaseRef): string {
+/** Full cases a last-layer case turns into (4LLL EOLL/CPLL), most likely first, each shown with only its favourite. */
+function renderSubcases(c: CaseOut): string {
+  const ids = (c as CaseOut & { subcases?: string[] }).subcases ?? [];
+  if (!ids.length) return "";
+  const m = t().ui;
+  const refs = ids.map((id) => caseIndex.get(id)).filter((r): r is CaseRef => !!r);
+  const total = refs.reduce((n, r) => n + probOf(r.c), 0);
+  const items = refs.map((r) => ({ r, share: total ? probOf(r.c) / total : 0 })).sort((a, b) => b.share - a.share);
+  const open = !isCollapsed(`subcases:${c.id}`, true);
+  const more = items.length - 3;
+  const shown = open && !isCollapsed(`subcases-more:${c.id}`, true) ? items : items.slice(0, 3);
+  return `
+  <div class="subcases">
+    <button class="subcases-head" data-action="toggle" data-id="subcases:${c.id}" aria-expanded="${open}">${icons.chevron}<span class="head-title">${esc(plural(refs.length, m.subcasesTitle))}</span></button>
+    ${
+      open
+        ? `<ul class="sub-list">${shown
+            .map(({ r, share }) => {
+              const fav = visibleAlgs(r.c).all[0];
+              const alg = shownAlg(r.c.id, fav.alg);
+              const label = `${r.group.view === "f2l" ? m.diagramF2L : m.diagramLL}: ${caseTitle(r.c)}`;
+              return `
+          <li><button class="sub-item" data-action="subcase" data-id="${c.id}" data-case="${r.c.id}">
+            <span class="sub-diagram">${caseDiagram(r.c.setup, r.group.view, label, settings.auf[r.c.id])}</span>
+            <span class="sub-body"><span class="sub-name">${esc(caseName(r.c))}</span><span class="alg" translate="no" aria-label="${esc(alg)}">${renderAlg(alg)}</span></span>
+            <span class="sub-share">${esc(percent(share))}</span>
+          </button></li>`;
+            })
+            .join("")}</ul>${
+          shown.length < items.length
+            ? `<button class="more" data-action="toggle" data-id="subcases-more:${c.id}" aria-expanded="false">${esc(plural(more, m.subcasesMore))}</button>`
+            : ""
+        }`
+        : ""
+    }
+  </div>`;
+}
+
+function renderCase(ref: CaseRef, idPrefix = "case-"): string {
   const m = t().ui;
   const { c } = ref;
   const learned = !!settings.learned[c.id];
@@ -179,7 +216,7 @@ function renderCase(ref: CaseRef): string {
   const sub = caseSubtitle(c);
   const diagramLabel = `${ref.group.view === "f2l" ? m.diagramF2L : m.diagramLL}: ${caseTitle(c)}`;
   return `
-  <article class="case${learned ? " learned" : ""}" id="case-${c.id}">
+  <article class="case${learned ? " learned" : ""}" id="${idPrefix}${c.id}">
     <div class="case-top">
       <button class="diagram-btn" data-action="play" data-case="${c.id}" data-alg="${esc(all[0].alg)}" title="${esc(m.playFav)}" aria-label="${esc(`${m.playFav}: ${caseTitle(c)}`)}">
         ${caseDiagram(c.setup, ref.group.view, diagramLabel, settings.auf[c.id])}
@@ -201,6 +238,7 @@ function renderCase(ref: CaseRef): string {
           }</button>`
         : ""
     }
+    ${renderSubcases(c)}
   </article>`;
 }
 
@@ -446,7 +484,7 @@ function render() {
   applyChrome();
   const m = t();
   // Full rebuild replaces the focused control; pin viewport to it so expand/collapse does not yank content away.
-  const active = document.activeElement as HTMLElement | null;
+  const active = dialogCase ? null : (document.activeElement as HTMLElement | null);
   const focusedKey = active?.dataset?.focusKey;
   const anchorTop = focusedKey != null ? active!.getBoundingClientRect().top : null;
   const scrollY = window.scrollY;
@@ -502,7 +540,42 @@ function render() {
     window.scrollTo(0, scrollY);
     focused?.focus({ preventScroll: true });
   }
+  renderCaseDialog();
 }
+
+/* ---------- full case dialog (opened from a subcase item) ---------- */
+
+const caseDialog = document.createElement("dialog");
+caseDialog.className = "case-dialog";
+document.body.appendChild(caseDialog);
+let dialogCase: string | null = null;
+
+/** Same card as in its full section; re-rendered with the app so favourite changes show in both places. */
+function renderCaseDialog() {
+  if (!dialogCase) return;
+  const ref = caseIndex.get(dialogCase)!;
+  const focusKey = caseDialog.contains(document.activeElement)
+    ? (document.activeElement as HTMLElement).dataset.focusKey
+    : undefined;
+  caseDialog.setAttribute("aria-label", caseTitle(ref.c));
+  caseDialog.innerHTML = `
+    <button class="icon-btn dialog-close" data-close aria-label="${esc(t().ui.close)}" title="${esc(t().ui.close)}">${icons.close}</button>
+    ${renderCase(ref, "dialog-case-")}`;
+  caseDialog.querySelectorAll<HTMLElement>("[data-action]").forEach(tagFocus);
+  if (focusKey)
+    caseDialog.querySelector<HTMLElement>(`[data-focus-key="${CSS.escape(focusKey)}"]`)?.focus({ preventScroll: true });
+}
+
+function openCaseDialog(caseId: string) {
+  dialogCase = caseId;
+  renderCaseDialog();
+  caseDialog.showModal();
+}
+
+caseDialog.addEventListener("close", () => {
+  dialogCase = null;
+  caseDialog.replaceChildren();
+});
 
 /* ---------- interactions ---------- */
 
@@ -544,7 +617,7 @@ app.addEventListener("change", (e) => {
   }
 });
 
-app.addEventListener("click", (e) => {
+function onClick(e: MouseEvent) {
   const el = (e.target as HTMLElement).closest<HTMLElement>("[data-action]");
   if (!el || el.tagName === "SELECT") return;
   // Programmatic clicks skip focus; render pins scroll to the focused control.
@@ -606,6 +679,9 @@ app.addEventListener("click", (e) => {
     case "expand":
       update((s) => (s.expanded[caseId!] = !s.expanded[caseId!]));
       break;
+    case "subcase":
+      openCaseDialog(caseId!);
+      break;
     case "learn":
       update((s) => (s.learned[caseId!] = !s.learned[caseId!]));
       break;
@@ -623,6 +699,12 @@ app.addEventListener("click", (e) => {
       });
       break;
   }
+}
+
+app.addEventListener("click", onClick);
+caseDialog.addEventListener("click", (e) => {
+  if (e.target === caseDialog || (e.target as HTMLElement).closest("[data-close]")) caseDialog.close();
+  else onClick(e);
 });
 
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {

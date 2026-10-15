@@ -425,6 +425,7 @@ const STAGE_OF: Record<string, Stage> = {
 };
 const claimed = new Map<Stage, Set<string>>();
 const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : a);
+const SOLVED_STATE = LL.get(SOLVED_KEY)!;
 
 function withProbability(section: SectionOut): SectionOut {
   return {
@@ -433,6 +434,7 @@ function withProbability(section: SectionOut): SectionOut {
       const stage = STAGE_OF[`${section.id}/${g.goal}`];
       if (!stage) return g;
       const { counts, total } = table(stage);
+      const nonSkip = total - counts.get(CLASS[stage](SOLVED_STATE)!)!;
       const used = claimed.get(stage) ?? new Set<string>();
       claimed.set(stage, used);
       return {
@@ -446,15 +448,51 @@ function withProbability(section: SectionOut): SectionOut {
             return c;
           }
           used.add(cls);
-          const d = gcd(n, total);
-          return { ...c, prob: [n / d, total / d] };
+          const d = gcd(n, nonSkip);
+          return { ...c, prob: [n / d, nonSkip / d] };
         }),
       };
     }),
   };
 }
 
-const sections = [beginner, intermediate, lll, buildFull("oll", ollGroupIds), buildFull("pll", pllGroupIds)].map(withProbability);
+const fullOll = buildFull("oll", ollGroupIds);
+const fullPll = buildFull("pll", pllGroupIds);
+const stateOf = (c: CaseOut) => LL.get(colorsAt(normalizeOrientation(caseState(c.setup)), LOCS))!;
+const FULL_BY_STAGE = {
+  eo: fullOll.groups.flatMap((g) => g.cases),
+  ocll: fullOll.groups.flatMap((g) => g.cases),
+  cp: fullPll.groups.flatMap((g) => g.cases),
+  ep: fullPll.groups.flatMap((g) => g.cases),
+} as Partial<Record<Stage, CaseOut[]>>;
+
+/**
+ * Links each 4LLL case to the full OLL/PLL cases in its class at its stage: `subcases` for EOLL and CPLL,
+ * `sameAs` (the one matching full case) for OCLL and EPLL.
+ */
+function linkLll(s: SectionOut): SectionOut {
+  return {
+    ...s,
+    groups: s.groups.map((g) => {
+      const stage = STAGE_OF[`4lll/${g.goal}`];
+      return {
+        ...g,
+        cases: g.cases.map((c): CaseOut => {
+          const cls = CLASS[stage](stateOf(c));
+          const hits = cls === null ? [] : (FULL_BY_STAGE[stage] ?? []).filter((f) => CLASS[stage](stateOf(f)) === cls);
+          if (!hits.length || ((stage === "ocll" || stage === "ep") && hits.length !== 1))
+            errors.push(`${c.id}: ${hits.length} full cases in its ${stage} class`);
+          if (stage === "eo" || stage === "cp") return { ...c, subcases: hits.map((f) => f.id) };
+          return { ...c, sameAs: c.sameAs ?? hits[0]?.name };
+        }),
+      };
+    }),
+  };
+}
+
+const sections = [beginner, intermediate, lll, fullOll, fullPll]
+  .map(withProbability)
+  .map((s) => (s.id === "4lll" ? linkLll(s) : s));
 
 /** Every stage class except the skip must be claimed by exactly one case. */
 for (const [stage, used] of claimed) {

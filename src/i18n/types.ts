@@ -50,6 +50,8 @@ export interface Messages {
     alternatives: PluralForms;
     chooseFav: string;
     showOnlyFav: string;
+    subcasesTitle: PluralForms;
+    subcasesMore: PluralForms;
     fav: string;
     setFav: string;
     moveUp: string;
