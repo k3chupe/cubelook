@@ -1700,6 +1700,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_45"
        }
+      ],
+      "prob": [
+       1,
+       4
       ]
      },
      {
@@ -1722,6 +1726,10 @@
         "alg": "(U2) f U R U' R' f' U F R U R' U' F'",
         "source": "community"
        }
+      ],
+      "prob": [
+       1,
+       2
       ]
      },
      {
@@ -1751,6 +1759,10 @@
         "source": "cubingcheatsheet",
         "sourceUrl": "https://cubingcheatsheet.com/algs3x_4lll.html"
        }
+      ],
+      "prob": [
+       1,
+       8
       ]
      }
     ]
@@ -1783,6 +1795,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_27"
        }
+      ],
+      "prob": [
+       4,
+       27
       ]
      },
      {
@@ -1814,6 +1830,10 @@
         "source": "cubingcheatsheet",
         "sourceUrl": "https://cubingcheatsheet.com/algs3x_4lll.html"
        }
+      ],
+      "prob": [
+       4,
+       27
       ]
      },
      {
@@ -1843,6 +1863,10 @@
         "source": "cubingcheatsheet",
         "sourceUrl": "https://cubingcheatsheet.com/algs3x_4lll.html"
        }
+      ],
+      "prob": [
+       2,
+       27
       ]
      },
      {
@@ -1866,6 +1890,10 @@
         "source": "reddit",
         "sourceUrl": "https://www.reddit.com/r/Cubers/comments/boukt3/"
        }
+      ],
+      "prob": [
+       4,
+       27
       ]
      },
      {
@@ -1889,6 +1917,10 @@
         "note": "no-d",
         "source": "community"
        }
+      ],
+      "prob": [
+       4,
+       27
       ]
      },
      {
@@ -1912,6 +1944,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_24"
        }
+      ],
+      "prob": [
+       4,
+       27
       ]
      },
      {
@@ -1939,6 +1975,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_25"
        }
+      ],
+      "prob": [
+       4,
+       27
       ]
      }
     ]
@@ -1979,6 +2019,10 @@
         "alg": "x' R' D R' U2 R D' R' U2 R2 x",
         "source": "community"
        }
+      ],
+      "prob": [
+       2,
+       3
       ]
      },
      {
@@ -2002,6 +2046,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Y"
        }
+      ],
+      "prob": [
+       1,
+       6
       ]
      }
     ]
@@ -2046,6 +2094,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Ua"
        }
+      ],
+      "prob": [
+       1,
+       3
       ]
      },
      {
@@ -2074,6 +2126,10 @@
         "source": "cubingcheatsheet",
         "sourceUrl": "https://cubingcheatsheet.com/algs3x_4lll.html"
        }
+      ],
+      "prob": [
+       1,
+       3
       ]
      },
      {
@@ -2095,6 +2151,10 @@
         "alg": "R2 S2 R2 U R2 S2 R2",
         "source": "community"
        }
+      ],
+      "prob": [
+       1,
+       12
       ]
      },
      {
@@ -2126,6 +2186,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Z"
        }
+      ],
+      "prob": [
+       1,
+       6
       ]
      }
     ]
@@ -2170,6 +2234,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_1"
        }
+      ],
+      "prob": [
+       1,
+       108
       ]
      },
      {
@@ -2198,6 +2266,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_2"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -2226,6 +2298,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_3"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -2254,6 +2330,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_4"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -2282,6 +2362,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_17"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -2310,6 +2394,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_18"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -2338,6 +2426,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_19"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -2366,6 +2458,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_20"
        }
+      ],
+      "prob": [
+       1,
+       216
       ]
      }
     ]
@@ -2401,6 +2497,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_5"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -2429,6 +2529,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_6"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      }
     ]
@@ -2464,6 +2568,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_7"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -2492,6 +2600,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_8"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -2520,6 +2632,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_11"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -2548,6 +2664,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_12"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -2576,6 +2696,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_39"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -2604,6 +2728,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_40"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      }
     ]
@@ -2639,6 +2767,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_9"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -2667,6 +2799,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_10"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -2695,6 +2831,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_35"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -2723,6 +2863,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_37"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      }
     ]
@@ -2758,6 +2902,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_13"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -2786,6 +2934,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_14"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -2814,6 +2966,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_15"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -2842,6 +2998,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_16"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      }
     ]
@@ -2877,6 +3037,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_21"
        }
+      ],
+      "prob": [
+       1,
+       108
       ]
      },
      {
@@ -2905,6 +3069,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_22"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -2933,6 +3101,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_23"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -2961,6 +3133,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_24"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -2989,6 +3165,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_25"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -3017,6 +3197,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_26"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -3045,6 +3229,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_27"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      }
     ]
@@ -3080,6 +3268,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_28"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -3108,6 +3300,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_57"
        }
+      ],
+      "prob": [
+       1,
+       108
       ]
      }
     ]
@@ -3143,6 +3339,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_29"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -3171,6 +3371,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_30"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -3199,6 +3403,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_41"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -3227,6 +3435,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_42"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      }
     ]
@@ -3262,6 +3474,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_31"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -3290,6 +3506,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_32"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -3318,6 +3538,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_43"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -3346,6 +3570,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_44"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      }
     ]
@@ -3381,6 +3609,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_33"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -3409,6 +3641,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_45"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      }
     ]
@@ -3444,6 +3680,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_34"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -3472,6 +3712,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_46"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      }
     ]
@@ -3507,6 +3751,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_36"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -3535,6 +3783,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_38"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      }
     ]
@@ -3570,6 +3822,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_47"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -3598,6 +3854,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_48"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -3626,6 +3886,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_49"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -3654,6 +3918,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_50"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -3682,6 +3950,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_53"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -3710,6 +3982,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_54"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      }
     ]
@@ -3745,6 +4021,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_51"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -3773,6 +4053,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_52"
        }
+      ],
+      "prob": [
+       1,
+       54
       ]
      },
      {
@@ -3801,6 +4085,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_55"
        }
+      ],
+      "prob": [
+       1,
+       108
       ]
      },
      {
@@ -3829,6 +4117,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/OLL/OLL_56"
        }
+      ],
+      "prob": [
+       1,
+       108
       ]
      }
     ]
@@ -3873,6 +4165,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Aa"
        }
+      ],
+      "prob": [
+       1,
+       18
       ]
      },
      {
@@ -3901,6 +4197,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Ab"
        }
+      ],
+      "prob": [
+       1,
+       18
       ]
      },
      {
@@ -3929,6 +4229,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/F"
        }
+      ],
+      "prob": [
+       1,
+       18
       ]
      },
      {
@@ -3957,6 +4261,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Ga"
        }
+      ],
+      "prob": [
+       1,
+       18
       ]
      },
      {
@@ -3985,6 +4293,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Gb"
        }
+      ],
+      "prob": [
+       1,
+       18
       ]
      },
      {
@@ -4013,6 +4325,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Gc"
        }
+      ],
+      "prob": [
+       1,
+       18
       ]
      },
      {
@@ -4041,6 +4357,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Gd"
        }
+      ],
+      "prob": [
+       1,
+       18
       ]
      },
      {
@@ -4069,6 +4389,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Ja"
        }
+      ],
+      "prob": [
+       1,
+       18
       ]
      },
      {
@@ -4097,6 +4421,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Jb"
        }
+      ],
+      "prob": [
+       1,
+       18
       ]
      },
      {
@@ -4125,6 +4453,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Ra"
        }
+      ],
+      "prob": [
+       1,
+       18
       ]
      },
      {
@@ -4153,6 +4485,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Rb"
        }
+      ],
+      "prob": [
+       1,
+       18
       ]
      },
      {
@@ -4181,6 +4517,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/T"
        }
+      ],
+      "prob": [
+       1,
+       18
       ]
      }
     ]
@@ -4216,6 +4556,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/E"
        }
+      ],
+      "prob": [
+       1,
+       36
       ]
      },
      {
@@ -4244,6 +4588,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Na"
        }
+      ],
+      "prob": [
+       1,
+       72
       ]
      },
      {
@@ -4272,6 +4620,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Nb"
        }
+      ],
+      "prob": [
+       1,
+       72
       ]
      },
      {
@@ -4300,6 +4652,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/V"
        }
+      ],
+      "prob": [
+       1,
+       18
       ]
      },
      {
@@ -4328,6 +4684,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Y"
        }
+      ],
+      "prob": [
+       1,
+       18
       ]
      }
     ]
@@ -4363,6 +4723,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/H"
        }
+      ],
+      "prob": [
+       1,
+       72
       ]
      },
      {
@@ -4391,6 +4755,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Ua"
        }
+      ],
+      "prob": [
+       1,
+       18
       ]
      },
      {
@@ -4419,6 +4787,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Ub"
        }
+      ],
+      "prob": [
+       1,
+       18
       ]
      },
      {
@@ -4447,6 +4819,10 @@
         "source": "speedcubedb",
         "sourceUrl": "https://speedcubedb.com/a/3x3/PLL/Z"
        }
+      ],
+      "prob": [
+       1,
+       36
       ]
      }
     ]

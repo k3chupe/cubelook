@@ -38,6 +38,14 @@ _Avoid_: Main alg, default (ambiguous)
 SpeedCubeDB's recommendation for a case: the first algorithm in its list. Always carries the Recommended tag, even when the user picks a different Favorite. Not a user choice.
 _Avoid_: Best (without saying by whom), Favorite (the user's choice, which may differ)
 
+**Case probability**:
+How likely a case is to come up at its stage on a random solve, shown as a fraction and percent (e.g. 1/54 · 1.9%). Last-layer cases only.
+_Avoid_: Frequency (only for the sort order), chance of skip (not shown)
+
+**Probability**:
+The chance that a case comes up at its stage of the solve, on a random cube (e.g. OLL 45 is 1/54). Shown for last-layer cases only.
+_Avoid_: Frequency (could mean how often the user practises), popularity (that is about algorithms, not cases)
+
 **Learned**:
 A case the user marked as already known.
 _Avoid_: Mastered, completed, done

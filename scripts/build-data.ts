@@ -6,7 +6,10 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { caseState, findPreAuf, invertAlg, parseAlg, applyAlg, GOAL_CHECK, type Goal, type Cube } from "../src/cube";
+import {
+  caseState, findPreAuf, invertAlg, parseAlg, applyAlg, GOAL_CHECK, normalizeOrientation, solvedCube, stickerAt, stickerMap,
+  type Goal, type Cube, type Vec,
+} from "../src/cube";
 import type { AlgOut, AlgSource, CaseOut, CaseSource, GroupOut, SectionOut, SectionSource } from "../src/data/types";
 import { SOURCES, speedcubedbCaseUrl, type SourceId } from "../src/data/sources";
 import { f2lBeginner } from "../src/data/f2l-beginner";
@@ -280,7 +283,185 @@ function buildBeginner(s: SectionSource): SectionOut {
 
 const beginner = buildBeginner(f2lBeginner);
 
-const sections = [beginner, intermediate, lll, buildFull("oll", ollGroupIds), buildFull("pll", pllGroupIds)];
+// ---- Case probability (GLOSSARY "Case probability") ----
+// A random solve reaches a uniform last-layer state with F2L solved: 288 permutations × 216 orientations = 62208.
+// Enumerate them with the simulator, then group each stage's states into classes equal up to AUF;
+// a case's probability is its class size over the stage's universe. The skip (solved) class is left out of cases.
+const LL_GENS = ["U", "R U R' U R U2 R'", "R U R' U' R' F R2 U' R' U' R U R' F'", "F R U R' U' F'"]; // U, Sune, T-perm, edge-flip
+const SOLVED = solvedCube();
+const LOCS = SOLVED; // one sticker per physical location (position + normal)
+const TOP_CORNERS = SOLVED.filter((s) => s.pos[1] === 1 && Math.abs(s.pos[0]) + Math.abs(s.pos[2]) === 2);
+const TOP_EDGES = SOLVED.filter((s) => s.pos[1] === 1 && Math.abs(s.pos[0]) + Math.abs(s.pos[2]) === 1);
+const CORNER_POS: Vec[] = [[1, 1, 1], [1, 1, -1], [-1, 1, -1], [-1, 1, 1]];
+const EDGE_POS: Vec[] = [[1, 1, 0], [0, 1, -1], [-1, 1, 0], [0, 1, 1]];
+
+/** Colours visible at the given locations, as one string. */
+function colorsAt(cube: Cube, locs: Cube): string {
+  const m = stickerMap(cube);
+  return locs.map((l) => stickerAt(m, l.pos, l.normal).color).join("");
+}
+
+const SOLVED_KEY = colorsAt(SOLVED, LOCS);
+/** Location permutation of an alg: the sticker at location j after it came from location src[j]. */
+function locPerm(alg: string): number[] {
+  const src: number[] = [];
+  applyAlg(SOLVED, alg).forEach((s, i) => {
+    src[LOCS.findIndex((l) => l.pos.join() === s.pos.join() && l.normal.join() === s.normal.join())] = i;
+  });
+  return src;
+}
+const apply = (key: string, src: number[]) => src.map((i) => key[i]).join("");
+const GEN_PERMS = LL_GENS.map(locPerm);
+const U_PERM = locPerm("U");
+const TOP_CORNER_IDX = TOP_CORNERS.map((l) => LOCS.indexOf(l));
+const TOP_EDGE_IDX = TOP_EDGES.map((l) => LOCS.indexOf(l));
+/** Per top piece, the locations of its stickers as [U, side, ...]: index into these = its twist. */
+const PIECE_SLOTS: number[][] = [...CORNER_POS, ...EDGE_POS].map((p) =>
+  ([[0, 1, 0], [p[0], 0, 0], [0, 0, p[2]]] as Vec[])
+    .filter((n) => n.some((v) => v !== 0))
+    .map((n) => LOCS.findIndex((l) => l.pos.join() === p.join() && l.normal.join() === n.join())),
+);
+/** Per top piece: index of its sticker showing U (0 = oriented; corners 0-2, edges 0-1), for a state key. */
+function orient(key: string): string {
+  return PIECE_SLOTS.map((slots) => {
+    const i = slots.findIndex((j) => key[j] === "U");
+    if (i < 0) throw new Error(`no U sticker in ${key}`);
+    return i;
+  }).join("");
+}
+
+interface LLState {
+  key: string;
+  /** Indices into LL_GENS that reach this state from solved (no whole-cube rotations). */
+  path: number[];
+  /** orient() after 0, 1, 2, 3 extra U turns: the orientation seen under pre-AUF. */
+  o: string[];
+}
+
+/** BFS over the last-layer group from solved, keyed by visible colours. */
+function enumerateLL(): Map<string, LLState> {
+  const states = new Map<string, LLState>();
+  let layer: LLState[] = [];
+  const visit = (key: string, path: number[]) => {
+    if (states.has(key)) return;
+    const u1 = apply(key, U_PERM), u2 = apply(u1, U_PERM), u3 = apply(u2, U_PERM);
+    const st: LLState = { key, path, o: [orient(key), orient(u1), orient(u2), orient(u3)] };
+    states.set(key, st);
+    layer.push(st);
+  };
+  visit(SOLVED_KEY, []);
+  while (layer.length) {
+    const current = layer;
+    layer = [];
+    for (const st of current) GEN_PERMS.forEach((perm, g) => visit(apply(st.key, perm), [...st.path, g]));
+  }
+  return states;
+}
+const LL = enumerateLL();
+if (LL.size !== 288 * 216) errors.push(`last-layer group has ${LL.size} states, expected ${288 * 216}`);
+
+interface Variant { full: string; corners: string; edges: string }
+const variantMemo = new Map<string, Variant[]>();
+/** The 16 pre/post-AUF variants U^a · path · U^b of a state, as colours at all / top-corner / top-edge stickers. */
+function variants(st: LLState): Variant[] {
+  let v = variantMemo.get(st.key);
+  if (!v) {
+    const turns = (key: string, n: number) => (n ? turns(apply(key, U_PERM), n - 1) : key);
+    v = [0, 1, 2, 3]
+      .flatMap((a) => {
+        const pre = st.path.reduce((key, g) => apply(key, GEN_PERMS[g]), turns(SOLVED_KEY, a));
+        return [0, 1, 2, 3].map((b) => turns(pre, b));
+      })
+      .map((key) => ({
+        full: key,
+        corners: TOP_CORNER_IDX.map((i) => key[i]).join(""),
+        edges: TOP_EDGE_IDX.map((i) => key[i]).join(""),
+      }));
+    variantMemo.set(st.key, v);
+  }
+  return v;
+}
+
+type Stage = "oll" | "eo" | "ocll" | "cp" | "ep" | "pll";
+const ORIENTED = orient(SOLVED_KEY);
+const SOLVED_CORNERS = colorsAt(SOLVED, TOP_CORNERS);
+const min = (xs: string[]) => xs.reduce((a, b) => (b < a ? b : a));
+/** Class of a state at each stage (null = outside the stage). Orientation strings are shifted by U: pre-AUF on o[]. */
+const CLASS: Record<Stage, (st: LLState) => string | null> = {
+  oll: (st) => min(st.o),
+  eo: (st) => min(st.o.map((o) => o.slice(4))),
+  ocll: (st) => (st.o[0].slice(4) === "0000" ? min(st.o.map((o) => o.slice(0, 4))) : null),
+  cp: (st) => (st.o[0] === ORIENTED ? min(variants(st).map((v) => v.corners)) : null),
+  ep: (st) => {
+    if (st.o[0] !== ORIENTED) return null;
+    const edges = variants(st).filter((v) => v.corners === SOLVED_CORNERS).map((v) => v.edges);
+    return edges.length ? min(edges) : null;
+  },
+  pll: (st) => (st.o[0] === ORIENTED ? min(variants(st).map((v) => v.full)) : null),
+};
+
+const tables = new Map<Stage, { counts: Map<string, number>; total: number }>();
+/** Class sizes over the stage's universe. */
+function table(stage: Stage) {
+  let t = tables.get(stage);
+  if (!t) {
+    const counts = new Map<string, number>();
+    let total = 0;
+    for (const st of LL.values()) {
+      const cls = CLASS[stage](st);
+      if (cls === null) continue;
+      total++;
+      counts.set(cls, (counts.get(cls) ?? 0) + 1);
+    }
+    t = { counts, total };
+    tables.set(stage, t);
+  }
+  return t;
+}
+
+/** Stage by section and group goal: 4LLL "oll" goal is OCLL; 4LLL "pll" goal is EPLL. */
+const STAGE_OF: Record<string, Stage> = {
+  "4lll/eo": "eo", "4lll/oll": "ocll", "4lll/cp": "cp", "4lll/pll": "ep", "oll/oll": "oll", "pll/pll": "pll",
+};
+const claimed = new Map<Stage, Set<string>>();
+const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : a);
+
+function withProbability(section: SectionOut): SectionOut {
+  return {
+    ...section,
+    groups: section.groups.map((g) => {
+      const stage = STAGE_OF[`${section.id}/${g.goal}`];
+      if (!stage) return g;
+      const { counts, total } = table(stage);
+      const used = claimed.get(stage) ?? new Set<string>();
+      claimed.set(stage, used);
+      return {
+        ...g,
+        cases: g.cases.map((c): CaseOut => {
+          const st = LL.get(colorsAt(normalizeOrientation(caseState(c.setup)), LOCS));
+          const cls = st ? CLASS[stage](st) : null;
+          const n = cls === null ? undefined : counts.get(cls);
+          if (cls === null || n === undefined || used.has(cls)) {
+            errors.push(`${c.id}: setup is not a distinct ${stage} case`);
+            return c;
+          }
+          used.add(cls);
+          const d = gcd(n, total);
+          return { ...c, prob: [n / d, total / d] };
+        }),
+      };
+    }),
+  };
+}
+
+const sections = [beginner, intermediate, lll, buildFull("oll", ollGroupIds), buildFull("pll", pllGroupIds)].map(withProbability);
+
+/** Every stage class except the skip must be claimed by exactly one case. */
+for (const [stage, used] of claimed) {
+  const skip = CLASS[stage](LL.get(colorsAt(SOLVED, LOCS))!)!;
+  if (used.has(skip) || table(stage).counts.size !== used.size + 1)
+    errors.push(`${stage}: ${table(stage).counts.size - 1} classes but ${used.size} cases`);
+}
 const all = sections.flatMap((s) => s.groups.flatMap((g) => g.cases.flatMap((c) => c.algs)));
 const bySource = all.reduce<Record<string, number>>((acc, a) => ((acc[a.source] = (acc[a.source] ?? 0) + 1), acc), {});
 

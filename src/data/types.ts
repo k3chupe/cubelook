@@ -67,6 +67,8 @@ export interface CaseOut {
   algs: AlgOut[];
   /** Numbered F2L case that is the same position. */
   sameAs?: string;
+  /** Last-layer cases only: chance this case comes up at its stage on a random solve, as a reduced fraction. */
+  prob?: [number, number];
 }
 
 export interface GroupOut {

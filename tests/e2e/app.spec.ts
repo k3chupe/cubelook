@@ -159,3 +159,42 @@ test("Animate here opens the 3D player without console errors", async ({ page })
   await expect(page.locator("dialog.player .player-error")).toHaveCount(0);
   expect(errors).toEqual([]);
 });
+
+test("PLL is ordered most common first by default, SCDB groups restore the original order, choice persists", async ({ page }) => {
+  const sortRadio = (v: string) => page.locator(`[data-action="sort"][data-value="${v}"]`);
+  /** Per group in display order: the cases with their probability. */
+  const pllGroups = () =>
+    page.locator('section[id="pll"] .group').evaluateAll((groups) =>
+      groups
+        .map((g) =>
+          [...g.querySelectorAll(".case")].map((c) => {
+            const [n, d] = c.querySelector(".badge.prob")!.textContent!.match(/(\d+)\/(\d+)/)!.slice(1).map(Number);
+            return { id: c.id, p: n / d };
+          }),
+        )
+        .filter((cases) => cases.length),
+    );
+  const isDesc = (xs: number[]) => xs.every((x, i) => i === 0 || xs[i - 1] >= x - 1e-9);
+
+  await page.locator('[data-action="path"][data-value="full"]').click();
+  await page.locator('button.section-head[data-id="section:pll"]').click();
+  await expect(sortRadio("freqDesc")).toHaveAttribute("aria-checked", "true");
+  await expect(page.locator('section[id="pll"] .badge.prob').first()).toContainText("%");
+
+  const desc = await pllGroups();
+  expect(isDesc(desc.map((g) => g.reduce((n, c) => n + c.p, 0)))).toBe(true);
+  for (const g of desc) expect(isDesc(g.map((c) => c.p))).toBe(true);
+  const sortedIds = desc.flat().map((c) => c.id);
+
+  await sortRadio("groups").click();
+  await expect(sortRadio("groups")).toHaveAttribute("aria-checked", "true");
+  const scdbIds = (await pllGroups()).flat().map((c) => c.id);
+  expect(scdbIds).not.toEqual(sortedIds);
+
+  await page.reload();
+  await expect(sortRadio("groups")).toHaveAttribute("aria-checked", "true");
+  expect((await pllGroups()).flat().map((c) => c.id)).toEqual(scdbIds);
+
+  await sortRadio("freqDesc").click();
+  expect((await pllGroups()).flat().map((c) => c.id)).toEqual(sortedIds);
+});

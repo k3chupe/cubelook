@@ -38,7 +38,26 @@ for (const section of sections)
 
 /** Learning path decides which last-layer section is shown; F2L sections are always shown. */
 const pathHidden = (id: string) => (settings.path === "4lll" ? ["oll", "pll"] : ["4lll"]).includes(id);
-const visibleSections = () => sections.filter((s) => !pathHidden(s.id));
+/** Integer (1e-9 units) so equal sums tie exactly; cases without prob (F2L) count as 0. */
+const probOf = (c: CaseOut) => {
+  const p = c.prob;
+  return p ? Math.round((p[0] / p[1]) * 1e9) : 0;
+};
+
+/** Display-only copies: data and stored user order are never changed. Stable sort keeps F2L as is. */
+function sortedSections(list: SectionOut[]): SectionOut[] {
+  if (settings.sort === "groups") return list;
+  const dir = settings.sort === "freqDesc" ? -1 : 1;
+  const groupSum = (g: GroupOut) => g.cases.reduce((n, c) => n + probOf(c), 0);
+  return list.map((s) => ({
+    ...s,
+    groups: s.groups
+      .map((g) => ({ ...g, cases: [...g.cases].sort((a, b) => (probOf(a) - probOf(b)) * dir) }))
+      .sort((a, b) => (groupSum(a) - groupSum(b)) * dir),
+  }));
+}
+
+const visibleSections = () => sortedSections(sections.filter((s) => !pathHidden(s.id)));
 
 const algsBySource = () =>
   visibleSections()
@@ -48,6 +67,14 @@ const algsBySource = () =>
 const caseName = (c: CaseOut) => content("cases", c.id)?.name ?? c.name;
 const caseSubtitle = (c: CaseOut) => content("cases", c.id)?.subtitle;
 const caseTitle = (c: CaseOut) => [caseName(c), caseSubtitle(c)].filter(Boolean).join(" – ");
+
+function probBadge(c: CaseOut): string {
+  const p = c.prob;
+  if (!p) return "";
+  const pct = new Intl.NumberFormat(locale(), { style: "percent", minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(p[0] / p[1]);
+  const text = `${p[0]}/${p[1]} · ${pct}`;
+  return `<span class="badge prob" role="img" aria-label="${esc(`${t().ui.probability}: ${text}`)}" translate="no">${esc(text)}</span>`;
+}
 
 function isCollapsed(id: string, fallback: boolean): boolean {
   return settings.collapsed[id] ?? fallback;
@@ -161,6 +188,7 @@ function renderCase(ref: CaseRef): string {
         <h4>${esc(caseName(c))}</h4>
         ${sub ? `<p class="sub">${esc(sub)}</p>` : ""}
         ${c.sameAs ? `<span class="badge" title="${esc(m.sameAsHint)}" translate="no">= ${esc(c.sameAs)}</span>` : ""}
+        ${probBadge(c)}
       </div>
       ${iconButton("learn", learned ? m.learned : m.markLearned, icons.check, `learn${learned ? " on" : ""}`, `data-case="${c.id}" aria-pressed="${learned}"`)}
       ${ref.group.view === "f2l" ? "" : iconButton("rotate", m.rotateCase, '<span aria-hidden="true">⟳</span>', "rotate", `data-case="${c.id}"`)}
@@ -343,6 +371,21 @@ function renderThemeSwitch(): string {
 
 type Settings = typeof settings;
 
+function renderSortSwitch(): string {
+  const m = t().ui;
+  const opts: [Settings["sort"], string][] = [
+    ["groups", m.sortGroups],
+    ["freqDesc", m.sortFreqDesc],
+    ["freqAsc", m.sortFreqAsc],
+  ];
+  return `<div class="segmented" role="radiogroup" aria-label="${esc(m.sortLabel)}">${opts
+    .map(
+      ([v, label]) =>
+        `<button role="radio" aria-checked="${settings.sort === v}" data-action="sort" data-value="${v}">${esc(label)}</button>`,
+    )
+    .join("")}</div>`;
+}
+
 function renderPathSwitch(): string {
   const m = t().ui;
   const opts: [Settings["path"], string][] = [
@@ -430,6 +473,7 @@ function render() {
       ${toggleBtn("compact", m.ui.compact, settings.compact, m.ui.compactHint)}
       <span class="sep" aria-hidden="true"></span>
       ${renderPathSwitch()}
+      ${renderSortSwitch()}
       ${renderThemeSwitch()}
       ${renderLanguagePicker()}
       <span class="sep" aria-hidden="true"></span>
@@ -534,6 +578,9 @@ app.addEventListener("click", (e) => {
       break;
     case "path":
       update((s) => (s.path = value as Settings["path"]));
+      break;
+    case "sort":
+      update((s) => (s.sort = value as Settings["sort"]));
       break;
     case "collapseAll":
       setAll(true);

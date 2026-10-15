@@ -40,6 +40,11 @@ export interface Messages {
     learningPath: string;
     path4lll: string;
     pathFull: string;
+    sortLabel: string;
+    sortGroups: string;
+    sortFreqDesc: string;
+    sortFreqAsc: string;
+    probability: string;
     sectionsNav: string;
     cases: PluralForms;
     alternatives: PluralForms;

@@ -18,6 +18,8 @@ export interface Settings {
   theme: "system" | "light" | "dark";
   /** Which last-layer stages to show: 4LLL, or full OLL + PLL. F2L is always shown. */
   path: "4lll" | "full";
+  /** Display order of groups and cases: SpeedCubeDB groups, or by case frequency (prob) desc/asc. */
+  sort: "groups" | "freqDesc" | "freqAsc";
   /** null = follow the browser language. */
   locale: string | null;
 }
@@ -35,6 +37,7 @@ const defaults: Settings = {
   compact: false,
   theme: "system",
   path: "4lll",
+  sort: "freqDesc",
   locale: null,
 };
 

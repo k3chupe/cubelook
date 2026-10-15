@@ -76,9 +76,9 @@ Jedna strona, konfiguracja „co pokazujemy”, nie osobne buildy. UI: segmented
 
 ## 9. Sortowanie po częstości
 
-- [ ] Przy każdym case: **% szans** w warstwie
-- [ ] Sort rosnąco / malejąco; domyślnie najczęstsze pierwsze
-- [ ] Per sekcja (OLL, PLL, F2L…)
+- [x] Przy każdym case LL: **% szans** w etapie (bez F2L)
+- [x] Sort rosnąco / malejąco; domyślnie najczęstsze pierwsze (grupy zostają)
+- [ ] „Kolejny krok” pod EOLL / CPLL: pełne case’y z jednym algiem (Q6–Q8 do potwierdzenia)
 
 ## 10. Grupowanie powiązanych algów / case’ów
 
